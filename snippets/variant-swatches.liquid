@@ -3,9 +3,10 @@
 
   @param {object} product_resource - The product object, which contains variants and options.
   @param {boolean} [has_option_selected] - Whether an option is already selected.
+  @param {string} [display_style] - Display style: 'color', 'image', or 'text'
 
   @example
-  {% render 'variant-swatches', product_resource: product %}
+  {% render 'variant-swatches', product_resource: product, display_style: 'image' %}
 {%- enddoc -%}
 
 <swatches-variant-picker-component
@@ -113,7 +114,8 @@
             <li class="variant-option__swatch">
               <label
                 data-media-id="{{ featured_media.id }}"
-                class="variant-option__button-label variant-option__button-label--has-swatch swatch-rounded"
+                class="variant-option__button-label {% if display_style == 'text' %}variant-option__button-label--text{% else %}variant-option__button-label--has-swatch{% endif %} {% if display_style == 'color' %}swatch-rounded{% endif %}"
+                {% if display_style == 'image' %}style="border-radius: 0; padding: 5px;"{% endif %}
                 on:pointerenter="product-card/previewVariant/{{ featured_media.id }}"
                 on:pointerleave="product-card/resetVariant"
               >
@@ -136,10 +138,16 @@
                   data-variant-id="{{ first_available_variant.id | default: product_option_value.variant.id }}"
                   data-first-available-or-first-variant-id="{{ first_available_variant.id | default: product_option_value.variant.id }}"
                 >
-                {% render 'swatch',
-                  swatch: product_option_value.swatch,
-                  variant_image: featured_media,
-                %}
+                {% if display_style == 'text' %}
+                  <span class="variant-option__text">{{ product_option_value.name }}</span>
+                {% else %}
+                  {% render 'swatch',
+                    swatch: product_option_value.swatch,
+                    variant_image: featured_media,
+                    mode: 'unscaled',
+                    display_style: display_style
+                  %}
+                {% endif %}
                 {% render 'strikethrough-variant', product_option: product_option_value %}
               </label>
             </li>

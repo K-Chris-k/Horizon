@@ -1,0 +1,186 @@
+{% liquid
+  assign section_title = section.settings.section_title
+  assign section_subtitle = section.settings.section_subtitle
+%}
+
+<div class="product-cards-section" {{ section.shopify_attributes }}>
+  <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+  
+  <div class="
+    section
+    section--{{ section.settings.section_width }}
+    color-{{ section.settings.color_scheme }}
+    spacing-style
+  " style="{% render 'spacing-style', settings: section.settings %}">
+    
+    {%- if section_title != blank or section_subtitle != blank -%}
+      <div class="product-cards-section__header">
+        {%- if section_title != blank -%}
+          <h2 class="product-cards-section__title">
+            {{ section_title | escape }}
+          </h2>
+        {%- endif -%}
+        
+        {%- if section_subtitle != blank -%}
+          <p class="product-cards-section__subtitle">
+            {{ section_subtitle | escape }}
+          </p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="product-cards-section__content">
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .product-cards-section {
+    width: 100%;
+  }
+
+  .product-cards-section__header {
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .product-cards-section__title {
+    margin: 0 0 var(--padding-sm) 0;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .product-cards-section__subtitle {
+    margin: 0;
+    font-size: var(--font-size-base);
+    color: rgb(var(--color-foreground) / var(--opacity-70));
+    line-height: var(--line-height-normal);
+  }
+
+  .product-cards-section__content {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+    width: 100%;
+  }
+  label.variant-option__button-label.variant-option__button-label--has-swatch {
+    border-radius: 4px !important;
+}
+  @media screen and (min-width: 750px) {
+    .product-cards-section__content {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product Cards",
+  "tag": "section",
+  "class": "product-cards-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "blocks": [
+    {
+      "type": "product-card-custom",
+      "name": "Custom Product Card"
+    }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Content"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "PAIRS WELL WITH"
+    },
+    {
+      "type": "text",
+      "id": "section_subtitle",
+      "label": "Section Subtitle",
+      "info": "Optional subtitle text"
+    },
+    {
+      "type": "header",
+      "content": "Section Layout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section Width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "Page Width"
+        },
+        {
+          "value": "full-width",
+          "label": "Full Width"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top Padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom Padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Cards",
+      "category": "Products",
+      "settings": {
+        "section_title": "PAIRS WELL WITH",
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      },
+      "blocks": [
+        {
+          "type": "product-card-custom",
+          "name": "Custom Product Card 1"
+        },
+        {
+          "type": "product-card-custom",
+          "name": "Custom Product Card 2"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

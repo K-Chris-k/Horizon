@@ -1,0 +1,642 @@
+{% comment %}
+  Product Features Section
+  Displays product features with customizable left/right layout
+{% endcomment %}
+
+<style>
+/* Product Features Section Styles */
+#shopify-section-{{ section.id }} .product-features {
+  padding: 4rem 0;
+  background-color: #f5f5f5;
+}
+
+#shopify-section-{{ section.id }} .product-features__container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#shopify-section-{{ section.id }} .product-features__top,
+#shopify-section-{{ section.id }} .product-features__bottom {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  margin-bottom: 4rem;
+}
+
+#shopify-section-{{ section.id }} .product-features__bottom {
+  margin-bottom: 0;
+}
+
+/* Images Container */
+#shopify-section-{{ section.id }} .product-features__images {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+}
+
+#shopify-section-{{ section.id }} .product-features__image-item {
+  flex: 1;
+  position: relative;
+}
+
+#shopify-section-{{ section.id }} .product-features__image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+  aspect-ratio: 1;
+}
+
+/* Text Block */
+#shopify-section-{{ section.id }} .product-features__text-block {
+  flex: 1;
+  padding: 2rem;
+}
+
+#shopify-section-{{ section.id }} .product-features__icon {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#shopify-section-{{ section.id }} .product-features__icon svg {
+  width: 32px;
+  height: 32px;
+  fill: #333;
+}
+
+#shopify-section-{{ section.id }} .product-features__icon-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+#shopify-section-{{ section.id }} .product-features__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+#shopify-section-{{ section.id }} .product-features__description {
+  margin-bottom: 1.5rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+#shopify-section-{{ section.id }} .product-features__description ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#shopify-section-{{ section.id }} .product-features__description li {
+  margin-bottom: 0.5rem;
+  padding-left: 1rem;
+  position: relative;
+}
+
+#shopify-section-{{ section.id }} .product-features__description li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Description Points */
+#shopify-section-{{ section.id }} .product-features__points {
+  margin-top: 1.5rem;
+}
+
+#shopify-section-{{ section.id }} .product-features__point {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+#shopify-section-{{ section.id }} .product-features__point-bullet {
+  width: 6px;
+  height: 6px;
+  background-color: #333;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  margin-top: 0.5rem;
+  flex-shrink: 0;
+}
+
+#shopify-section-{{ section.id }} .product-features__point-text {
+  color: #666;
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  #shopify-section-{{ section.id }} .product-features {
+    padding: 2rem 0;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__top,
+  #shopify-section-{{ section.id }} .product-features__bottom {
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__bottom {
+    margin-bottom: 0;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__images {
+    flex-direction: row;
+    gap: 1rem;
+    order: 1;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__text-block {
+    padding: 1.5rem;
+    order: 2;
+    width: 100%;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1rem;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__icon svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__icon-img {
+    width: 24px;
+    height: 24px;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__description {
+    margin-bottom: 1rem;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__points {
+    margin-top: 1rem;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__point {
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__point-text {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #shopify-section-{{ section.id }} .product-features {
+    padding: 1.5rem 0;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__top,
+  #shopify-section-{{ section.id }} .product-features__bottom {
+    margin-bottom: 2rem;
+    gap: 1.5rem;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__images {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__text-block {
+    padding: 1rem;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__title {
+    font-size: 1.1rem;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__icon {
+    width: 45px;
+    height: 45px;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__icon-img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  #shopify-section-{{ section.id }} .product-features__point-text {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+}
+</style>
+
+<div class="product-features">
+  <div class="page-width">
+    <div class="product-features__container">
+      
+      <!-- Top Section -->
+      <div class="product-features__top">
+        {% if section.settings.top_layout == 'left_image' %}
+          <!-- Left Images -->
+          <div class="product-features__images">
+            {% if section.settings.top_left_image != blank %}
+              <div class="product-features__image-item">
+                {{ section.settings.top_left_image | image_url: width: 400 | image_tag: 
+                   alt: section.settings.top_left_image.alt,
+                   class: 'product-features__image' }}
+              </div>
+            {% endif %}
+            {% if section.settings.top_right_image != blank %}
+              <div class="product-features__image-item">
+                {{ section.settings.top_right_image | image_url: width: 400 | image_tag: 
+                   alt: section.settings.top_right_image.alt,
+                   class: 'product-features__image' }}
+              </div>
+            {% endif %}
+          </div>
+          
+          <!-- Right Text Block -->
+          <div class="product-features__text-block">
+            <div class="product-features__icon">
+              {% if section.settings.top_icon_type == 'svg' and section.settings.top_custom_svg != blank %}
+                {{ section.settings.top_custom_svg }}
+              {% elsif section.settings.top_icon_type == 'image' and section.settings.top_icon_image != blank %}
+                {{ section.settings.top_icon_image | image_url: width: 32 | image_tag: 
+                   alt: section.settings.top_icon_image.alt,
+                   class: 'product-features__icon-img' }}
+              {% endif %}
+            </div>
+            <h3 class="product-features__title">{{ section.settings.top_title }}</h3>
+            <div class="product-features__description">
+              {% if section.settings.top_description != blank %}
+                {{ section.settings.top_description }}
+              {% endif %}
+            </div>
+          </div>
+        {% else %}
+          <!-- Right Images -->
+          <div class="product-features__text-block">
+            <div class="product-features__icon">
+              {% if section.settings.top_icon_type == 'svg' and section.settings.top_custom_svg != blank %}
+                {{ section.settings.top_custom_svg }}
+              {% elsif section.settings.top_icon_type == 'image' and section.settings.top_icon_image != blank %}
+                {{ section.settings.top_icon_image | image_url: width: 32 | image_tag: 
+                   alt: section.settings.top_icon_image.alt,
+                   class: 'product-features__icon-img' }}
+              {% endif %}
+            </div>
+            <h3 class="product-features__title">{{ section.settings.top_title }}</h3>
+            <div class="product-features__description">
+              {% if section.settings.top_description != blank %}
+                {{ section.settings.top_description }}
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="product-features__images">
+            {% if section.settings.top_left_image != blank %}
+              <div class="product-features__image-item">
+                {{ section.settings.top_left_image | image_url: width: 400 | image_tag: 
+                   alt: section.settings.top_left_image.alt,
+                   class: 'product-features__image' }}
+              </div>
+            {% endif %}
+            {% if section.settings.top_right_image != blank %}
+              <div class="product-features__image-item">
+                {{ section.settings.top_right_image | image_url: width: 400 | image_tag: 
+                   alt: section.settings.top_right_image.alt,
+                   class: 'product-features__image' }}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+      
+      <!-- Bottom Section -->
+      <div class="product-features__bottom">
+        {% if section.settings.bottom_layout == 'left_text' %}
+          <!-- Left Text Block -->
+          <div class="product-features__text-block">
+            <div class="product-features__icon">
+              {% if section.settings.bottom_icon_type == 'svg' and section.settings.bottom_custom_svg != blank %}
+                {{ section.settings.bottom_custom_svg }}
+              {% elsif section.settings.bottom_icon_type == 'image' and section.settings.bottom_icon_image != blank %}
+                {{ section.settings.bottom_icon_image | image_url: width: 32 | image_tag: 
+                   alt: section.settings.bottom_icon_image.alt,
+                   class: 'product-features__icon-img' }}
+              {% endif %}
+            </div>
+            <h3 class="product-features__title">{{ section.settings.bottom_title }}</h3>
+            <div class="product-features__description">
+              {% if section.settings.bottom_description != blank %}
+                {{ section.settings.bottom_description }}
+              {% endif %}
+            </div>
+            
+            <!-- Eight Description Points -->
+            <div class="product-features__points">
+              {% for i in (1..8) %}
+                {% assign point_key = 'bottom_point_' | append: i %}
+                {% assign point_text = section.settings[point_key] %}
+                {% if point_text != blank %}
+                  <div class="product-features__point">
+                    <span class="product-features__point-bullet"></span>
+                    <span class="product-features__point-text">{{ point_text }}</span>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+          
+          <!-- Right Images -->
+          <div class="product-features__images">
+            {% if section.settings.bottom_left_image != blank %}
+              <div class="product-features__image-item">
+                {{ section.settings.bottom_left_image | image_url: width: 400 | image_tag: 
+                   alt: section.settings.bottom_left_image.alt,
+                   class: 'product-features__image' }}
+              </div>
+            {% endif %}
+            {% if section.settings.bottom_right_image != blank %}
+              <div class="product-features__image-item">
+                {{ section.settings.bottom_right_image | image_url: width: 400 | image_tag: 
+                   alt: section.settings.bottom_right_image.alt,
+                   class: 'product-features__image' }}
+              </div>
+            {% endif %}
+          </div>
+        {% else %}
+          <!-- Right Text Block -->
+          <div class="product-features__images">
+            {% if section.settings.bottom_left_image != blank %}
+              <div class="product-features__image-item">
+                {{ section.settings.bottom_left_image | image_url: width: 400 | image_tag: 
+                   alt: section.settings.bottom_left_image.alt,
+                   class: 'product-features__image' }}
+              </div>
+            {% endif %}
+            {% if section.settings.bottom_right_image != blank %}
+              <div class="product-features__image-item">
+                {{ section.settings.bottom_right_image | image_url: width: 400 | image_tag: 
+                   alt: section.settings.bottom_right_image.alt,
+                   class: 'product-features__image' }}
+              </div>
+            {% endif %}
+          </div>
+          
+          <div class="product-features__text-block">
+            <div class="product-features__icon">
+              {% if section.settings.bottom_icon_type == 'svg' and section.settings.bottom_custom_svg != blank %}
+                {{ section.settings.bottom_custom_svg }}
+              {% elsif section.settings.bottom_icon_type == 'image' and section.settings.bottom_icon_image != blank %}
+                {{ section.settings.bottom_icon_image | image_url: width: 32 | image_tag: 
+                   alt: section.settings.bottom_icon_image.alt,
+                   class: 'product-features__icon-img' }}
+              {% endif %}
+            </div>
+            <h3 class="product-features__title">{{ section.settings.bottom_title }}</h3>
+            <div class="product-features__description">
+              {% if section.settings.bottom_description != blank %}
+                {{ section.settings.bottom_description }}
+              {% endif %}
+            </div>
+            
+            <!-- Eight Description Points -->
+            <div class="product-features__points">
+              {% for i in (1..8) %}
+                {% assign point_key = 'bottom_point_' | append: i %}
+                {% assign point_text = section.settings[point_key] %}
+                {% if point_text != blank %}
+                  <div class="product-features__point">
+                    <span class="product-features__point-bullet"></span>
+                    <span class="product-features__point-text">{{ point_text }}</span>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product Features",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Top Section Settings"
+    },
+    {
+      "type": "select",
+      "id": "top_layout",
+      "label": "Top Section Layout",
+      "options": [
+        {
+          "value": "left_image",
+          "label": "Images Left, Text Right"
+        },
+        {
+          "value": "right_image",
+          "label": "Text Left, Images Right"
+        }
+      ],
+      "default": "left_image"
+    },
+    {
+      "type": "image_picker",
+      "id": "top_left_image",
+      "label": "Top Left Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "top_right_image",
+      "label": "Top Right Image"
+    },
+    {
+      "type": "select",
+      "id": "top_icon_type",
+      "label": "Top Icon Type",
+      "options": [
+        {
+          "value": "svg",
+          "label": "Custom SVG"
+        },
+        {
+          "value": "image",
+          "label": "Upload Image"
+        }
+      ],
+      "default": "svg"
+    },
+    {
+      "type": "textarea",
+      "id": "top_custom_svg",
+      "label": "Top Custom SVG Code",
+      "info": "Paste your SVG code here"
+    },
+    {
+      "type": "image_picker",
+      "id": "top_icon_image",
+      "label": "Top Icon Image",
+      "info": "Upload an image for the icon"
+    },
+    {
+      "type": "text",
+      "id": "top_title",
+      "label": "Top Title",
+      "default": "High-end texture"
+    },
+    {
+      "type": "richtext",
+      "id": "top_description",
+      "label": "Top Description"
+    },
+    {
+      "type": "header",
+      "content": "Bottom Section Settings"
+    },
+    {
+      "type": "select",
+      "id": "bottom_layout",
+      "label": "Bottom Section Layout",
+      "options": [
+        {
+          "value": "left_text",
+          "label": "Text Left, Images Right"
+        },
+        {
+          "value": "right_text",
+          "label": "Images Left, Text Right"
+        }
+      ],
+      "default": "left_text"
+    },
+    {
+      "type": "image_picker",
+      "id": "bottom_left_image",
+      "label": "Bottom Left Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "bottom_right_image",
+      "label": "Bottom Right Image"
+    },
+    {
+      "type": "select",
+      "id": "bottom_icon_type",
+      "label": "Bottom Icon Type",
+      "options": [
+        {
+          "value": "svg",
+          "label": "Custom SVG"
+        },
+        {
+          "value": "image",
+          "label": "Upload Image"
+        }
+      ],
+      "default": "svg"
+    },
+    {
+      "type": "textarea",
+      "id": "bottom_custom_svg",
+      "label": "Bottom Custom SVG Code",
+      "info": "Paste your SVG code here"
+    },
+    {
+      "type": "image_picker",
+      "id": "bottom_icon_image",
+      "label": "Bottom Icon Image",
+      "info": "Upload an image for the icon"
+    },
+    {
+      "type": "text",
+      "id": "bottom_title",
+      "label": "Bottom Title",
+      "default": "Multifunctional dimming"
+    },
+    {
+      "type": "richtext",
+      "id": "bottom_description",
+      "label": "Bottom Description"
+    },
+    {
+      "type": "header",
+      "content": "Description Points"
+    },
+    {
+      "type": "text",
+      "id": "bottom_point_1",
+      "label": "Point 1"
+    },
+    {
+      "type": "text",
+      "id": "bottom_point_2",
+      "label": "Point 2"
+    },
+    {
+      "type": "text",
+      "id": "bottom_point_3",
+      "label": "Point 3"
+    },
+    {
+      "type": "text",
+      "id": "bottom_point_4",
+      "label": "Point 4"
+    },
+    {
+      "type": "text",
+      "id": "bottom_point_5",
+      "label": "Point 5"
+    },
+    {
+      "type": "text",
+      "id": "bottom_point_6",
+      "label": "Point 6"
+    },
+    {
+      "type": "text",
+      "id": "bottom_point_7",
+      "label": "Point 7"
+    },
+    {
+      "type": "text",
+      "id": "bottom_point_8",
+      "label": "Point 8"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Features"
+    }
+  ]
+}
+{% endschema %}

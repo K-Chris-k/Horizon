@@ -16,7 +16,7 @@
     assign product_variant_media = product.featured_media.preview_image | image_url: width: 100
   endif
 -%}
-
+<div class="custom-add-to-cart-button-container-component">
 <add-to-cart-component
   ref="addToCartButtonContainer"
   data-product-variant-media="{{ product_variant_media }}"
@@ -58,6 +58,7 @@
     </span>
   </button>
 </add-to-cart-component>
+</div>
 
 {% stylesheet %}
   .add-to-cart-text {

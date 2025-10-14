@@ -2086,6 +2086,37 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
   border-radius: var(--variant-picker-swatch-radius);
 }
 
+/* Text button variant style */
+.variant-option__button-label--text {
+  padding: 8px 16px;
+  border: 1px solid rgb(var(--color-foreground-rgb) / 0.2);
+  border-radius: 4px;
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+
+.variant-option__button-label--text:hover {
+  border-color: rgb(var(--color-foreground-rgb) / 0.4);
+  background-color: rgb(var(--color-foreground-rgb) / 0.05);
+}
+
+.variant-option__button-label--text:has(input:checked) {
+  border-color: var(--color-foreground);
+  background-color: var(--color-foreground);
+}
+
+.variant-option__text {
+  display: block;
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: inherit;
+}
+
+.variant-option__button-label--text:has(input:checked) .variant-option__text {
+  color: var(--color-background);
+}
+
 .sticky-content {
   position: sticky;
   top: var(--sticky-header-offset, 0);
@@ -4282,4 +4313,9 @@ text-component {
   .h6.h6 select {
     font-size: max(1rem, 100%);
   }
+}
+
+
+label.variant-option__button-label.variant-option__button-label--has-swatch {
+  background: transparent;
 }

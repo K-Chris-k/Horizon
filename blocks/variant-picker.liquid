@@ -7,7 +7,7 @@
   endif
 -%}
 
-{% render 'variant-main-picker', product_resource: product_resource %}
+{% render 'variant-main-picker', product_resource: product_resource, display_style: block.settings.swatch_display_style %}
 
 {% schema %}
 {
@@ -43,6 +43,27 @@
       "id": "show_swatches",
       "label": "t:settings.swatches",
       "default": true
+    },
+    {
+      "type": "select",
+      "id": "swatch_display_style",
+      "label": "Swatch display style",
+      "options": [
+        {
+          "value": "color",
+          "label": "Color swatches (round)"
+        },
+        {
+          "value": "image",
+          "label": "Background images (square)"
+        },
+        {
+          "value": "text",
+          "label": "Text buttons"
+        }
+      ],
+      "default": "color",
+      "info": "Choose how to display variant options"
     },
     {
       "type": "text_alignment",

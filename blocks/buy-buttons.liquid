@@ -68,7 +68,7 @@
           {%- render 'gift-card-recipient-form', product: product, form: form, section: section, block: block -%}
         {%- endif -%}
         <div
-          class="product-form-buttons spacing-style{% if block_settings.stacking %} product-form-buttons--stacked{% endif %}"
+          class="product-form-buttons spacing-style custom-product-form-buttons-stacking {% if block_settings.stacking %} product-form-buttons--stacked{% endif %}"
           style="{% render 'spacing-style', settings: block_settings %}"
         >
           {% content_for 'block', type: 'quantity', id: 'quantity' %}

@@ -27,7 +27,7 @@
     "
     {{ block.shopify_attributes }}
   >
-    {% render 'variant-swatches', product_resource: closest.product %}
+    {% render 'variant-swatches', product_resource: closest.product, display_style: block_settings.swatch_display_style %}
   </product-swatches>
 {% endif %}
 
@@ -97,6 +97,37 @@
   .hidden-swatches__count:hover {
     color: var(--color-foreground-rgb);
   }
+
+  /* Text button style */
+  .variant-option__button-label--text {
+    padding: 8px 16px;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.2);
+    border-radius: 4px;
+    background-color: transparent;
+    transition: all 0.2s ease;
+  }
+
+  .variant-option__button-label--text:hover {
+    border-color: rgb(var(--color-foreground-rgb) / 0.4);
+    background-color: rgb(var(--color-foreground-rgb) / 0.05);
+  }
+
+  .variant-option__button-label--text:has(input:checked) {
+    border-color: var(--color-foreground);
+    background-color: var(--color-foreground);
+  }
+
+  .variant-option__text {
+    display: block;
+    font-size: 14px;
+    line-height: 1.2;
+    white-space: nowrap;
+    color: inherit;
+  }
+
+  .variant-option__button-label--text:has(input:checked) .variant-option__text {
+    color: var(--color-background);
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -107,6 +138,27 @@
     {
       "type": "paragraph",
       "content": "t:content.resource_reference_product_swatches"
+    },
+    {
+      "type": "select",
+      "id": "swatch_display_style",
+      "label": "Display style",
+      "options": [
+        {
+          "value": "color",
+          "label": "Color swatches (round)"
+        },
+        {
+          "value": "image",
+          "label": "Background images (square)"
+        },
+        {
+          "value": "text",
+          "label": "Text buttons"
+        }
+      ],
+      "default": "color",
+      "info": "Choose how to display variant options"
     },
     {
       "type": "select",

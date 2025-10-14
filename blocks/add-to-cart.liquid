@@ -1,5 +1,10 @@
 
-
+{% stylesheet %}
+  
+  .custom-add-to-cart-button-container-component {
+    flex-basis: 100% !important;
+}
+{% endstylesheet %}
 {%- doc -%}
   This block is used to display the add to cart button.
   Intended for product-form.liquid block.
@@ -12,7 +17,7 @@
   assign class = 'add-to-cart-button ' | append: block.settings.style_class
   assign id = 'BuyButtons-ProductSubmitButton-' | append: block.id
 %}
-
+<div class="custom-add-to-cart-button-container-component">
 <span
   {{ block.shopify_attributes }}
   style="--add-to-cart-font-case: {{ settings.button_text_case }};"
@@ -25,7 +30,7 @@
     add_to_cart_text: add_to_cart_text
   %}
 </span>
-
+</div>
 {% schema %}
 {
   "name": "t:names.add_to_cart",
