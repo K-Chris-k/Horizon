@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "hero_jVaWmY": {
       "type": "hero",
@@ -61,6 +62,7 @@
       "settings": {
         "media_type_1": "image",
         "media_type_2": "image",
+        "link": "",
         "open_in_new_tab": false,
         "content_direction": "column",
         "vertical_on_mobile": true,
@@ -82,6 +84,39 @@
         "reflection_opacity": 75,
         "padding-block-start": 100,
         "padding-block-end": 72
+      }
+    },
+    "brand_philosophy_ntNxi4": {
+      "type": "brand-philosophy",
+      "blocks": {
+        "text_overlay_Kn3Byd": {
+          "type": "text_overlay",
+          "settings": {
+            "image": "shopify://shop_images/1.png",
+            "heading": "WE KNOW",
+            "text": "What you desire is not merely intelligence, but rather designs that carry stories, embody spirit, and can withstand the test of time.",
+            "text_position": "center-left",
+            "flex_ratio": "3"
+          }
+        },
+        "image_only_y6fTLx": {
+          "type": "image_only",
+          "settings": {
+            "image": "shopify://shop_images/22.jpg",
+            "flex_ratio": "2"
+          }
+        }
+      },
+      "block_order": [
+        "text_overlay_Kn3Byd",
+        "image_only_y6fTLx"
+      ],
+      "name": "Brand Philosophy",
+      "settings": {
+        "content_width": "full-width",
+        "padding_top": 36,
+        "padding_bottom": 36,
+        "background_color": ""
       }
     },
     "product_list_fa6P9H": {
@@ -281,6 +316,7 @@
   },
   "order": [
     "hero_jVaWmY",
+    "brand_philosophy_ntNxi4",
     "product_list_fa6P9H"
   ]
 }
