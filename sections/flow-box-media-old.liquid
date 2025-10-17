@@ -1,0 +1,1083 @@
+{{ 'flow-box-media.css' | asset_url | stylesheet_tag }}
+{%- style -%}
+  #shopify-section-{{ section.id }}  {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    background-color: {{ section.settings.background_color }};
+  }
+
+  #shopify-section-{{ section.id }} .flow-box-media__grid {
+    gap: {{ section.settings.gap }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign total_blocks = section.blocks.size
+  assign items_per_row_desktop = section.settings.items_per_row_desktop
+  assign items_per_row_mobile = section.settings.items_per_row_mobile
+  assign show_more_needed = false
+
+  if total_blocks > items_per_row_desktop
+    assign show_more_needed = true
+  endif
+-%}
+
+<div class="flow-box-media section section--{{ section.settings.content_width }}" data-section-id="{{ section.id }}">
+  <div
+    class="flow-box-media__grid"
+    data-items-per-row-desktop="{{ items_per_row_desktop }}"
+    data-items-per-row-mobile="{{ items_per_row_mobile }}"
+    data-total-blocks="{{ total_blocks }}"
+  >
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'image' -%}
+          <div
+            class="flow-box-media__item"
+            {{ block.shopify_attributes }}
+            data-block-index="{{ forloop.index }}"
+          >
+            {%- if block.settings.image != blank -%}
+              <div class="flow-box-media__media">
+                {%- if block.settings.link != blank -%}
+                  <a href="{{ block.settings.link }}" class="flow-box-media__link">
+                {%- endif -%}
+                <img
+                  srcset="
+                    {{ block.settings.image | image_url: width: 400 }} 400w,
+                    {{ block.settings.image | image_url: width: 600 }} 600w,
+                    {{ block.settings.image | image_url: width: 800 }} 800w,
+                    {{ block.settings.image | image_url: width: 1200 }} 1200w
+                  "
+                  src="{{ block.settings.image | image_url: width: 800 }}"
+                  alt="{{ block.settings.image.alt | escape }}"
+                  loading="lazy"
+                  width="{{ block.settings.image.width }}"
+                  height="{{ block.settings.image.height }}"
+                  class="flow-box-media__img"
+                >
+                {%- if block.settings.link != blank -%}
+                  </a>
+                {%- endif -%}
+              </div>
+            {%- else -%}
+              <div class="flow-box-media__placeholder">
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+            {%- endif -%}
+          </div>
+
+        {%- when 'video' -%}
+          <div
+            class="flow-box-media__item"
+            {{ block.shopify_attributes }}
+            data-block-index="{{ forloop.index }}"
+          >
+            <div class="flow-box-media__media flow-box-media__media--video">
+              {%- if block.settings.video != blank -%}
+                {{
+                  block.settings.video
+                  | video_tag:
+                    image_size: '1200x',
+                    autoplay: block.settings.autoplay,
+                    loop: block.settings.loop,
+                    muted: block.settings.muted,
+                    controls: block.settings.controls,
+                    class: 'flow-box-media__video'
+                }}
+              {%- elsif block.settings.video_url != blank -%}
+                <div class="flow-box-media__video-wrapper">
+                  {%- if block.settings.cover_image != blank -%}
+                    <img
+                      src="{{ block.settings.cover_image | image_url: width: 1200 }}"
+                      alt="{{ block.settings.cover_image.alt | escape }}"
+                      width="{{ block.settings.cover_image.width }}"
+                      height="{{ block.settings.cover_image.height }}"
+                      class="flow-box-media__video-cover"
+                      loading="lazy"
+                    >
+                  {%- endif -%}
+                  <iframe
+                    src="{{ block.settings.video_url }}"
+                    frameborder="0"
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allowfullscreen
+                    class="flow-box-media__iframe"
+                  ></iframe>
+                </div>
+              {%- else -%}
+                <div class="flow-box-media__placeholder">
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+
+        {%- when 'media_group' -%}
+          {%- liquid
+            assign media_count = 0
+
+            if block.settings.media_type_1 != 'none'
+              assign media_count = media_count | plus: 1
+            endif
+            if block.settings.media_type_2 != 'none'
+              assign media_count = media_count | plus: 1
+            endif
+            if block.settings.media_type_3 != 'none'
+              assign media_count = media_count | plus: 1
+            endif
+            if block.settings.media_type_4 != 'none'
+              assign media_count = media_count | plus: 1
+            endif
+          -%}
+
+          <div
+            class="flow-box-media__item flow-box-media__item--group"
+            {{ block.shopify_attributes }}
+            data-block-index="{{ forloop.index }}"
+          >
+            <div class="flow-box-media__group flow-box-media__group--count-{{ media_count }}">
+              {%- if media_count > 0 -%}
+                {%- comment -%} Media Item 1 {%- endcomment -%}
+                {%- if block.settings.media_type_1 == 'image' and block.settings.image_1 != blank -%}
+                  {%- liquid
+                    assign image_urls_1 = block.settings.image_1 | image_url: width: 1200
+                    assign thumb_urls_1 = block.settings.image_1 | image_url: width: 120, height: 120, crop: 'center'
+                    assign image_count_1 = 1
+
+                    if block.settings.image_1_2 != blank
+                      assign image_urls_1 = image_urls_1 | append: '||' | append: block.settings.image_1_2 | image_url: width: 1200
+                      assign thumb_urls_1 = thumb_urls_1 | append: '||' | append: block.settings.image_1_2 | image_url: width: 120, height: 120, crop: 'center'
+                      assign image_count_1 = image_count_1 | plus: 1
+                    endif
+                    if block.settings.image_1_3 != blank
+                      assign image_urls_1 = image_urls_1 | append: '||' | append: block.settings.image_1_3 | image_url: width: 1200
+                      assign thumb_urls_1 = thumb_urls_1 | append: '||' | append: block.settings.image_1_3 | image_url: width: 120, height: 120, crop: 'center'
+                      assign image_count_1 = image_count_1 | plus: 1
+                    endif
+                    if block.settings.image_1_4 != blank
+                      assign image_urls_1 = image_urls_1 | append: '||' | append: block.settings.image_1_4 | image_url: width: 1200
+                      assign thumb_urls_1 = thumb_urls_1 | append: '||' | append: block.settings.image_1_4 | image_url: width: 120, height: 120, crop: 'center'
+                      assign image_count_1 = image_count_1 | plus: 1
+                    endif
+                  -%}
+                  <div
+                    class="flow-box-media__group-item"
+                    data-image-gallery="1"
+                    data-image-urls="{{ image_urls_1 }}"
+                    data-thumb-urls="{{ thumb_urls_1 }}"
+                    data-image-count="{{ image_count_1 }}"
+                  >
+                    <img
+                      srcset="
+                        {{ block.settings.image_1 | image_url: width: 400 }} 400w,
+                        {{ block.settings.image_1 | image_url: width: 600 }} 600w,
+                        {{ block.settings.image_1 | image_url: width: 800 }} 800w
+                      "
+                      src="{{ block.settings.image_1 | image_url: width: 600 }}"
+                      alt="{{ block.settings.image_1.alt | escape }}"
+                      loading="lazy"
+                      width="{{ block.settings.image_1.width }}"
+                      height="{{ block.settings.image_1.height }}"
+                      class="flow-box-media__img"
+                    >
+                    {% render 'image-gallery-indicator', image_count: image_count_1 %}
+                  </div>
+                {%- elsif block.settings.media_type_1 == 'video' -%}
+                  <div class="flow-box-media__group-item flow-box-media__group-item--video">
+                    {%- if block.settings.video_1 != blank -%}
+                      {{
+                        block.settings.video_1
+                        | video_tag:
+                          image_size: '800x',
+                          autoplay: false,
+                          loop: true,
+                          muted: true,
+                          controls: true,
+                          class: 'flow-box-media__video'
+                      }}
+                    {%- elsif block.settings.video_url_1 != blank -%}
+                      <div class="flow-box-media__video-wrapper">
+                        {%- if block.settings.cover_image_1 != blank -%}
+                          <img
+                            src="{{ block.settings.cover_image_1 | image_url: width: 800 }}"
+                            alt="{{ block.settings.cover_image_1.alt | escape }}"
+                            width="{{ block.settings.cover_image_1.width }}"
+                            height="{{ block.settings.cover_image_1.height }}"
+                            class="flow-box-media__video-cover"
+                            loading="lazy"
+                          >
+                        {%- endif -%}
+                        <iframe
+                          src="{{ block.settings.video_url_1 }}"
+                          frameborder="0"
+                          allow="autoplay; encrypted-media; picture-in-picture"
+                          allowfullscreen
+                          class="flow-box-media__iframe"
+                        ></iframe>
+                      </div>
+                    {%- else -%}
+                      <div class="flow-box-media__placeholder">
+                        {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+
+                {%- comment -%} Media Item 2 {%- endcomment -%}
+                {%- if block.settings.media_type_2 == 'image' and block.settings.image_2 != blank -%}
+                  {%- liquid
+                    assign image_urls_2 = block.settings.image_2 | image_url: width: 1200
+                    assign thumb_urls_2 = block.settings.image_2 | image_url: width: 120, height: 120, crop: 'center'
+                    assign image_count_2 = 1
+
+                    if block.settings.image_2_2 != blank
+                      assign image_urls_2 = image_urls_2 | append: '||' | append: block.settings.image_2_2 | image_url: width: 1200
+                      assign thumb_urls_2 = thumb_urls_2 | append: '||' | append: block.settings.image_2_2 | image_url: width: 120, height: 120, crop: 'center'
+                      assign image_count_2 = image_count_2 | plus: 1
+                    endif
+                    if block.settings.image_2_3 != blank
+                      assign image_urls_2 = image_urls_2 | append: '||' | append: block.settings.image_2_3 | image_url: width: 1200
+                      assign thumb_urls_2 = thumb_urls_2 | append: '||' | append: block.settings.image_2_3 | image_url: width: 120, height: 120, crop: 'center'
+                      assign image_count_2 = image_count_2 | plus: 1
+                    endif
+                    if block.settings.image_2_4 != blank
+                      assign image_urls_2 = image_urls_2 | append: '||' | append: block.settings.image_2_4 | image_url: width: 1200
+                      assign thumb_urls_2 = thumb_urls_2 | append: '||' | append: block.settings.image_2_4 | image_url: width: 120, height: 120, crop: 'center'
+                      assign image_count_2 = image_count_2 | plus: 1
+                    endif
+                  -%}
+                  <div
+                    class="flow-box-media__group-item"
+                    data-image-gallery="2"
+                    data-image-urls="{{ image_urls_2 }}"
+                    data-thumb-urls="{{ thumb_urls_2 }}"
+                    data-image-count="{{ image_count_2 }}"
+                  >
+                    <img
+                      srcset="
+                        {{ block.settings.image_2 | image_url: width: 400 }} 400w,
+                        {{ block.settings.image_2 | image_url: width: 600 }} 600w,
+                        {{ block.settings.image_2 | image_url: width: 800 }} 800w
+                      "
+                      src="{{ block.settings.image_2 | image_url: width: 600 }}"
+                      alt="{{ block.settings.image_2.alt | escape }}"
+                      loading="lazy"
+                      width="{{ block.settings.image_2.width }}"
+                      height="{{ block.settings.image_2.height }}"
+                      class="flow-box-media__img"
+                    >
+                    {% render 'image-gallery-indicator', image_count: image_count_2 %}
+                  </div>
+                {%- elsif block.settings.media_type_2 == 'video' -%}
+                  <div class="flow-box-media__group-item flow-box-media__group-item--video">
+                    {%- if block.settings.video_2 != blank -%}
+                      {{
+                        block.settings.video_2
+                        | video_tag:
+                          image_size: '800x',
+                          autoplay: false,
+                          loop: true,
+                          muted: true,
+                          controls: true,
+                          class: 'flow-box-media__video'
+                      }}
+                    {%- elsif block.settings.video_url_2 != blank -%}
+                      <div class="flow-box-media__video-wrapper">
+                        {%- if block.settings.cover_image_2 != blank -%}
+                          <img
+                            src="{{ block.settings.cover_image_2 | image_url: width: 800 }}"
+                            alt="{{ block.settings.cover_image_2.alt | escape }}"
+                            width="{{ block.settings.cover_image_2.width }}"
+                            height="{{ block.settings.cover_image_2.height }}"
+                            class="flow-box-media__video-cover"
+                            loading="lazy"
+                          >
+                        {%- endif -%}
+                        <iframe
+                          src="{{ block.settings.video_url_2 }}"
+                          frameborder="0"
+                          allow="autoplay; encrypted-media; picture-in-picture"
+                          allowfullscreen
+                          class="flow-box-media__iframe"
+                        ></iframe>
+                      </div>
+                    {%- else -%}
+                      <div class="flow-box-media__placeholder">
+                        {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+
+                {%- comment -%} Media Item 3 {%- endcomment -%}
+                {%- if block.settings.media_type_3 == 'image' and block.settings.image_3 != blank -%}
+                  {%- liquid
+                    assign image_urls_3 = block.settings.image_3 | image_url: width: 1200
+                    assign thumb_urls_3 = block.settings.image_3 | image_url: width: 120, height: 120, crop: 'center'
+                    assign image_count_3 = 1
+
+                    if block.settings.image_3_2 != blank
+                      assign image_urls_3 = image_urls_3 | append: '||' | append: block.settings.image_3_2 | image_url: width: 1200
+                      assign thumb_urls_3 = thumb_urls_3 | append: '||' | append: block.settings.image_3_2 | image_url: width: 120, height: 120, crop: 'center'
+                      assign image_count_3 = image_count_3 | plus: 1
+                    endif
+                    if block.settings.image_3_3 != blank
+                      assign image_urls_3 = image_urls_3 | append: '||' | append: block.settings.image_3_3 | image_url: width: 1200
+                      assign thumb_urls_3 = thumb_urls_3 | append: '||' | append: block.settings.image_3_3 | image_url: width: 120, height: 120, crop: 'center'
+                      assign image_count_3 = image_count_3 | plus: 1
+                    endif
+                    if block.settings.image_3_4 != blank
+                      assign image_urls_3 = image_urls_3 | append: '||' | append: block.settings.image_3_4 | image_url: width: 1200
+                      assign thumb_urls_3 = thumb_urls_3 | append: '||' | append: block.settings.image_3_4 | image_url: width: 120, height: 120, crop: 'center'
+                      assign image_count_3 = image_count_3 | plus: 1
+                    endif
+                  -%}
+                  <div
+                    class="flow-box-media__group-item"
+                    data-image-gallery="3"
+                    data-image-urls="{{ image_urls_3 }}"
+                    data-thumb-urls="{{ thumb_urls_3 }}"
+                    data-image-count="{{ image_count_3 }}"
+                  >
+                    <img
+                      srcset="
+                        {{ block.settings.image_3 | image_url: width: 400 }} 400w,
+                        {{ block.settings.image_3 | image_url: width: 600 }} 600w,
+                        {{ block.settings.image_3 | image_url: width: 800 }} 800w
+                      "
+                      src="{{ block.settings.image_3 | image_url: width: 600 }}"
+                      alt="{{ block.settings.image_3.alt | escape }}"
+                      loading="lazy"
+                      width="{{ block.settings.image_3.width }}"
+                      height="{{ block.settings.image_3.height }}"
+                      class="flow-box-media__img"
+                    >
+                    {% render 'image-gallery-indicator', image_count: image_count_3 %}
+                  </div>
+                {%- elsif block.settings.media_type_3 == 'video' -%}
+                  <div class="flow-box-media__group-item flow-box-media__group-item--video">
+                    {%- if block.settings.video_3 != blank -%}
+                      {{
+                        block.settings.video_3
+                        | video_tag:
+                          image_size: '800x',
+                          autoplay: false,
+                          loop: true,
+                          muted: true,
+                          controls: true,
+                          class: 'flow-box-media__video'
+                      }}
+                    {%- elsif block.settings.video_url_3 != blank -%}
+                      <div class="flow-box-media__video-wrapper">
+                        {%- if block.settings.cover_image_3 != blank -%}
+                          <img
+                            src="{{ block.settings.cover_image_3 | image_url: width: 800 }}"
+                            alt="{{ block.settings.cover_image_3.alt | escape }}"
+                            width="{{ block.settings.cover_image_3.width }}"
+                            height="{{ block.settings.cover_image_3.height }}"
+                            class="flow-box-media__video-cover"
+                            loading="lazy"
+                          >
+                        {%- endif -%}
+                        <iframe
+                          src="{{ block.settings.video_url_3 }}"
+                          frameborder="0"
+                          allow="autoplay; encrypted-media; picture-in-picture"
+                          allowfullscreen
+                          class="flow-box-media__iframe"
+                        ></iframe>
+                      </div>
+                    {%- else -%}
+                      <div class="flow-box-media__placeholder">
+                        {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+
+                {%- comment -%} Media Item 4 {%- endcomment -%}
+                {%- if block.settings.media_type_4 == 'image' and block.settings.image_4 != blank -%}
+                  {%- liquid
+                    assign additional_images_4 = ''
+                    assign image_count_4 = 1
+
+                    if block.settings.image_4_2 != blank
+                      assign additional_images_4 = additional_images_4 | append: block.settings.image_4_2.id | append: ','
+                      assign image_count_4 = image_count_4 | plus: 1
+                    endif
+                    if block.settings.image_4_3 != blank
+                      assign additional_images_4 = additional_images_4 | append: block.settings.image_4_3.id | append: ','
+                      assign image_count_4 = image_count_4 | plus: 1
+                    endif
+                    if block.settings.image_4_4 != blank
+                      assign additional_images_4 = additional_images_4 | append: block.settings.image_4_4.id | append: ','
+                      assign image_count_4 = image_count_4 | plus: 1
+                    endif
+                  -%}
+                  <div
+                    class="flow-box-media__group-item"
+                    data-image-gallery="4"
+                    data-images="{{ block.settings.image_4.id }},{{ additional_images_4 }}"
+                    data-image-count="{{ image_count_4 }}"
+                  >
+                    <img
+                      srcset="
+                        {{ block.settings.image_4 | image_url: width: 400 }} 400w,
+                        {{ block.settings.image_4 | image_url: width: 600 }} 600w,
+                        {{ block.settings.image_4 | image_url: width: 800 }} 800w
+                      "
+                      src="{{ block.settings.image_4 | image_url: width: 600 }}"
+                      alt="{{ block.settings.image_4.alt | escape }}"
+                      loading="lazy"
+                      width="{{ block.settings.image_4.width }}"
+                      height="{{ block.settings.image_4.height }}"
+                      class="flow-box-media__img"
+                    >
+                    {% render 'image-gallery-indicator', image_count: image_count_4 %}
+                  </div>
+                {%- elsif block.settings.media_type_4 == 'video' -%}
+                  <div class="flow-box-media__group-item flow-box-media__group-item--video">
+                    {%- if block.settings.video_4 != blank -%}
+                      {{
+                        block.settings.video_4
+                        | video_tag:
+                          image_size: '800x',
+                          autoplay: false,
+                          loop: true,
+                          muted: true,
+                          controls: true,
+                          class: 'flow-box-media__video'
+                      }}
+                    {%- elsif block.settings.video_url_4 != blank -%}
+                      <div class="flow-box-media__video-wrapper">
+                        {%- if block.settings.cover_image_4 != blank -%}
+                          <img
+                            src="{{ block.settings.cover_image_4 | image_url: width: 800 }}"
+                            alt="{{ block.settings.cover_image_4.alt | escape }}"
+                            width="{{ block.settings.cover_image_4.width }}"
+                            height="{{ block.settings.cover_image_4.height }}"
+                            class="flow-box-media__video-cover"
+                            loading="lazy"
+                          >
+                        {%- endif -%}
+                        <iframe
+                          src="{{ block.settings.video_url_4 }}"
+                          frameborder="0"
+                          allow="autoplay; encrypted-media; picture-in-picture"
+                          allowfullscreen
+                          class="flow-box-media__iframe"
+                        ></iframe>
+                      </div>
+                    {%- else -%}
+                      <div class="flow-box-media__placeholder">
+                        {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              {%- else -%}
+                <div class="flow-box-media__placeholder">
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+
+  {%- if show_more_needed -%}
+    <div class="flow-box-media__show-more-wrapper">
+      <button
+        class="flow-box-media__show-more"
+        data-show-more-section="{{ section.id }}"
+        data-show-text="{{ section.settings.show_more_text }}"
+        data-hide-text="{{ section.settings.show_less_text }}"
+      >
+        <span class="flow-box-media__show-more-text">{{ section.settings.show_more_text }}</span>
+        <svg class="flow-box-media__show-more-icon" width="12" height="8" viewBox="0 0 12 8" fill="none">
+          <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  {%- endif -%}
+</div>
+
+<!-- Image Gallery Modal Component -->
+{% render 'image-gallery-modal' %}
+
+<script>
+  if (!window.flowBoxMediaInitialized) {
+    window.flowBoxMediaInitialized = true;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize dynamic grid layout
+      function initFlowBoxMedia() {
+        const sections = document.querySelectorAll('.flow-box-media');
+
+        sections.forEach((section) => {
+          const grid = section.querySelector('.flow-box-media__grid');
+          if (!grid) return;
+
+          const totalBlocks = parseInt(grid.getAttribute('data-total-blocks'));
+          const itemsPerRowDesktop = parseInt(grid.getAttribute('data-items-per-row-desktop'));
+          const itemsPerRowMobile = parseInt(grid.getAttribute('data-items-per-row-mobile'));
+
+          // Calculate how many items to show per row based on total blocks
+          const actualItemsDesktop = Math.min(totalBlocks, itemsPerRowDesktop);
+          const actualItemsMobile = Math.min(totalBlocks, itemsPerRowMobile);
+
+          // Set CSS custom properties for dynamic width
+          grid.style.setProperty('--items-per-row-desktop', actualItemsDesktop);
+          grid.style.setProperty('--items-per-row-mobile', actualItemsMobile);
+
+          // Initialize visible items count
+          const isMobile = window.innerWidth <= 749;
+          const initialVisibleItems = isMobile ? actualItemsMobile : actualItemsDesktop;
+          section.setAttribute('data-visible-items', initialVisibleItems);
+        });
+      }
+
+      // Show More functionality - progressive reveal
+      const showMoreButtons = document.querySelectorAll('.flow-box-media__show-more');
+
+      showMoreButtons.forEach((button) => {
+        button.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          const sectionId = this.getAttribute('data-show-more-section');
+          const section = document.querySelector(`[data-section-id="${sectionId}"]`);
+          const grid = section.querySelector('.flow-box-media__grid');
+          const showText = this.getAttribute('data-show-text') || 'Show More';
+          const hideText = this.getAttribute('data-hide-text') || 'Show Less';
+
+          const totalBlocks = parseInt(grid.getAttribute('data-total-blocks'));
+          const itemsPerRowDesktop = parseInt(grid.getAttribute('data-items-per-row-desktop'));
+          const itemsPerRowMobile = parseInt(grid.getAttribute('data-items-per-row-mobile'));
+
+          const isMobile = window.innerWidth <= 749;
+          const itemsPerRow = isMobile ? itemsPerRowMobile : itemsPerRowDesktop;
+          const currentVisibleItems = parseInt(section.getAttribute('data-visible-items')) || itemsPerRow;
+
+          if (section.classList.contains('is-fully-expanded')) {
+            // Collapse back to first row
+            section.classList.remove('is-fully-expanded');
+            section.setAttribute('data-visible-items', itemsPerRow);
+            this.querySelector('.flow-box-media__show-more-text').textContent = showText;
+          } else {
+            // Show next row
+            const nextVisibleItems = Math.min(currentVisibleItems + itemsPerRow, totalBlocks);
+            section.setAttribute('data-visible-items', nextVisibleItems);
+
+            // Check if we've shown all items
+            if (nextVisibleItems >= totalBlocks) {
+              section.classList.add('is-fully-expanded');
+              this.querySelector('.flow-box-media__show-more-text').textContent = hideText;
+            }
+          }
+        });
+      });
+
+      // Handle window resize
+      window.addEventListener('resize', function () {
+        const sections = document.querySelectorAll('.flow-box-media');
+        sections.forEach((section) => {
+          const grid = section.querySelector('.flow-box-media__grid');
+          if (!grid) return;
+
+          const totalBlocks = parseInt(grid.getAttribute('data-total-blocks'));
+          const itemsPerRowDesktop = parseInt(grid.getAttribute('data-items-per-row-desktop'));
+          const itemsPerRowMobile = parseInt(grid.getAttribute('data-items-per-row-mobile'));
+
+          const isMobile = window.innerWidth <= 749;
+          const itemsPerRow = isMobile ? itemsPerRowMobile : itemsPerRowDesktop;
+
+          // Reset to first row on resize
+          section.classList.remove('is-fully-expanded');
+          section.setAttribute('data-visible-items', itemsPerRow);
+
+          // Update button text
+          const button = section.querySelector('.flow-box-media__show-more');
+          if (button) {
+            const showText = button.getAttribute('data-show-text') || 'Show More';
+            button.querySelector('.flow-box-media__show-more-text').textContent = showText;
+          }
+        });
+      });
+
+      initFlowBoxMedia();
+    });
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Flow Box Media Old",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "range",
+      "id": "items_per_row_desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "label": "Items Per Row (Desktop)",
+      "default": 4,
+      "info": "Items will auto-adjust width based on total number of blocks"
+    },
+    {
+      "type": "range",
+      "id": "items_per_row_mobile",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "label": "Items Per Row (Mobile)",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Gap Between Items",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Show More Settings"
+    },
+    {
+      "type": "text",
+      "id": "show_more_text",
+      "label": "Show More Text",
+      "default": "Show More"
+    },
+    {
+      "type": "text",
+      "id": "show_less_text",
+      "label": "Show Less Text",
+      "default": "Show Less"
+    },
+    {
+      "type": "header",
+      "content": "Content Width"
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:settings.top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:settings.bottom",
+      "default": 36
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (Optional)"
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Shopify Hosted Video"
+        },
+        {
+          "type": "text",
+          "id": "video_url",
+          "label": "Video URL (YouTube/Vimeo)",
+          "info": "Use if not using Shopify video"
+        },
+        {
+          "type": "image_picker",
+          "id": "cover_image",
+          "label": "Cover Image (for external videos)"
+        },
+        {
+          "type": "checkbox",
+          "id": "autoplay",
+          "label": "Autoplay",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "loop",
+          "label": "Loop",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "muted",
+          "label": "Muted",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "controls",
+          "label": "Show Controls",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "media_group",
+      "name": "Media Group",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Add up to 4 media items to this group. Mix images and videos as needed."
+        },
+        {
+          "type": "header",
+          "content": "Media Item 1"
+        },
+        {
+          "type": "select",
+          "id": "media_type_1",
+          "label": "Type",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "image",
+              "label": "Image"
+            },
+            {
+              "value": "video",
+              "label": "Video"
+            }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "Image 1",
+          "visible_if": "{{ block.settings.media_type_1 == 'image' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1_2",
+          "label": "Image 1 - Additional 1",
+          "visible_if": "{{ block.settings.media_type_1 == 'image' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1_3",
+          "label": "Image 1 - Additional 2",
+          "visible_if": "{{ block.settings.media_type_1 == 'image' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1_4",
+          "label": "Image 1 - Additional 3",
+          "visible_if": "{{ block.settings.media_type_1 == 'image' }}"
+        },
+        {
+          "type": "video",
+          "id": "video_1",
+          "label": "Video 1",
+          "visible_if": "{{ block.settings.media_type_1 == 'video' }}"
+        },
+        {
+          "type": "text",
+          "id": "video_url_1",
+          "label": "Video URL 1 (YouTube/Vimeo)",
+          "visible_if": "{{ block.settings.media_type_1 == 'video' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "cover_image_1",
+          "label": "Cover Image 1",
+          "visible_if": "{{ block.settings.media_type_1 == 'video' }}"
+        },
+        {
+          "type": "header",
+          "content": "Media Item 2"
+        },
+        {
+          "type": "select",
+          "id": "media_type_2",
+          "label": "Type",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "image",
+              "label": "Image"
+            },
+            {
+              "value": "video",
+              "label": "Video"
+            }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Image 2",
+          "visible_if": "{{ block.settings.media_type_2 == 'image' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2_2",
+          "label": "Image 2 - Additional 1",
+          "visible_if": "{{ block.settings.media_type_2 == 'image' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2_3",
+          "label": "Image 2 - Additional 2",
+          "visible_if": "{{ block.settings.media_type_2 == 'image' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2_4",
+          "label": "Image 2 - Additional 3",
+          "visible_if": "{{ block.settings.media_type_2 == 'image' }}"
+        },
+        {
+          "type": "video",
+          "id": "video_2",
+          "label": "Video 2",
+          "visible_if": "{{ block.settings.media_type_2 == 'video' }}"
+        },
+        {
+          "type": "text",
+          "id": "video_url_2",
+          "label": "Video URL 2 (YouTube/Vimeo)",
+          "visible_if": "{{ block.settings.media_type_2 == 'video' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "cover_image_2",
+          "label": "Cover Image 2",
+          "visible_if": "{{ block.settings.media_type_2 == 'video' }}"
+        },
+        {
+          "type": "header",
+          "content": "Media Item 3"
+        },
+        {
+          "type": "select",
+          "id": "media_type_3",
+          "label": "Type",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "image",
+              "label": "Image"
+            },
+            {
+              "value": "video",
+              "label": "Video"
+            }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_3",
+          "label": "Image 3",
+          "visible_if": "{{ block.settings.media_type_3 == 'image' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_3_2",
+          "label": "Image 3 - Additional 1",
+          "visible_if": "{{ block.settings.media_type_3 == 'image' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_3_3",
+          "label": "Image 3 - Additional 2",
+          "visible_if": "{{ block.settings.media_type_3 == 'image' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_3_4",
+          "label": "Image 3 - Additional 3",
+          "visible_if": "{{ block.settings.media_type_3 == 'image' }}"
+        },
+        {
+          "type": "video",
+          "id": "video_3",
+          "label": "Video 3",
+          "visible_if": "{{ block.settings.media_type_3 == 'video' }}"
+        },
+        {
+          "type": "text",
+          "id": "video_url_3",
+          "label": "Video URL 3 (YouTube/Vimeo)",
+          "visible_if": "{{ block.settings.media_type_3 == 'video' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "cover_image_3",
+          "label": "Cover Image 3",
+          "visible_if": "{{ block.settings.media_type_3 == 'video' }}"
+        },
+        {
+          "type": "header",
+          "content": "Media Item 4"
+        },
+        {
+          "type": "select",
+          "id": "media_type_4",
+          "label": "Type",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "image",
+              "label": "Image"
+            },
+            {
+              "value": "video",
+              "label": "Video"
+            }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_4",
+          "label": "Image 4",
+          "visible_if": "{{ block.settings.media_type_4 == 'image' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_4_2",
+          "label": "Image 4 - Additional 1",
+          "visible_if": "{{ block.settings.media_type_4 == 'image' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_4_3",
+          "label": "Image 4 - Additional 2",
+          "visible_if": "{{ block.settings.media_type_4 == 'image' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_4_4",
+          "label": "Image 4 - Additional 3",
+          "visible_if": "{{ block.settings.media_type_4 == 'image' }}"
+        },
+        {
+          "type": "video",
+          "id": "video_4",
+          "label": "Video 4",
+          "visible_if": "{{ block.settings.media_type_4 == 'video' }}"
+        },
+        {
+          "type": "text",
+          "id": "video_url_4",
+          "label": "Video URL 4 (YouTube/Vimeo)",
+          "visible_if": "{{ block.settings.media_type_4 == 'video' }}"
+        },
+        {
+          "type": "image_picker",
+          "id": "cover_image_4",
+          "label": "Cover Image 4",
+          "visible_if": "{{ block.settings.media_type_4 == 'video' }}"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Flow Box Media Old",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

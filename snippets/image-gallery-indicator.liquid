@@ -1,0 +1,19 @@
+{%- comment -%}
+  Image Gallery Indicator Component
+
+  Parameters:
+  - image_count: Number of images in the gallery
+
+  Usage:
+  {% render 'image-gallery-indicator', image_count: 3 %}
+{%- endcomment -%}
+
+{%- if image_count > 1 -%}
+  <div class="post-type-indicator">
+    <svg aria-hidden="true" focusable="false" height="100%" viewBox="0 0 24 24" width="100%">
+      <g fill="currentColor">
+        <path d="M20 6h2a2 2 0 012 2v14a2 2 0 01-2 2H8a2 2 0 01-2-2v-2h12a2 2 0 002-2V6zM2 0h14a2 2 0 012 2v14a2 2 0 01-2 2H2a2 2 0 01-2-2V2a2 2 0 012-2z"></path>
+      </g>
+    </svg>
+  </div>
+{%- endif -%}
