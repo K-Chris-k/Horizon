@@ -1,0 +1,174 @@
+{%- liquid
+  assign block_settings = block.settings
+  assign item_type = block_settings.item_type
+-%}
+{%- assign block_size = block.blocks.size | plus: 1 -%}
+{%- case item_type -%}
+  {%- when 'image' -%}
+    {%- if block_settings.image != blank -%}
+      <div class="flow-box-media__group-item">
+        {%- if block_settings.link != blank -%}
+          <a href="{{ block_settings.link }}" class="flow-box-media__link">
+        {%- endif -%}
+        <img
+          srcset="
+            {{ block_settings.image | image_url: width: 400 }} 400w,
+            {{ block_settings.image | image_url: width: 600 }} 600w,
+            {{ block_settings.image | image_url: width: 800 }} 800w,
+          "
+          src="{{ block_settings.image | image_url: width: 600 }}"
+          alt="{{ block_settings.image.alt | escape }}"
+          loading="lazy"
+          width="{{ block_settings.image.width }}"
+          height="{{ block_settings.image.height }}"
+          class="flow-box-media__img"
+        >
+        {%- if block_settings.link != blank -%}
+          </a>
+        {%- endif -%}
+        {% render 'image-gallery-indicator', image_count: block_size %}
+
+        {%- comment -%} 存储图片数据为 JSON (单张或多张都显示) {%- endcomment -%}
+        <script type="application/json" class="gallery-images-data">
+          [{"url":"{{ block_settings.image | image_url }}","alt":"{{ block_settings.image.alt | escape | replace: '"', '\\"' }}","width":{{ block_settings.image.width }},"height":{{ block_settings.image.height }}}
+            {%- for nested_block in block.blocks -%}
+              {%- capture nested_output -%}{% render nested_block %}{%- endcapture -%}
+              {%- assign trimmed_output = nested_output | strip -%}
+              {%- if trimmed_output != blank -%}
+                ,{{ trimmed_output }}
+              {%- endif -%}
+            {%- endfor -%}
+          ]
+        </script>
+      </div>
+    {%- endif -%}
+  {%- when 'video' -%}
+    <div class="flow-box-media__media flow-box-media__media--video">
+      {%- if block_settings.video != blank -%}
+        {{
+          block_settings.video
+          | video_tag:
+            image_size: '1200x',
+            autoplay: block_settings.autoplay,
+            loop: block_settings.loop,
+            muted: block_settings.muted,
+            controls: block_settings.controls,
+            class: 'flow-box-media__video'
+        }}
+      {%- elsif block_settings.video_url != blank -%}
+        <div class="flow-box-media__video-wrapper">
+          {%- if block_settings.cover_image != blank -%}
+            <img
+              src="{{ block_settings.cover_image | image_url: width: 1200 }}"
+              alt="{{ block_settings.cover_image.alt | escape }}"
+              width="{{ block_settings.cover_image.width }}"
+              height="{{ block_settings.cover_image.height }}"
+              class="flow-box-media__video-cover"
+              loading="lazy"
+            >
+          {%- endif -%}
+          <iframe
+            src="{{ block_settings.video_url }}"
+            frameborder="0"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+            class="flow-box-media__iframe"
+          ></iframe>
+        </div>
+      {%- endif -%}
+    </div>
+{%- endcase -%}
+
+{% schema %}
+{
+  "name": "Media Flow Item",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "_media-item-image"
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "item_type",
+      "label": "Item Type",
+      "options": [
+        {
+          "value": "image",
+          "label": "Image"
+        },
+        {
+          "value": "video",
+          "label": "Video"
+        }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "visible_if": "{{ block.settings.item_type == 'image' }}"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link (Optional)",
+      "visible_if": "{{ block.settings.item_type == 'image' }}"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Shopify Hosted Video",
+      "visible_if": "{{ block.settings.item_type == 'video' }}"
+    },
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Video URL (YouTube/Vimeo)",
+      "info": "Use if not using Shopify video",
+      "visible_if": "{{ block.settings.item_type == 'video' }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "cover_image",
+      "label": "Cover Image (for external videos)",
+      "visible_if": "{{ block.settings.item_type == 'video' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "default": false,
+      "visible_if": "{{ block.settings.item_type == 'video' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop",
+      "default": true,
+      "visible_if": "{{ block.settings.item_type == 'video' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "muted",
+      "label": "Muted",
+      "default": true,
+      "visible_if": "{{ block.settings.item_type == 'video' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "controls",
+      "label": "Show Controls",
+      "default": true,
+      "visible_if": "{{ block.settings.item_type == 'video' }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Media Flow Item"
+    }
+  ]
+}
+{% endschema %}
