@@ -38,7 +38,7 @@
 
 /* Slide Items */
 #shopify-section-{{ section.id }} .product-carousel__slide {
-  flex: 0 0 50%;
+  flex: 0 0 25%;
   scroll-snap-align: center;
   position: relative;
   display: flex;
@@ -180,11 +180,11 @@
 }
 
 #shopify-section-{{ section.id }} .product-carousel__nav--prev {
-  left: 200px;
+  left: 2rem;
 }
 
 #shopify-section-{{ section.id }} .product-carousel__nav--next {
-  right: 200px;
+  right: 2rem;
 }
 
 #shopify-section-{{ section.id }} .product-carousel__nav-btn {
@@ -231,16 +231,16 @@
 
 /* Responsive Design */
 @media screen and (max-width: 990px) {
-  #shopify-section-{{ section.id }} .product-carousel__wrapper {
-    padding: 0 60px;
-  }
-
-  #shopify-section-{{ section.id }} .product-carousel__scroller {
-    padding: 0 20%;
-  }
-
   #shopify-section-{{ section.id }} .product-carousel__slide {
-    flex: 0 0 60%;
+    flex: 0 0 33.33%;
+  }
+  
+  #shopify-section-{{ section.id }} .product-carousel__nav--prev {
+    left: 1rem;
+  }
+
+  #shopify-section-{{ section.id }} .product-carousel__nav--next {
+    right: 1rem;
   }
 }
 
@@ -248,17 +248,17 @@
   #shopify-section-{{ section.id }} .product-carousel {
     padding: 2rem 0;
   }
-  
-  #shopify-section-{{ section.id }} .product-carousel__wrapper {
-    padding: 0 50px;
-  }
-
-  #shopify-section-{{ section.id }} .product-carousel__scroller {
-    padding: 0 15%;
-  }
 
   #shopify-section-{{ section.id }} .product-carousel__slide {
-    flex: 0 0 70%;
+    flex: 0 0 77%;
+  }
+  
+  #shopify-section-{{ section.id }} .product-carousel__nav--prev {
+    left: 0.5rem;
+  }
+
+  #shopify-section-{{ section.id }} .product-carousel__nav--next {
+    right: 0.5rem;
   }
   
   #shopify-section-{{ section.id }} .product-carousel__nav-btn {

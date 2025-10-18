@@ -1,0 +1,757 @@
+{% liquid
+  assign section_id = section.id
+%}
+
+<style>
+  .brand-belief-{{ section_id }} {
+    background-color: {{ section.settings.background_color }};
+    padding: {{ section.settings.padding_top_mobile }}px 0 {{ section.settings.padding_bottom_mobile }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brand-belief-{{ section_id }} {
+      padding: {{ section.settings.padding_top_desktop }}px 0 {{ section.settings.padding_bottom_desktop }}px;
+    }
+  }
+
+  .brand-belief-{{ section_id }}__container {
+    max-width: {{ section.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brand-belief-{{ section_id }}__container {
+      padding: 0 40px;
+    }
+  }
+
+  /* Header Section */
+  .brand-belief-{{ section_id }}__header {
+    text-align: center;
+    margin-bottom: {{ section.settings.header_margin_mobile }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brand-belief-{{ section_id }}__header {
+      margin-bottom: {{ section.settings.header_margin_desktop }}px;
+    }
+  }
+
+  .brand-belief-{{ section_id }}__title {
+    font-size: {{ section.settings.title_size_mobile }}px;
+    font-weight: {{ section.settings.title_weight }};
+    line-height: 1.3;
+    color: {{ section.settings.title_color }};
+    margin: 0 0 {{ section.settings.subtitle_gap_mobile }}px 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brand-belief-{{ section_id }}__title {
+      font-size: {{ section.settings.title_size_desktop }}px;
+      margin-bottom: {{ section.settings.subtitle_gap_desktop }}px;
+    }
+  }
+
+  .brand-belief-{{ section_id }}__subtitles {
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.subtitle_line_gap_mobile }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brand-belief-{{ section_id }}__subtitles {
+      gap: {{ section.settings.subtitle_line_gap_desktop }}px;
+    }
+  }
+
+  .brand-belief-{{ section_id }}__subtitle {
+    font-size: {{ section.settings.subtitle_size_mobile }}px;
+    font-weight: {{ section.settings.subtitle_weight }};
+    line-height: 1.5;
+    color: {{ section.settings.subtitle_color }};
+    margin: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brand-belief-{{ section_id }}__subtitle {
+      font-size: {{ section.settings.subtitle_size_desktop }}px;
+    }
+  }
+
+  /* Images Section */
+  .brand-belief-{{ section_id }}__images-wrapper {
+    margin-bottom: {{ section.settings.footer_gap_mobile }}px;
+    overflow: hidden;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brand-belief-{{ section_id }}__images-wrapper {
+      margin-bottom: {{ section.settings.footer_gap_desktop }}px;
+    }
+  }
+
+  /* Desktop Grid Layout */
+  .brand-belief-{{ section_id }}__images {
+    display: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brand-belief-{{ section_id }}__images {
+      display: grid;
+      grid-template-columns: repeat({{ section.settings.columns_desktop }}, 1fr);
+      gap: {{ section.settings.image_gap_desktop }}px;
+      justify-items: center;
+    }
+  }
+
+  .brand-belief-{{ section_id }}__image-item {
+    width: 100%;
+    aspect-ratio: {{ section.settings.image_aspect_ratio }};
+    background-color: {{ section.settings.image_placeholder_color }};
+    border-radius: {{ section.settings.image_border_radius }}px;
+    overflow: hidden;
+  }
+
+  .brand-belief-{{ section_id }}__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Mobile Slider */
+  .brand-belief-{{ section_id }}__slider {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    padding: 0 20px;
+    margin: 0 -20px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brand-belief-{{ section_id }}__slider {
+      display: none;
+    }
+  }
+
+  .brand-belief-{{ section_id }}__slider-track {
+    display: flex;
+    gap: {{ section.settings.image_gap_mobile }}px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 0 20px;
+  }
+
+  .brand-belief-{{ section_id }}__slider-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .brand-belief-{{ section_id }}__slider-item {
+    flex: 0 0 calc((100% - {{ section.settings.image_gap_mobile }}px * 0.3) / 1.3);
+    scroll-snap-align: start;
+    aspect-ratio: {{ section.settings.image_aspect_ratio }};
+    background-color: {{ section.settings.image_placeholder_color }};
+    border-radius: {{ section.settings.image_border_radius }}px;
+    overflow: hidden;
+  }
+
+  /* Footer Section */
+  .brand-belief-{{ section_id }}__footer {
+    text-align: center;
+    max-width: {{ section.settings.footer_max_width }}px;
+    margin: 0 auto;
+  }
+
+  .brand-belief-{{ section_id }}__footer-text {
+    font-size: {{ section.settings.footer_size_mobile }}px;
+    font-weight: {{ section.settings.footer_weight }};
+    line-height: 1.6;
+    color: {{ section.settings.footer_color }};
+    margin: 0;
+    white-space: pre-line;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brand-belief-{{ section_id }}__footer-text {
+      font-size: {{ section.settings.footer_size_desktop }}px;
+    }
+  }
+</style>
+
+<div class="brand-belief-{{ section_id }}">
+  <div class="brand-belief-{{ section_id }}__container">
+    
+    {%- comment -%} Header: Title and Subtitles {%- endcomment -%}
+    <div class="brand-belief-{{ section_id }}__header">
+      {%- if section.settings.title != blank -%}
+        <h2 class="brand-belief-{{ section_id }}__title">
+          {{ section.settings.title }}
+        </h2>
+      {%- endif -%}
+
+      {%- if section.settings.subtitle_1 != blank or section.settings.subtitle_2 != blank or section.settings.subtitle_3 != blank or section.settings.subtitle_4 != blank -%}
+        <div class="brand-belief-{{ section_id }}__subtitles">
+          {%- if section.settings.subtitle_1 != blank -%}
+            <p class="brand-belief-{{ section_id }}__subtitle">{{ section.settings.subtitle_1 }}</p>
+          {%- endif -%}
+          {%- if section.settings.subtitle_2 != blank -%}
+            <p class="brand-belief-{{ section_id }}__subtitle">{{ section.settings.subtitle_2 }}</p>
+          {%- endif -%}
+          {%- if section.settings.subtitle_3 != blank -%}
+            <p class="brand-belief-{{ section_id }}__subtitle">{{ section.settings.subtitle_3 }}</p>
+          {%- endif -%}
+          {%- if section.settings.subtitle_4 != blank -%}
+            <p class="brand-belief-{{ section_id }}__subtitle">{{ section.settings.subtitle_4 }}</p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Images Section {%- endcomment -%}
+    {%- if section.blocks.size > 0 -%}
+      <div class="brand-belief-{{ section_id }}__images-wrapper">
+        
+        {%- comment -%} Desktop Grid {%- endcomment -%}
+        <div class="brand-belief-{{ section_id }}__images">
+          {%- for block in section.blocks -%}
+            <div class="brand-belief-{{ section_id }}__image-item" {{ block.shopify_attributes }}>
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 800
+                  | image_tag:
+                    loading: 'lazy',
+                    class: 'brand-belief-' | append: section_id | append: '__image',
+                    alt: block.settings.image.alt | escape
+                }}
+              {%- else -%}
+                <div class="brand-belief-{{ section_id }}__image" style="background-color: {{ section.settings.image_placeholder_color }};"></div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- comment -%} Mobile Slider {%- endcomment -%}
+        <div class="brand-belief-{{ section_id }}__slider">
+          <div class="brand-belief-{{ section_id }}__slider-track">
+            {%- for block in section.blocks -%}
+              <div class="brand-belief-{{ section_id }}__slider-item" {{ block.shopify_attributes }}>
+                {%- if block.settings.image != blank -%}
+                  {{
+                    block.settings.image
+                    | image_url: width: 600
+                    | image_tag:
+                      loading: 'lazy',
+                      class: 'brand-belief-' | append: section_id | append: '__image',
+                      alt: block.settings.image.alt | escape
+                  }}
+                {%- else -%}
+                  <div class="brand-belief-{{ section_id }}__image" style="background-color: {{ section.settings.image_placeholder_color }};"></div>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Footer Section {%- endcomment -%}
+    {%- if section.settings.footer_text != blank -%}
+      <div class="brand-belief-{{ section_id }}__footer">
+        <p class="brand-belief-{{ section_id }}__footer-text">
+          {{ section.settings.footer_text }}
+        </p>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Brand Belief",
+  "tag": "section",
+  "class": "section-brand-belief",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container Max Width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "header",
+      "content": "Spacing - Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top Padding",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom Padding",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "header_margin_desktop",
+      "label": "Header Bottom Margin",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "footer_gap_desktop",
+      "label": "Images to Footer Gap",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Spacing - Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top Padding",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom Padding",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "header_margin_mobile",
+      "label": "Header Bottom Margin",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "footer_gap_mobile",
+      "label": "Images to Footer Gap",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Choose REPENIC because you believe:"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "label": "Title Size (Desktop)",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Title Size (Mobile)",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title Font Weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Subtitles"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_1",
+      "label": "Subtitle Line 1",
+      "default": "* Taste should not compromise, intelligence should be forward-looking."
+    },
+    {
+      "type": "text",
+      "id": "subtitle_2",
+      "label": "Subtitle Line 2",
+      "default": "* Value lies in essence; do not pay for premium prices."
+    },
+    {
+      "type": "text",
+      "id": "subtitle_3",
+      "label": "Subtitle Line 3",
+      "default": "* Intelligence should deeply empower life."
+    },
+    {
+      "type": "text",
+      "id": "subtitle_4",
+      "label": "Subtitle Line 4",
+      "default": "* A good life should be shared."
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "label": "Subtitle Size (Desktop)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "label": "Subtitle Size (Mobile)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "subtitle_weight",
+      "label": "Subtitle Font Weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_gap_desktop",
+      "label": "Title to Subtitles Gap (Desktop)",
+      "min": 10,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "subtitle_gap_mobile",
+      "label": "Title to Subtitles Gap (Mobile)",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "subtitle_line_gap_desktop",
+      "label": "Between Subtitle Lines (Desktop)",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "subtitle_line_gap_mobile",
+      "label": "Between Subtitle Lines (Mobile)",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Images Layout - Desktop"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "image_gap_desktop",
+      "label": "Gap Between Images",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Images Layout - Mobile"
+    },
+    {
+      "type": "range",
+      "id": "image_gap_mobile",
+      "label": "Gap Between Images",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "paragraph",
+      "content": "Mobile displays 1.3 cards at a time with horizontal scrolling"
+    },
+    {
+      "type": "header",
+      "content": "Image Styling"
+    },
+    {
+      "type": "select",
+      "id": "image_aspect_ratio",
+      "label": "Image Aspect Ratio",
+      "options": [
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "4/3",
+          "label": "Landscape (4:3)"
+        },
+        {
+          "value": "3/4",
+          "label": "Portrait (3:4)"
+        },
+        {
+          "value": "16/9",
+          "label": "Widescreen (16:9)"
+        }
+      ],
+      "default": "1/1"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "image_placeholder_color",
+      "label": "Placeholder Color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "header",
+      "content": "Footer Text"
+    },
+    {
+      "type": "textarea",
+      "id": "footer_text",
+      "label": "Footer Description",
+      "default": "Intelligent aesthetics, within reach.\nThis is not just a promise;\nit is our mission to drive industry transformation\nand benefit millions of families."
+    },
+    {
+      "type": "color",
+      "id": "footer_color",
+      "label": "Footer Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "footer_size_desktop",
+      "label": "Footer Text Size (Desktop)",
+      "min": 14,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "footer_size_mobile",
+      "label": "Footer Text Size (Mobile)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "footer_weight",
+      "label": "Footer Font Weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold"
+        }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "footer_max_width",
+      "label": "Footer Max Width",
+      "min": 400,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "default": 800
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image Block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Belief",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

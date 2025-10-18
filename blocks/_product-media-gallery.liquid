@@ -2,6 +2,11 @@
 
 {% assign block_settings = block.settings %}
 
+<script
+  src="{{ 'media-gallery.js' | asset_url }}"
+  type="module"
+></script>
+
 {%- if block_settings.zoom -%}
   <script
     src="{{ 'zoom-dialog.js' | asset_url }}"
