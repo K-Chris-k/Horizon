@@ -1,0 +1,445 @@
+{%- doc -%}
+  Renders a product recommendation card with custom image, title, price, and add to cart functionality.
+  
+  @param {object} product - The product object to display
+  @param {string} custom_title - Custom title for the product
+  @param {string} custom_image - Custom image URL
+  @param {string} custom_link - Optional custom link URL
+{%- enddoc -%}
+
+{%- liquid
+  assign product_to_use = block.settings.product
+  assign custom_title = block.settings.custom_title
+  assign custom_image = block.settings.custom_image
+  assign custom_link = block.settings.custom_link
+  assign button_text = block.settings.button_text | default: 'Add to cart'
+  assign button_added_text = block.settings.button_added_text | default: 'Added'
+  assign button_soldout_text = block.settings.button_soldout_text | default: 'Sold out'
+  
+  # Use custom product if specified, otherwise use closest product
+  if product_to_use != blank
+    assign product = product_to_use
+  else
+    assign product = closest.product
+  endif
+  
+  # Get product price
+  assign product_price = product.price | money
+  if product.compare_at_price > product.price
+    assign product_price = product.price | money
+    assign compare_price = product.compare_at_price | money
+  endif
+  
+  # Determine if product can be added to cart
+  assign can_add_to_cart = false
+  if product.selected_or_first_available_variant.available
+    assign can_add_to_cart = true
+  endif
+  
+  # Use custom title if provided, otherwise use product title
+  assign display_title = custom_title | default: product.title
+  
+  # Use custom image only - no fallback to product image
+  assign display_image = custom_image
+-%}
+
+{%- if display_image != blank -%}
+<div class="product-card-custom" {{ block.shopify_attributes }}>
+  <div class="product-card-custom__content">
+    {%- if custom_link != blank -%}
+      <a href="{{ custom_link }}" class="product-card-custom__image-link">
+        <img 
+          src="{{ display_image | image_url: width: 200 }}"
+          alt="{{ display_title | escape }}"
+          class="product-card-custom__image"
+          loading="lazy"
+          width="200"
+          height="200"
+        >
+      </a>
+    {%- else -%}
+      <a href="{{ product.url }}" class="product-card-custom__image-link">
+        <img 
+          src="{{ display_image | image_url: width: 200 }}"
+          alt="{{ display_title | escape }}"
+          class="product-card-custom__image"
+          loading="lazy"
+          width="200"
+          height="200"
+        >
+      </a>
+    {%- endif -%}
+      
+    <div class="product-card-custom__details">
+      <div class="product-card-custom__info">
+        <h3 class="product-card-custom__title">
+          {%- if custom_link != blank -%}
+            <a href="{{ custom_link }}">{{ display_title | escape }}</a>
+          {%- else -%}
+            <a href="{{ product.url }}">{{ display_title | escape }}</a>
+          {%- endif -%}
+        </h3>
+        
+        <div class="product-card-custom__price">
+          {%- if compare_price -%}
+            <span class="price price--on-sale">
+              <span class="visually-hidden">Regular price</span>
+              <s class="price-item price-item--regular">{{ compare_price }}</s>
+              <span class="visually-hidden">Sale price</span>
+              <span class="price-item price-item--sale">{{ product_price }}</span>
+            </span>
+          {%- else -%}
+            <span class="price">
+              <span class="price-item">{{ product_price }}</span>
+            </span>
+          {%- endif -%}
+        </div>
+      </div>
+      
+      <div class="product-card-custom__actions">
+        {%- if can_add_to_cart -%}
+          <product-form-component
+            data-section-id="{{ section.id }}"
+            data-product-id="{{ product.id }}"
+            on:submit="/handleSubmit"
+          >
+            <div
+              class="visually-hidden"
+              aria-live="assertive"
+              role="status"
+              aria-atomic="true"
+              ref="liveRegion"
+            ></div>
+            <form action="{{ routes.cart_add_url }}" method="post" id="product-card-form-{{ block.id }}" accept-charset="UTF-8" enctype="multipart/form-data" novalidate="novalidate" data-type="add-to-cart-form">
+              <input type="hidden" name="form_type" value="product">
+              <input type="hidden" name="utf8" value="✓">
+              <input type="hidden" name="id" ref="variantId" value="{{ product.selected_or_first_available_variant.id }}">
+              <input type="hidden" name="quantity" value="1">
+              
+              <add-to-cart-component
+                ref="addToCartButtonContainer"
+                data-product-variant-media="{{ product.selected_or_first_available_variant.featured_media.preview_image | image_url: width: 100 }}"
+                data-add-to-cart-animation="{{ settings.add_to_cart_animation }}"
+              >
+                <button 
+                  type="submit" 
+                  name="add"
+                  ref="addToCartButton"
+                  on:click="/handleClick"
+                  class="product-card-custom__add-to-cart"
+                  id="product-card-custom-add-to-cart-{{ block.id }}"
+                >
+                  <span class="product-card-custom__button-text">{{ button_text }}</span>
+                  <span class="product-card-custom__button-text--added" aria-hidden="true">
+                    <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M13 4L6 11L3 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    {{ button_added_text }}
+                  </span>
+                </button>
+              </add-to-cart-component>
+            </form>
+          </product-form-component>
+        {%- else -%}
+          <button class="product-card-custom__add-to-cart" disabled>
+            {{ button_soldout_text }}
+          </button>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+{%- endif -%}
+
+<script>
+  (function() {
+    // 监听购物车添加事件
+    document.addEventListener('theme:cart:update', function(event) {
+      // 查找所有按钮并更新状态
+      const buttons = document.querySelectorAll('.product-card-custom__add-to-cart');
+      buttons.forEach(function(button) {
+        const addToCartComponent = button.closest('add-to-cart-component');
+        if (addToCartComponent && !addToCartComponent.classList.contains('atc-added')) {
+          // 添加成功状态
+          addToCartComponent.classList.add('atc-added');
+          
+          // 2秒后移除状态
+          setTimeout(function() {
+            addToCartComponent.classList.remove('atc-added');
+          }, 2000);
+        }
+      });
+    });
+    
+    // 为每个表单添加submit监听
+    const forms = document.querySelectorAll('[id^="product-card-form-"]');
+    forms.forEach(function(form) {
+      form.addEventListener('submit', function(e) {
+        const button = form.querySelector('.product-card-custom__add-to-cart');
+        const addToCartComponent = button.closest('add-to-cart-component');
+        
+        if (addToCartComponent) {
+          // 立即添加成功状态
+          setTimeout(function() {
+            addToCartComponent.classList.add('atc-added');
+            
+            // 2秒后移除状态
+            setTimeout(function() {
+              addToCartComponent.classList.remove('atc-added');
+            }, 2000);
+          }, 300);
+        }
+      });
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .product-card-custom {
+    width: 100%;
+    background-color: rgb(var(--color-background));
+    border-radius: var(--style-border-radius);
+    overflow: hidden;
+    transition: transform var(--animation-speed) var(--animation-easing),
+                box-shadow var(--animation-speed) var(--animation-easing);
+  }
+
+  .product-card-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-card-custom__content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    height: 100%;
+    gap: 16px;
+  }
+
+  .product-card-custom__image-link {
+    display: block;
+    text-decoration: none;
+    flex-shrink: 0;
+    width: 150px;
+  }
+
+  .product-card-custom__image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .product-card-custom__details {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .product-card-custom__info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .product-card-custom__title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .product-card-custom__title a {
+    color: rgb(var(--color-foreground));
+    text-decoration: none;
+    transition: color var(--animation-speed) var(--animation-easing);
+  }
+
+  .product-card-custom__title a:hover {
+    color: rgb(var(--color-foreground) / var(--opacity-70));
+  }
+
+  .product-card-custom__price {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(var(--color-foreground));
+  }
+
+  .product-card-custom__actions {
+    flex-shrink: 0;
+  }
+
+  .product-card-custom__add-to-cart {
+    position: relative;
+    width: auto;
+    min-width: 140px;
+    padding: 12px 24px;
+    background-color: #f5f5f5;
+    color: #333333;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+
+  .product-card-custom__button-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.2s ease;
+  }
+
+  .product-card-custom__button-text--added {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .product-card-custom__button-text--added svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.5;
+  }
+
+  .product-card-custom__add-to-cart:hover:not(:disabled) {
+    background-color: #e8e8e8;
+    transform: translateY(-1px);
+  }
+
+  .product-card-custom__add-to-cart:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .product-card-custom__add-to-cart:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+  }
+
+  /* Added state */
+  add-to-cart-component.atc-added .product-card-custom__add-to-cart {
+    background-color: #333333;
+    color: #ffffff;
+  }
+
+  add-to-cart-component.atc-added .product-card-custom__button-text {
+    opacity: 0;
+  }
+
+  add-to-cart-component.atc-added .product-card-custom__button-text--added {
+    opacity: 1;
+  }
+
+  add-to-cart-component.atc-added .product-card-custom__add-to-cart:hover {
+    background-color: #333333;
+    transform: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .product-card-custom__content {
+      flex-direction: column;
+    }
+
+    .product-card-custom__image-link {
+      width: 100%;
+    }
+
+    .product-card-custom__image {
+      height: 200px;
+    }
+
+    .product-card-custom__details {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .product-card-custom__add-to-cart {
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Custom Product Card",
+  "tag": "div",
+  "class": "product-card-custom-block",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product Settings"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "Select a product to display. If not selected, will use the current product."
+    },
+    {
+      "type": "text",
+      "id": "custom_title",
+      "label": "Custom Title",
+      "info": "Override the product title with custom text"
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_image",
+      "label": "Product Image",
+      "info": "Upload a custom image for this product card (Required)"
+    },
+    {
+      "type": "url",
+      "id": "custom_link",
+      "label": "Custom Link",
+      "info": "Override the product link with a custom URL"
+    },
+    {
+      "type": "header",
+      "content": "Button Settings"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Add to Cart Button Text",
+      "default": "Add to cart",
+      "info": "Text displayed on the add to cart button"
+    },
+    {
+      "type": "text",
+      "id": "button_added_text",
+      "label": "Added Button Text",
+      "default": "Added",
+      "info": "Text displayed after successfully adding to cart"
+    },
+    {
+      "type": "text",
+      "id": "button_soldout_text",
+      "label": "Sold Out Button Text",
+      "default": "Sold out",
+      "info": "Text displayed when product is sold out"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Product Card"
+    }
+  ]
+}
+{% endschema %}

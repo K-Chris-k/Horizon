@@ -4,22 +4,46 @@
   @param {object} swatch - a swatch object
   @param {object} [variant_image] - an alternate image
   @param {string} [mode] - one of 'unscaled' or 'filter'
+  @param {string} [display_style] - 'color', 'image', or 'text'
 
   @example
-  {% render 'swatch', swatch: swatch, variant_image: variant_image, mode: 'unscaled' %}
+  {% render 'swatch', swatch: swatch, variant_image: variant_image, mode: 'unscaled', display_style: 'image' %}
 {%- enddoc -%}
 
 {% liquid
   assign swatch_value = null
-  if settings.show_variant_image and variant_image
-    assign swatch_image_width = settings.variant_swatch_width | times: 2
-    assign swatch_image_url = variant_image | image_url: width: swatch_image_width
-    assign swatch_value = 'url(' | append: swatch_image_url | append: ')'
-  elsif swatch.image
-    assign swatch_image_url = swatch.image | image_url: width: 80
-    assign swatch_value = 'url(' | append: swatch_image_url | append: ')'
-  elsif swatch.color
-    assign swatch_value = 'rgb(' | append: swatch.color.rgb | append: ')'
+  
+  # Display based on display_style
+  if display_style == 'image'
+    # Background images (square) - always show variant image
+    if variant_image
+      assign swatch_image_width = 120
+      assign swatch_image_url = variant_image | image_url: width: swatch_image_width
+      assign swatch_value = 'url(' | append: swatch_image_url | append: ')'
+    elsif swatch.image
+      assign swatch_image_url = swatch.image | image_url: width: 120
+      assign swatch_value = 'url(' | append: swatch_image_url | append: ')'
+    endif
+  elsif display_style == 'color'
+    # Color swatches (round) - show color or swatch image
+    if swatch.color
+      assign swatch_value = 'rgb(' | append: swatch.color.rgb | append: ')'
+    elsif swatch.image
+      assign swatch_image_url = swatch.image | image_url: width: 80
+      assign swatch_value = 'url(' | append: swatch_image_url | append: ')'
+    endif
+  else
+    # Default fallback
+    if variant_image
+      assign swatch_image_width = 120
+      assign swatch_image_url = variant_image | image_url: width: swatch_image_width
+      assign swatch_value = 'url(' | append: swatch_image_url | append: ')'
+    elsif swatch.image
+      assign swatch_image_url = swatch.image | image_url: width: 80
+      assign swatch_value = 'url(' | append: swatch_image_url | append: ')'
+    elsif swatch.color
+      assign swatch_value = 'rgb(' | append: swatch.color.rgb | append: ')'
+    endif
   endif
 
   case mode
@@ -32,10 +56,16 @@
     else
       assign extra_classes = ''
   endcase
+  
+  # Custom styles based on display_style
+  assign custom_style = ''
+  if display_style == 'image'
+    assign custom_style = 'border-radius: 0; --swatch-width: 80px; --swatch-height: 80px; background-size: contain; background-repeat: no-repeat; background-position: center;'
+  endif
 %}
 
 <span
   class="swatch{{ extra_classes }}{% if swatch_value == null %} swatch--unavailable{% endif %}"
-  style="--swatch-background: {{ swatch_value }};{% if swatch.image and settings.show_variant_image == false %} --swatch-focal-point: {{ swatch.image.presentation.focal_point }};{% endif %}"
+  style="--swatch-background: {{ swatch_value }};{% if variant_image %} --swatch-focal-point: {{ variant_image.preview_image.presentation.focal_point }};{% elsif swatch.image %} --swatch-focal-point: {{ swatch.image.presentation.focal_point }};{% endif %} {{ custom_style }}"
 >
 </span>

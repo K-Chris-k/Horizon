@@ -3,6 +3,7 @@
 
   @param {object} product_resource - The product object.
   @param {object} [block] - The block object
+  @param {string} [display_style] - Display style: 'color', 'image', or 'text'
 {%- enddoc -%}
 
 {% assign block_settings = block.settings %}
@@ -68,7 +69,7 @@
               {% if product_option_value.size > longest_value and option_id_attribute %}
                 {% assign longest_value = product_option_value.size %}
               {% endif %}
-              <label class="variant-option__button-label{% if variant_style == 'swatch' %} variant-option__button-label--has-swatch{% endif %}">
+              <label class="variant-option__button-label{% if variant_style == 'swatch' %}{% if display_style == 'text' %} variant-option__button-label--text{% else %} variant-option__button-label--has-swatch{% endif %}{% if display_style == 'color' %} swatch-rounded{% endif %}{% endif %}" {% if variant_style == 'swatch' and display_style == 'image' %}style="border-radius: 0; padding: 5px;"{% endif %}>
                 <input
                   type="radio"
                   name="{{ product_option.name | escape }}-{{ block.id }}-{{ product_resource.id }}"
@@ -89,21 +90,26 @@
                   {% endif %}
                 >
                 {% if variant_style == 'swatch' %}
-                  {% liquid
-                    assign featured_media = product_option_value.variant.featured_media
+                  {% if display_style == 'text' %}
+                    <span class="variant-option__text">{{ product_option_value.name }}</span>
+                  {% else %}
+                    {% liquid
+                      assign featured_media = product_option_value.variant.featured_media
 
-                    # If the variant has no featured media, and we have a combined listing product, then fall back to
-                    # using the featured media of the child product that is linked to this option value.
-                    if featured_media == blank and product_option_value.product_url
-                      assign featured_media = product_option_value.variant.product.featured_media
-                    endif
-                  %}
+                      # If the variant has no featured media, and we have a combined listing product, then fall back to
+                      # using the featured media of the child product that is linked to this option value.
+                      if featured_media == blank and product_option_value.product_url
+                        assign featured_media = product_option_value.variant.product.featured_media
+                      endif
+                    %}
 
-                  {% render 'swatch',
-                    swatch: product_option_value.swatch,
-                    variant_image: featured_media,
-                    mode: 'unscaled'
-                  %}
+                    {% render 'swatch',
+                      swatch: product_option_value.swatch,
+                      variant_image: featured_media,
+                      mode: 'unscaled',
+                      display_style: display_style
+                    %}
+                  {% endif %}
                 {% else %}
                   <span class="variant-option__button-label__text">{{ product_option_value | escape }}</span>
                 {% endif %}

@@ -1,0 +1,819 @@
+{{ 'component.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .technical-specs-section {
+    padding: 60px 0;
+
+  }
+
+  /* .technical-specs-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  } */
+
+  .technical-specs-title {
+    font-size: 32px;
+    font-weight: 300;
+    margin-bottom: 40px;
+    color: #333;
+  }
+
+  .technical-specs-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+  }
+
+  .specs-left {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .specs-subtitle {
+    font-size: 24px;
+    font-weight: 300;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 60px;
+  }
+
+  .spec-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .spec-label {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.6;
+  }
+
+  .spec-value {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .specs-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .specs-image {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Tabs Section */
+  .specs-tabs-wrapper {
+    background: transparent;
+    margin-top: 30px;
+  }
+
+  .specs-tabs {
+    display: flex;
+    gap: 40px;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 10px;
+  }
+
+  .specs-tab {
+    padding: 15px 0;
+    font-size: 16px;
+    font-weight: 400;
+    color: #000;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .specs-tab:hover {
+    color: #333;
+  }
+
+  .specs-tab.active {
+    color: #333;
+    border-bottom-color: #333;
+  }
+
+  .specs-tab-content {
+    display: none;
+    padding-top: 20px;
+  }
+
+  .specs-tab-content.active {
+    display: block;
+  }
+
+  /* PDF Downloads */
+  .download-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .download-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .download-item:last-child {
+    border-bottom: none;
+  }
+
+  .download-label {
+    font-size: 16px;
+    color: #333;
+  }
+
+  .download-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: transparent;
+
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+
+  .download-icon {
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+  }
+
+  .tab-content-title {
+    font-size: 32px;
+    font-weight: 300;
+    margin-bottom: 15px;
+    color: #333;
+  }
+
+  /* FAQ */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .faq-question {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 0;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+    color: #000;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+  }
+
+
+  .faq-icon {
+    transition: transform 0.3s ease;
+    font-size: 18px;
+  }
+
+  .faq-item.active .faq-icon {
+    transform: rotate(90deg);
+  }
+
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #666;
+  }
+
+  .faq-answer-content {
+    padding-bottom: 24px;
+    margin-left: 2rem;
+  }
+
+  .faq-item.active .faq-answer {
+    max-height: 500px;
+  }
+
+  /* Video */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+  }
+
+  .video-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .video-thumbnail {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+  }
+
+  .video-placeholder {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: #999;
+  }
+
+  .video-title {
+    padding: 15px;
+    background: white;
+    font-size: 14px;
+    color: #333;
+  }
+
+  /* Modal for Video */
+  .video-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .video-modal.active {
+    display: flex;
+  }
+
+  .video-modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+  }
+
+  .video-modal-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+  }
+
+  .video-player {
+    width: 100%;
+    aspect-ratio: 16/9;
+  }
+
+  @media (max-width: 768px) {
+    .technical-specs-section {
+      padding: 40px 0;
+    }
+
+    .technical-specs-title {
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+
+    .technical-specs-content {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .specs-subtitle {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    .specs-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .spec-label {
+      font-size: 12px;
+    }
+
+    .spec-value {
+      font-size: 12px;
+    }
+
+    .specs-tabs-wrapper {
+      margin-top: 20px;
+    }
+
+    .specs-tabs {
+      gap: 20px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .specs-tab {
+      padding: 12px 0;
+      font-size: 14px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .tab-content-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .download-label {
+      font-size: 14px;
+    }
+
+    .download-button {
+      font-size: 12px;
+      padding: 8px 15px;
+    }
+
+    .faq-question {
+      font-size: 13px;
+      padding: 20px 0;
+    }
+
+    .faq-answer {
+      font-size: 13px;
+    }
+
+    .faq-answer-content {
+      margin-left: 0;
+    }
+
+    .video-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="technical-specs-section">
+  <div class="technical-specs-container">
+    {%- if section.settings.title != blank -%}
+      <h2 class="technical-specs-title">{{ section.settings.title }}</h2>
+    {%- endif -%}
+
+    <div class="technical-specs-content">
+      <div class="specs-left">
+        {%- if section.settings.subtitle != blank -%}
+          <h3 class="specs-subtitle">{{ section.settings.subtitle }}</h3>
+        {%- endif -%}
+        
+        <div class="specs-grid">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'tech_spec' -%}
+              <div class="spec-item" {{ block.shopify_attributes }}>
+                <div class="spec-label" style="color: {{ block.settings.label_color }};">
+                  {{ block.settings.label }}
+                </div>
+                <div class="spec-value" style="color: {{ block.settings.value_color }};">
+                  {{ block.settings.value }}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <div class="specs-right">
+        {%- if section.settings.image != blank -%}
+          <img 
+            src="{{ section.settings.image | image_url: width: 800 }}" 
+            alt="{{ section.settings.image.alt | escape }}"
+            class="specs-image"
+            loading="lazy"
+          >
+        {%- else -%}
+          <div class="video-placeholder">📐</div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- assign has_downloads = false -%}
+    {%- assign has_faqs = false -%}
+    {%- assign has_videos = false -%}
+
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'download' -%}
+        {%- assign has_downloads = true -%}
+      {%- elsif block.type == 'faq' -%}
+        {%- assign has_faqs = true -%}
+      {%- elsif block.type == 'video' -%}
+        {%- assign has_videos = true -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    <div class="specs-tabs-wrapper">
+      <div class="specs-tabs">
+        {%- if has_downloads -%}
+          <button class="specs-tab" data-tab="pdf">PDF</button>
+        {%- endif -%}
+        {%- if has_faqs -%}
+          <button class="specs-tab" data-tab="faq">FAQ</button>
+        {%- endif -%}
+        {%- if has_videos -%}
+          <button class="specs-tab" data-tab="video">Installation video</button>
+        {%- endif -%}
+      </div>
+
+      {%- if has_downloads -%}
+        <div class="specs-tab-content" data-content="pdf">
+          <div class="download-list">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'download' -%}
+                <div class="download-item" {{ block.shopify_attributes }}>
+                  <span class="download-label">{{ block.settings.label }}</span>
+                  {%- if block.settings.file != blank -%}
+                    <a href="{{ block.settings.file }}" class="download-button" download target="_blank" rel="noopener noreferrer">
+                      <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" id="Layer_2" width="19" height="19" data-name="Layer 2" viewBox="0 0 114.79 146.52">
+                        <defs>
+                          <style>
+                            .cls-1 {
+                              fill: #393939;
+                            }
+                            .cls-2 {
+                              fill: none;
+                              stroke: #393939;
+                              stroke-miterlimit: 10;
+                              stroke-width: 1.5px;
+                            }
+                          </style>
+                        </defs>
+                        <g id="Layer_1-2" data-name="Layer 1">
+                          <polyline class="cls-2" points="76.09 .75 .75 .75 .75 145.77 114.04 145.77 114.04 43.02"></polyline>
+                          <polygon class="cls-1" points="76.18 42.84 114.54 43.03 76.09 .26 76.18 42.84"></polygon>
+                        </g>
+                      </svg>
+                      Download
+                    </a>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- if has_faqs -%}
+        <div class="specs-tab-content" data-content="faq">
+          {%- if section.settings.faq_title != blank -%}
+            <h3 class="tab-content-title">{{ section.settings.faq_title }}</h3>
+          {%- endif -%}
+          <div class="faq-list">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'faq' -%}
+                <div class="faq-item" {{ block.shopify_attributes }}>
+                  <button class="faq-question">
+                    <span>{{ block.settings.question }}</span>
+                    <span class="faq-icon">›</span>
+                  </button>
+                  <div class="faq-answer">
+                    <div class="faq-answer-content">
+                      {{ block.settings.answer }}
+                    </div>
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- if has_videos -%}
+        <div class="specs-tab-content" data-content="video">
+          <div class="video-grid">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'video' -%}
+                <div class="video-item" data-video-url="{{ block.settings.video_url }}" {{ block.shopify_attributes }}>
+                  {%- if block.settings.thumbnail != blank -%}
+                    <img 
+                      src="{{ block.settings.thumbnail | image_url: width: 600 }}" 
+                      alt="{{ block.settings.title | escape }}"
+                      class="video-thumbnail"
+                      loading="lazy"
+                    >
+                  {%- else -%}
+                    <div class="video-placeholder">▶</div>
+                  {%- endif -%}
+                  {%- if block.settings.title != blank -%}
+                    <div class="video-title">{{ block.settings.title }}</div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<div class="video-modal" id="videoModal">
+  <div class="video-modal-content">
+    <button class="video-modal-close" id="closeVideoModal">&times;</button>
+    <div id="videoPlayerContainer"></div>
+  </div>
+</div>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.specs-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      const tabName = this.getAttribute('data-tab');
+      
+      // Remove active class from all tabs and contents
+      document.querySelectorAll('.specs-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.specs-tab-content').forEach(c => c.classList.remove('active'));
+      
+      // Add active class to clicked tab and corresponding content
+      this.classList.add('active');
+      document.querySelector(`[data-content="${tabName}"]`).classList.add('active');
+    });
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-question').forEach(question => {
+    question.addEventListener('click', function() {
+      const faqItem = this.closest('.faq-item');
+      const isActive = faqItem.classList.contains('active');
+      
+      // Close all FAQ items
+      document.querySelectorAll('.faq-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // Open clicked item if it wasn't active
+      if (!isActive) {
+        faqItem.classList.add('active');
+      }
+    });
+  });
+
+  // Video modal
+  const videoModal = document.getElementById('videoModal');
+  const closeVideoModal = document.getElementById('closeVideoModal');
+  const videoPlayerContainer = document.getElementById('videoPlayerContainer');
+
+  document.querySelectorAll('.video-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const videoUrl = this.getAttribute('data-video-url');
+      
+      if (videoUrl) {
+        let embedUrl = videoUrl;
+        
+        // Convert YouTube URL to embed URL
+        if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+          const videoId = videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+          if (videoId) {
+            embedUrl = `https://www.youtube.com/embed/${videoId[1]}?autoplay=1`;
+          }
+        }
+        
+        // Convert Vimeo URL to embed URL
+        if (videoUrl.includes('vimeo.com')) {
+          const videoId = videoUrl.match(/vimeo\.com\/(\d+)/);
+          if (videoId) {
+            embedUrl = `https://player.vimeo.com/video/${videoId[1]}?autoplay=1`;
+          }
+        }
+        
+        videoPlayerContainer.innerHTML = `<iframe class="video-player" src="${embedUrl}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+        videoModal.classList.add('active');
+      }
+    });
+  });
+
+  closeVideoModal.addEventListener('click', function() {
+    videoModal.classList.remove('active');
+    videoPlayerContainer.innerHTML = '';
+  });
+
+  videoModal.addEventListener('click', function(e) {
+    if (e.target === videoModal) {
+      videoModal.classList.remove('active');
+      videoPlayerContainer.innerHTML = '';
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Technical Specifications",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Technical Specifications"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Generic Data"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Technical Drawing/Image"
+    },
+    {
+      "type": "text",
+      "id": "faq_title",
+      "label": "FAQ Section Title",
+      "default": "Frequently Asked Questions"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tech_spec",
+      "name": "Technical Spec Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "WEIGHT (KG)"
+        },
+        {
+          "type": "color",
+          "id": "label_color",
+          "label": "Label Color",
+          "default": "#333333"
+        },
+        {
+          "type": "textarea",
+          "id": "value",
+          "label": "Value",
+          "default": "12,6"
+        },
+        {
+          "type": "color",
+          "id": "value_color",
+          "label": "Value Color",
+          "default": "#666666"
+        }
+      ]
+    },
+    {
+      "type": "download",
+      "name": "Download Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Product datasheets",
+          "info": "e.g., Product datasheets, Instructions, Care guide"
+        },
+        {
+          "type": "url",
+          "id": "file",
+          "label": "File URL",
+          "info": "Upload the file to Files section and paste the URL here"
+        }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "HOW DO I INSTALL CORSTON ELECTRICAL PRODUCTS?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>You can view and print instructions from our mobile-friendly support page. We recommend using a professional to fit all Corston products. Electrical items must be installed by a qualified electrician.</p>"
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "name": "Video Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Video Title",
+          "default": "Installation Guide"
+        },
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video URL",
+          "info": "YouTube or Vimeo URL"
+        },
+        {
+          "type": "image_picker",
+          "id": "thumbnail",
+          "label": "Video Thumbnail"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Technical Specifications",
+      "blocks": [
+        {
+          "type": "tech_spec",
+          "settings": {
+            "label": "WEIGHT (KG)",
+            "value": "12,6"
+          }
+        },
+        {
+          "type": "tech_spec",
+          "settings": {
+            "label": "DIMENSIONS (CM)",
+            "value": "120"
+          }
+        },
+        {
+          "type": "tech_spec",
+          "settings": {
+            "label": "FINISHING",
+            "value": "Stainless Steel"
+          }
+        },
+        {
+          "type": "download",
+          "settings": {
+            "label": "Product datasheets"
+          }
+        },
+        {
+          "type": "download",
+          "settings": {
+            "label": "Instructions"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "HOW DO I INSTALL CORSTON ELECTRICAL PRODUCTS?",
+            "answer": "<p>You can view and print instructions from our mobile-friendly support page. We recommend using a professional to fit all Corston products.</p>"
+          }
+        },
+        {
+          "type": "video",
+          "settings": {
+            "title": "Installation Guide"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
