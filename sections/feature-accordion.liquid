@@ -1,0 +1,468 @@
+{% comment %}
+  Feature Accordion Section
+  Desktop: Clickable titles on left with descriptions, images on right
+  Mobile: Image on top, section title/subtitle, accordion content below
+{% endcomment %}
+
+<style>
+/* Feature Accordion Section Styles */
+#shopify-section-{{ section.id }} .feature-accordion {
+  padding: 4rem 0;
+  background-color: {{ section.settings.background_color }};
+}
+
+
+/* Desktop Layout */
+#shopify-section-{{ section.id }} .feature-accordion__content {
+  display: flex;
+  gap: 4rem;
+  align-items: flex-start;
+}
+
+/* Left Side - Header + Accordion Items */
+#shopify-section-{{ section.id }} .feature-accordion__left {
+  flex: 1;
+  min-width: 0;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__header {
+  margin-bottom: 3rem;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  color: #1a1a1a;
+  line-height: 1.2;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__section-subtitle {
+  font-size: 1.125rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.6;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__items {
+  width: 100%;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__item {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 1.5rem 0;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__item:first-child {
+  padding-top: 0;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  gap: 1rem;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__item-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+
+
+#shopify-section-{{ section.id }} .feature-accordion__item-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__item.active .feature-accordion__item-icon {
+  transform: rotate(180deg);
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__item-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__item-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.4s ease, margin-top 0.4s ease;
+  opacity: 0;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__item.active .feature-accordion__item-content {
+  max-height: 500px;
+  opacity: 1;
+  margin-top: 1rem;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__item-description {
+  color: #4a4a4a;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Right Side - Images */
+#shopify-section-{{ section.id }} .feature-accordion__images {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 1;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__image.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#shopify-section-{{ section.id }} .feature-accordion__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Mobile Header - Hidden on Desktop */
+#shopify-section-{{ section.id }} .feature-accordion__mobile-header {
+  display: none;
+}
+
+/* Hide mobile header on desktop (it's inside the content wrapper) */
+@media screen and (min-width: 750px) {
+  #shopify-section-{{ section.id }} .feature-accordion__mobile-header {
+    display: none !important;
+  }
+}
+
+/* Tablet */
+@media screen and (max-width: 989px) {
+  #shopify-section-{{ section.id }} .feature-accordion {
+    padding: 3rem 0;
+  }
+
+  #shopify-section-{{ section.id }} .feature-accordion__container {
+    padding: 0 1.5rem;
+  }
+
+  #shopify-section-{{ section.id }} .feature-accordion__content {
+    gap: 2.5rem;
+  }
+
+  #shopify-section-{{ section.id }} .feature-accordion__section-title {
+    font-size: 2rem;
+  }
+
+  #shopify-section-{{ section.id }} .feature-accordion__item-title {
+    font-size: 1.125rem;
+  }
+}
+
+/* Mobile Layout */
+@media screen and (max-width: 749px) {
+  #shopify-section-{{ section.id }} .feature-accordion {
+    padding: 2rem 0;
+  }
+
+  #shopify-section-{{ section.id }} .feature-accordion__container {
+    padding: 0 1rem;
+  }
+
+  /* Stack layout on mobile */
+  #shopify-section-{{ section.id }} .feature-accordion__content {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* Images on top */
+  #shopify-section-{{ section.id }} .feature-accordion__images {
+    order: 1;
+    width: 100%;
+    aspect-ratio: 4/3;
+  }
+
+  /* Left side (header + items) */
+  #shopify-section-{{ section.id }} .feature-accordion__left {
+    order: 2;
+    width: 100%;
+  }
+
+  /* Hide desktop header on mobile */
+  #shopify-section-{{ section.id }} .feature-accordion__header {
+    display: none;
+  }
+
+  /* Show mobile header */
+  #shopify-section-{{ section.id }} .feature-accordion__mobile-header {
+    display: block;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  #shopify-section-{{ section.id }} .feature-accordion__mobile-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem 0;
+    color: #1a1a1a;
+    line-height: 1.3;
+  }
+
+  #shopify-section-{{ section.id }} .feature-accordion__mobile-subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  #shopify-section-{{ section.id }} .feature-accordion__item {
+    padding: 1.25rem 0;
+  }
+
+  #shopify-section-{{ section.id }} .feature-accordion__item-title {
+    font-size: 1.1rem;
+  }
+
+  #shopify-section-{{ section.id }} .feature-accordion__item-description {
+    font-size: 0.9rem;
+  }
+}
+</style>
+
+<div class="feature-accordion">
+  <div class="feature-accordion__container">
+    <div class="feature-accordion__content">
+      <!-- Left Side: Header + Accordion Items -->
+      <div class="feature-accordion__left">
+        <!-- Desktop Header -->
+        {% if section.settings.section_title != blank or section.settings.section_subtitle != blank %}
+          <div class="feature-accordion__header">
+            {% if section.settings.section_title != blank %}
+              <h2 class="feature-accordion__section-title">{{ section.settings.section_title }}</h2>
+            {% endif %}
+            {% if section.settings.section_subtitle != blank %}
+              <p class="feature-accordion__section-subtitle">{{ section.settings.section_subtitle }}</p>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <!-- Mobile Header (shown on mobile only) -->
+        {% if section.settings.section_title != blank or section.settings.section_subtitle != blank %}
+          <div class="feature-accordion__mobile-header">
+            {% if section.settings.section_title != blank %}
+              <h2 class="feature-accordion__mobile-title">{{ section.settings.section_title }}</h2>
+            {% endif %}
+            {% if section.settings.section_subtitle != blank %}
+              <p class="feature-accordion__mobile-subtitle">{{ section.settings.section_subtitle }}</p>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <!-- Accordion Items -->
+        <div class="feature-accordion__items">
+          {% for block in section.blocks %}
+            <div class="feature-accordion__item {% if forloop.first %}active{% endif %}" data-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+              <div class="feature-accordion__item-header" data-accordion-trigger>
+                <h3 class="feature-accordion__item-title">
+                  {{ block.settings.title | default: 'Feature Title' }}
+                </h3>
+                <div class="feature-accordion__item-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+              </div>
+              {% if block.settings.description != blank %}
+                <div class="feature-accordion__item-content">
+                  <div class="feature-accordion__item-description">
+                    {{ block.settings.description }}
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Right Side: Images -->
+      <div class="feature-accordion__images">
+        {% for block in section.blocks %}
+          <div class="feature-accordion__image {% if forloop.first %}active{% endif %}" data-index="{{ forloop.index0 }}">
+            {% if block.settings.image != blank %}
+              {{
+                block.settings.image
+                | image_url: width: 1000
+                | image_tag:
+                  loading: 'lazy',
+                  alt: block.settings.image.alt | default: block.settings.title,
+                  widths: '375, 550, 750, 1100, 1500'
+              }}
+            {% else %}
+              <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #e0e0e0; color: #999;">
+                No image
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const section = document.querySelector('#shopify-section-{{ section.id }}');
+    if (!section) return;
+
+    const items = section.querySelectorAll('.feature-accordion__item');
+    const images = section.querySelectorAll('.feature-accordion__image');
+
+    items.forEach((item, index) => {
+      const trigger = item.querySelector('[data-accordion-trigger]');
+      
+      trigger.addEventListener('click', () => {
+        // Toggle current item
+        const wasActive = item.classList.contains('active');
+        
+        // Close all items
+        items.forEach(i => i.classList.remove('active'));
+        images.forEach(img => img.classList.remove('active'));
+        
+        // Open clicked item if it wasn't active
+        if (!wasActive) {
+          item.classList.add('active');
+          const targetImage = section.querySelector(`.feature-accordion__image[data-index="${index}"]`);
+          if (targetImage) {
+            targetImage.classList.add('active');
+          }
+        } else {
+          // If we closed the active one, open the first one
+          items[0].classList.add('active');
+          const firstImage = section.querySelector('.feature-accordion__image[data-index="0"]');
+          if (firstImage) {
+            firstImage.classList.add('active');
+          }
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Feature Accordion",
+  "tag": "section",
+  "class": "section section-feature-accordion",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Savings and comfort"
+    },
+    {
+      "type": "textarea",
+      "id": "section_subtitle",
+      "label": "Section Subtitle",
+      "default": "Smarter ways to save. And stay comfortable."
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "accordion_item",
+      "name": "Feature Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "WIRELESS DESIGN"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Compared to some other brands on the market (Netatmo, Hive etc.) you see the full (or full network). It will help users save the cost of a gateway.</p>"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Feature Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feature Accordion",
+      "blocks": [
+        {
+          "type": "accordion_item",
+          "settings": {
+            "title": "WIRELESS DESIGN",
+            "description": "<p>Compared to some other brands on the market (Netatmo, Hive etc.) you see the full (or full network). It will help users save the cost of a gateway.</p>"
+          }
+        },
+        {
+          "type": "accordion_item",
+          "settings": {
+            "title": "HOTKEYS CONCEPT",
+            "description": "<p>Quick access to frequently used features with programmable hotkeys for maximum efficiency.</p>"
+          }
+        },
+        {
+          "type": "accordion_item",
+          "settings": {
+            "title": "MULTI-ZONE CONTROL",
+            "description": "<p>Control different zones independently for optimal comfort and energy savings throughout your space.</p>"
+          }
+        },
+        {
+          "type": "accordion_item",
+          "settings": {
+            "title": "SKIN FEEL PAINT",
+            "description": "<p>Premium soft-touch finish provides a luxurious tactile experience and enhanced durability.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

@@ -1,0 +1,903 @@
+{% comment %}
+  Product Features with Downloads, FAQ, and Videos Section
+  Displays smart features with tabbed content for PDF downloads, FAQs, and installation videos
+{% endcomment %}
+
+{%- style -%}
+  .pft-section-{{ section.id }} {
+    padding: var(--spacing-12) 0;
+  }
+  
+  .pft-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-6);
+  }
+  
+  .pft-main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-12);
+    align-items: center;
+    margin-bottom: var(--spacing-12);
+  }
+  
+  .pft-image-wrapper {
+    position: relative;
+  }
+  
+  .pft-image-desktop {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  
+  .pft-image-mobile-only {
+    display: none;
+  }
+  
+  .pft-features-content {
+    padding: var(--spacing-6);
+  }
+  
+  .pft-section-title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-8);
+    color: #1a1a1a;
+  }
+  
+  .pft-features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-8);
+  }
+  
+  .pft-feature-item {
+    padding: var(--spacing-4);
+    border-bottom: 1px solid #e5e5e5;
+  }
+  
+  .pft-feature-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: var(--spacing-3);
+  }
+  
+  .pft-feature-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .pft-feature-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-2);
+    color: #1a1a1a;
+  }
+  
+  .pft-feature-description {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #666;
+  }
+  
+  .pft-separator-line {
+    width: 100%;
+    height: 1px;
+    background-color: #e5e5e5;
+    margin: var(--spacing-6) 0;
+  }
+  
+  /* Tabs Section */
+  .pft-tabs-section {
+    margin-top: var(--spacing-10);
+  }
+  
+  .pft-tabs-header {
+    display: flex;
+    gap: var(--spacing-8);
+    border-bottom: 2px solid #e5e5e5;
+    margin-bottom: var(--spacing-8);
+  }
+  
+  .pft-tab-button {
+    background: none;
+    border: none;
+    padding: var(--spacing-4) var(--spacing-2);
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  
+  .pft-tab-button:hover {
+    color: #1a1a1a;
+  }
+  
+  .pft-tab-button.pft-active {
+    color: #1a1a1a;
+  }
+  
+  .pft-tab-button.pft-active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #1a1a1a;
+  }
+  
+  .pft-tab-content {
+    display: none;
+  }
+  
+  .pft-tab-content.pft-active {
+    display: block;
+  }
+  
+  /* PDF Downloads */
+  .pft-downloads-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-6);
+    color: #1a1a1a;
+  }
+  
+  .pft-download-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+  
+  .pft-download-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-5) 0;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  
+  .pft-download-title {
+    font-size: 1rem;
+    color: #8b0000;
+    margin: 0;
+  }
+  
+  .pft-download-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    text-decoration: none;
+    color: #393939;
+    transition: opacity 0.3s ease;
+  }
+  
+  .pft-download-link:hover {
+    opacity: 0.7;
+  }
+  
+  .pft-download-icon {
+    width: 19px;
+    height: 19px;
+  }
+  
+  .pft-download-text {
+    font-size: 0.875rem;
+    color: #393939;
+  }
+  
+  /* FAQ Section */
+  .pft-faq-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-6);
+    color: #1a1a1a;
+  }
+  
+  .pft-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+  
+  .pft-faq-item {
+    border-bottom: 1px solid #e5e5e5;
+  }
+  
+  .pft-faq-question {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-5) 0;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #1a1a1a;
+    font-weight: 400;
+  }
+  
+  .pft-faq-question:hover {
+    color: #666;
+  }
+  
+  .pft-faq-icon {
+    transition: transform 0.3s ease;
+    font-size: 1.25rem;
+    color: #666;
+  }
+  
+  .pft-faq-item.pft-open .pft-faq-icon {
+    transform: rotate(180deg);
+  }
+  
+  .pft-faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding: 0;
+  }
+  
+  .pft-faq-item.pft-open .pft-faq-answer {
+    max-height: 500px;
+    padding-bottom: var(--spacing-5);
+  }
+  
+  .pft-faq-answer-content {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #666;
+  }
+  
+  /* Video Section */
+  .pft-video-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-6);
+    color: #1a1a1a;
+  }
+  
+  .pft-video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-6);
+  }
+  
+  .pft-video-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .pft-video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    background-color: #f5f5f5;
+    margin-bottom: var(--spacing-3);
+    overflow: hidden;
+  }
+  
+  .pft-video-wrapper iframe,
+  .pft-video-wrapper video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  
+  .pft-video-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e5e5e5;
+  }
+  
+  .pft-video-play-icon {
+    width: 60px;
+    height: 60px;
+    fill: #999;
+  }
+  
+  .pft-video-description {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: #8b0000;
+  }
+  
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .pft-main-content {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-6);
+    }
+    
+    .pft-image-desktop {
+      display: none;
+    }
+    
+    .pft-image-mobile-only {
+      display: block;
+      width: 100%;
+      height: auto;
+      order: 1;
+    }
+    
+    .pft-features-content {
+      order: 2;
+      padding: var(--spacing-4) 0;
+    }
+    
+    .pft-section-title {
+      font-size: 2rem;
+      text-align: center;
+    }
+    
+    .pft-features-grid {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-4);
+    }
+    
+    .pft-tabs-header {
+      gap: var(--spacing-4);
+      overflow-x: auto;
+    }
+    
+    .pft-tab-button {
+      font-size: 1rem;
+      white-space: nowrap;
+    }
+    
+    .pft-video-grid {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-5);
+    }
+  }
+  
+  /* Fallback for CSS variables */
+  :root {
+    --spacing-2: 0.5rem;
+    --spacing-3: 0.75rem;
+    --spacing-4: 1rem;
+    --spacing-5: 1.25rem;
+    --spacing-6: 1.5rem;
+    --spacing-8: 2rem;
+    --spacing-10: 2.5rem;
+    --spacing-12: 3rem;
+  }
+{%- endstyle -%}
+
+<div class="pft-section-{{ section.id }}">
+  <div class="pft-container">
+    
+    {%- comment -%} Main Content Grid {%- endcomment -%}
+    <div class="pft-main-content">
+      
+      {%- comment -%} Left Side: Image {%- endcomment -%}
+      <div class="pft-image-wrapper">
+        {%- if section.settings.desktop_image != blank -%}
+          <img 
+            src="{{ section.settings.desktop_image | image_url: width: 800 }}"
+            srcset="{{ section.settings.desktop_image | image_url: width: 400 }} 400w,
+                    {{ section.settings.desktop_image | image_url: width: 600 }} 600w,
+                    {{ section.settings.desktop_image | image_url: width: 800 }} 800w"
+            alt="{{ section.settings.desktop_image.alt | default: section.settings.section_title }}"
+            class="pft-image-desktop"
+            loading="lazy"
+            width="{{ section.settings.desktop_image.width }}"
+            height="{{ section.settings.desktop_image.height }}"
+          >
+        {%- endif -%}
+      </div>
+      
+      {%- comment -%} Right Side: Features Content {%- endcomment -%}
+      <div class="pft-features-content">
+        
+        {%- comment -%} Mobile Image {%- endcomment -%}
+        {%- if section.settings.mobile_image != blank -%}
+          <img 
+            src="{{ section.settings.mobile_image | image_url: width: 600 }}"
+            srcset="{{ section.settings.mobile_image | image_url: width: 300 }} 300w,
+                    {{ section.settings.mobile_image | image_url: width: 600 }} 600w"
+            alt="{{ section.settings.mobile_image.alt | default: section.settings.section_title }}"
+            class="pft-image-mobile-only"
+            loading="lazy"
+            width="{{ section.settings.mobile_image.width }}"
+            height="{{ section.settings.mobile_image.height }}"
+          >
+        {%- endif -%}
+        
+        {%- if section.settings.section_title != blank -%}
+          <h2 class="pft-section-title">{{ section.settings.section_title }}</h2>
+        {%- endif -%}
+        
+        {%- comment -%} Features Grid (2 columns) {%- endcomment -%}
+        {%- if section.blocks.size > 0 -%}
+          <div class="pft-features-grid">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'feature_item' -%}
+                <div class="pft-feature-item" {{ block.shopify_attributes }}>
+                  {%- if block.settings.feature_icon != blank -%}
+                    <div class="pft-feature-icon">
+                      {{ block.settings.feature_icon }}
+                    </div>
+                  {%- endif -%}
+                  
+                  {%- if block.settings.feature_title != blank -%}
+                    <h3 class="pft-feature-title">{{ block.settings.feature_title }}</h3>
+                  {%- endif -%}
+                  
+                  {%- if block.settings.feature_description != blank -%}
+                    <p class="pft-feature-description">{{ block.settings.feature_description }}</p>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+        
+        <div class="pft-separator-line"></div>
+      </div>
+    </div>
+    
+    {%- comment -%} Tabs Section {%- endcomment -%}
+    <div class="pft-tabs-section">
+      
+      {%- comment -%} Tab Headers {%- endcomment -%}
+      <div class="pft-tabs-header">
+        <button class="pft-tab-button pft-active" data-tab="pdf-tab">
+          {{ section.settings.pdf_tab_label | default: 'PDF' }}
+        </button>
+        <button class="pft-tab-button" data-tab="faq-tab">
+          {{ section.settings.faq_tab_label | default: 'FAQ' }}
+        </button>
+        <button class="pft-tab-button" data-tab="video-tab">
+          {{ section.settings.video_tab_label | default: 'Installation video' }}
+        </button>
+      </div>
+      
+      {%- comment -%} PDF Tab Content {%- endcomment -%}
+      <div class="pft-tab-content pft-active" id="pdf-tab">
+        {%- if section.settings.pdf_section_title != blank -%}
+          <h3 class="pft-downloads-section-title">{{ section.settings.pdf_section_title }}</h3>
+        {%- endif -%}
+        
+        <div class="pft-download-list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'pdf_download' -%}
+              <div class="pft-download-item" {{ block.shopify_attributes }}>
+                <h4 class="pft-download-title">{{ block.settings.pdf_title }}</h4>
+                <a 
+                  href="{{ block.settings.pdf_file }}" 
+                  class="pft-download-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  {% if block.settings.force_download %}download{% endif %}
+                >
+                  <span class="pft-download-text">{{ block.settings.download_text | default: 'Download' }}</span>
+                  <svg class="pft-download-icon" xmlns="http://www.w3.org/2000/svg" id="Layer_2" width="19" height="19" data-name="Layer 2" viewBox="0 0 114.79 146.52">
+                    <defs>
+                      <style>
+                        .cls-1 {
+                          fill: #393939;
+                        }
+                        .cls-2 {
+                          fill: none;
+                          stroke: #393939;
+                          stroke-miterlimit: 10;
+                          stroke-width: 1.5px;
+                        }
+                      </style>
+                    </defs>
+                    <g id="Layer_1-2" data-name="Layer 1">
+                      <polyline class="cls-2" points="76.09 .75 .75 .75 .75 145.77 114.04 145.77 114.04 43.02"></polyline>
+                      <polygon class="cls-1" points="76.18 42.84 114.54 43.03 76.09 .26 76.18 42.84"></polygon>
+                    </g>
+                  </svg>
+                </a>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+      
+      {%- comment -%} FAQ Tab Content {%- endcomment -%}
+      <div class="pft-tab-content" id="faq-tab">
+        {%- if section.settings.faq_section_title != blank -%}
+          <h3 class="pft-faq-section-title">{{ section.settings.faq_section_title }}</h3>
+        {%- endif -%}
+        
+        <div class="pft-faq-list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'faq_item' -%}
+              <div class="pft-faq-item" {{ block.shopify_attributes }}>
+                <button class="pft-faq-question">
+                  <span>{{ block.settings.faq_question }}</span>
+                  <span class="pft-faq-icon">›</span>
+                </button>
+                <div class="pft-faq-answer">
+                  <div class="pft-faq-answer-content">
+                    {{ block.settings.faq_answer }}
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+      
+      {%- comment -%} Video Tab Content {%- endcomment -%}
+      <div class="pft-tab-content" id="video-tab">
+        {%- if section.settings.video_section_title != blank -%}
+          <h3 class="pft-video-section-title">{{ section.settings.video_section_title }}</h3>
+        {%- endif -%}
+        
+        <div class="pft-video-grid">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'video_item' -%}
+              <div class="pft-video-item" {{ block.shopify_attributes }}>
+                <div class="pft-video-wrapper">
+                  {%- if block.settings.video_url != blank -%}
+                    {%- liquid
+                      assign video_url = block.settings.video_url
+                      assign youtube_id = ''
+                      assign vimeo_id = ''
+                      
+                      if video_url contains 'youtube.com/watch'
+                        assign youtube_id = video_url | split: 'v=' | last | split: '&' | first
+                      elsif video_url contains 'youtu.be/'
+                        assign youtube_id = video_url | split: 'youtu.be/' | last | split: '?' | first
+                      elsif video_url contains 'vimeo.com/'
+                        assign vimeo_id = video_url | split: 'vimeo.com/' | last | split: '?' | first
+                      endif
+                    -%}
+                    
+                    {%- if youtube_id != blank -%}
+                      <iframe 
+                        src="https://www.youtube.com/embed/{{ youtube_id }}" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen
+                        loading="lazy"
+                      ></iframe>
+                    {%- elsif vimeo_id != blank -%}
+                      <iframe 
+                        src="https://player.vimeo.com/video/{{ vimeo_id }}" 
+                        allow="autoplay; fullscreen; picture-in-picture" 
+                        allowfullscreen
+                        loading="lazy"
+                      ></iframe>
+                    {%- else -%}
+                      <div class="pft-video-placeholder">
+                        <svg class="pft-video-play-icon" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M8 5v14l11-7z"/>
+                        </svg>
+                      </div>
+                    {%- endif -%}
+                  {%- else -%}
+                    <div class="pft-video-placeholder">
+                      <svg class="pft-video-play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  {%- endif -%}
+                </div>
+                
+                {%- if block.settings.video_description != blank -%}
+                  <p class="pft-video-description">{{ block.settings.video_description }}</p>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    'use strict';
+    
+    // Tab functionality
+    const tabButtons = document.querySelectorAll('.pft-tab-button');
+    const tabContents = document.querySelectorAll('.pft-tab-content');
+    
+    tabButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const targetTab = this.getAttribute('data-tab');
+        
+        // Remove active class from all buttons and contents
+        tabButtons.forEach(btn => btn.classList.remove('pft-active'));
+        tabContents.forEach(content => content.classList.remove('pft-active'));
+        
+        // Add active class to clicked button and corresponding content
+        this.classList.add('pft-active');
+        document.getElementById(targetTab).classList.add('pft-active');
+      });
+    });
+    
+    // FAQ accordion functionality
+    const faqQuestions = document.querySelectorAll('.pft-faq-question');
+    
+    faqQuestions.forEach(question => {
+      question.addEventListener('click', function() {
+        const faqItem = this.closest('.pft-faq-item');
+        const isOpen = faqItem.classList.contains('pft-open');
+        
+        // Close all other FAQ items
+        document.querySelectorAll('.pft-faq-item').forEach(item => {
+          if (item !== faqItem) {
+            item.classList.remove('pft-open');
+          }
+        });
+        
+        // Toggle current FAQ item
+        if (isOpen) {
+          faqItem.classList.remove('pft-open');
+        } else {
+          faqItem.classList.add('pft-open');
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product Features Tabs",
+  "tag": "section",
+  "class": "pft-section-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Main Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Smart Features"
+    },
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile Image (Different from desktop)"
+    },
+    {
+      "type": "header",
+      "content": "Tab Labels"
+    },
+    {
+      "type": "text",
+      "id": "pdf_tab_label",
+      "label": "PDF Tab Label",
+      "default": "PDF"
+    },
+    {
+      "type": "text",
+      "id": "faq_tab_label",
+      "label": "FAQ Tab Label",
+      "default": "FAQ"
+    },
+    {
+      "type": "text",
+      "id": "video_tab_label",
+      "label": "Video Tab Label",
+      "default": "Installation video"
+    },
+    {
+      "type": "header",
+      "content": "PDF Section"
+    },
+    {
+      "type": "text",
+      "id": "pdf_section_title",
+      "label": "PDF Section Title",
+      "default": "Product datasheets"
+    },
+    {
+      "type": "header",
+      "content": "FAQ Section"
+    },
+    {
+      "type": "text",
+      "id": "faq_section_title",
+      "label": "FAQ Section Title",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "header",
+      "content": "Video Section"
+    },
+    {
+      "type": "text",
+      "id": "video_section_title",
+      "label": "Video Section Title",
+      "default": "Installation Guide"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature_item",
+      "name": "Feature Item",
+      "settings": [
+        {
+          "type": "html",
+          "id": "feature_icon",
+          "label": "Feature Icon (SVG)",
+          "info": "Paste your custom SVG code here"
+        },
+        {
+          "type": "text",
+          "id": "feature_title",
+          "label": "Feature Title",
+          "default": "Feature Title"
+        },
+        {
+          "type": "textarea",
+          "id": "feature_description",
+          "label": "Feature Description",
+          "default": "Feature description goes here."
+        }
+      ]
+    },
+    {
+      "type": "pdf_download",
+      "name": "PDF Download",
+      "settings": [
+        {
+          "type": "text",
+          "id": "pdf_title",
+          "label": "PDF Title",
+          "default": "Product datasheets"
+        },
+        {
+          "type": "url",
+          "id": "pdf_file",
+          "label": "PDF File URL",
+          "info": "Upload PDF to Files section and paste URL here"
+        },
+        {
+          "type": "text",
+          "id": "download_text",
+          "label": "Download Button Text",
+          "default": "Download"
+        },
+        {
+          "type": "checkbox",
+          "id": "force_download",
+          "label": "Force Download (instead of opening in new tab)",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "faq_question",
+          "label": "Question",
+          "default": "How do I install Corston electrical products?"
+        },
+        {
+          "type": "richtext",
+          "id": "faq_answer",
+          "label": "Answer",
+          "default": "<p>Answer goes here.</p>"
+        }
+      ]
+    },
+    {
+      "type": "video_item",
+      "name": "Video Item",
+      "settings": [
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video URL",
+          "info": "YouTube or Vimeo URL"
+        },
+        {
+          "type": "text",
+          "id": "video_description",
+          "label": "Video Description",
+          "default": "Installation Guide"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Features Tabs",
+      "blocks": [
+        {
+          "type": "feature_item",
+          "settings": {
+            "feature_title": "Programmable",
+            "feature_description": "It automatically adjust the room temperature and hot water according to your preset schedule, how busy it always benefits from you."
+          }
+        },
+        {
+          "type": "feature_item",
+          "settings": {
+            "feature_title": "ECO Mode",
+            "feature_description": "Save you energy when you're temporarily away from home. And allow you to quickly return your previous setting."
+          }
+        },
+        {
+          "type": "feature_item",
+          "settings": {
+            "feature_title": "Frost Protection",
+            "feature_description": "Say goodbye to rising property insurance costs, protect your water pipes from freezing while you're away."
+          }
+        },
+        {
+          "type": "feature_item",
+          "settings": {
+            "feature_title": "Window detection",
+            "feature_description": "It automatically shut off or continue heating based on your needs when you ventilate by opening windows."
+          }
+        },
+        {
+          "type": "pdf_download",
+          "settings": {
+            "pdf_title": "Product datasheets"
+          }
+        },
+        {
+          "type": "pdf_download",
+          "settings": {
+            "pdf_title": "Instructions"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "faq_question": "How do I install Corston electrical products?"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "faq_question": "How do I install Corston Clear Switches and Sockets?"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "faq_question": "Do I need to use Corston back boxes for your electrical products?"
+          }
+        },
+        {
+          "type": "video_item",
+          "settings": {
+            "video_description": "Installation Guide"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

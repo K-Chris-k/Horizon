@@ -1,0 +1,344 @@
+{% comment %}
+  Control & Compatibility Section
+  Features a two-column layout with offset positioning for desktop
+  and stacked layout for mobile
+{% endcomment %}
+
+<style>
+
+
+  #shopify-section-{{ section.id }} .control-compatibility__header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  #shopify-section-{{ section.id }} .control-compatibility__title {
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    font-weight: 400;
+    line-height: 1.2;
+    margin: 0;
+    color: var(--color-foreground, #1a1a1a);
+    letter-spacing: -0.02em;
+  }
+
+  {% if section.settings.subtitle != blank %}
+  #shopify-section-{{ section.id }} .control-compatibility__subtitle {
+    font-size: clamp(0.875rem, 1.8vw, 1.125rem);
+    line-height: 1.6;
+    color: var(--color-foreground-secondary, #666);
+    max-width: 700px;
+    margin: 1rem auto 0;
+  }
+  {% endif %}
+
+  /* Grid Layout for Desktop */
+  #shopify-section-{{ section.id }} .control-compatibility__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .control-compatibility__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    #shopify-section-{{ section.id }} .control-compatibility__grid {
+      gap: 2rem;
+    }
+  }
+
+  /* Block Items */
+  #shopify-section-{{ section.id }} .control-compatibility__item {
+    position: relative;
+    width: 100%;
+  }
+
+  /* Offset for even-indexed items on desktop */
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .control-compatibility__item--offset {
+      margin-top: 128px;
+    }
+  }
+
+  /* Image Container */
+  #shopify-section-{{ section.id }} .control-compatibility__image {
+    position: relative;
+    width: 100%;
+    border-radius: 1rem;
+    overflow: hidden;
+    background-color: #f5f5f5;
+    margin-bottom: 1.5rem;
+  }
+
+  #shopify-section-{{ section.id }} .control-compatibility__image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* Aspect ratio control */
+  #shopify-section-{{ section.id }} .control-compatibility__image--ratio {
+    aspect-ratio: 4 / 3;
+  }
+
+  #shopify-section-{{ section.id }} .control-compatibility__image--ratio img {
+    height: 100%;
+  }
+
+  @media screen and (min-width: 990px) {
+    #shopify-section-{{ section.id }} .control-compatibility__image {
+      margin-bottom: 2rem;
+    }
+  }
+
+  /* Content Block */
+  #shopify-section-{{ section.id }} .control-compatibility__content {
+    padding: 0 0.5rem;
+  }
+
+  #shopify-section-{{ section.id }} .control-compatibility__item-title {
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0 0 1rem 0;
+    color: var(--color-foreground, #1a1a1a);
+  }
+
+  #shopify-section-{{ section.id }} .control-compatibility__description {
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
+    line-height: 1.7;
+    color: var(--color-foreground-secondary, #4a4a4a);
+    margin: 0;
+  }
+
+  /* Placeholder for empty image */
+  #shopify-section-{{ section.id }} .control-compatibility__image-placeholder {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    color: #999;
+    font-size: 0.875rem;
+    border-radius: 1rem;
+  }
+
+  /* Mobile Optimization */
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .control-compatibility {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    #shopify-section-{{ section.id }} .control-compatibility__header {
+      margin-bottom: 2.5rem;
+    }
+
+    #shopify-section-{{ section.id }} .control-compatibility__grid {
+      gap: 2.5rem;
+    }
+
+    #shopify-section-{{ section.id }} .control-compatibility__item {
+      margin-top: 0 !important;
+    }
+
+    #shopify-section-{{ section.id }} .control-compatibility__image {
+      margin-bottom: 1rem;
+    }
+
+    #shopify-section-{{ section.id }} .control-compatibility__content {
+      padding: 0;
+    }
+  }
+
+  /* Responsive Images */
+  @media screen and (min-width: 750px) and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .control-compatibility__item--offset {
+      margin-top: clamp(64px, 10vw, 128px);
+    }
+  }
+</style>
+
+<div class="control-compatibility">
+  {% if section.settings.title != blank or section.settings.subtitle != blank %}
+    <div class="control-compatibility__header">
+      {% if section.settings.title != blank %}
+        <h2 class="control-compatibility__title">
+          {{ section.settings.title }}
+        </h2>
+      {% endif %}
+      
+      {% if section.settings.subtitle != blank %}
+        <p class="control-compatibility__subtitle">
+          {{ section.settings.subtitle }}
+        </p>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if section.blocks.size > 0 %}
+    <div class="control-compatibility__grid">
+      {% for block in section.blocks %}
+        {% assign block_index = forloop.index %}
+        {% assign is_even = block_index | modulo: 2 %}
+        
+        <div 
+          class="control-compatibility__item {% if is_even == 0 %}control-compatibility__item--offset{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          {%- comment -%} Image Block {%- endcomment -%}
+          <div class="control-compatibility__image {% if block.settings.use_aspect_ratio %}control-compatibility__image--ratio{% endif %}">
+            {% if block.settings.image != blank %}
+              {{
+                block.settings.image
+                | image_url: width: 800
+                | image_tag:
+                  loading: 'lazy',
+                  alt: block.settings.image.alt | default: block.settings.title,
+                  widths: '375, 550, 750, 1100, 1500'
+              }}
+            {% else %}
+              <div class="control-compatibility__image-placeholder">
+                {{ 'sections.control_compatibility.image_placeholder' | t | default: 'Image placeholder' }}
+              </div>
+            {% endif %}
+          </div>
+
+          {%- comment -%} Content Block {%- endcomment -%}
+          <div class="control-compatibility__content">
+            {% if block.settings.title != blank %}
+              <h3 class="control-compatibility__item-title">
+                {{ block.settings.title }}
+              </h3>
+            {% endif %}
+
+            {% if block.settings.description != blank %}
+              <div class="control-compatibility__description">
+                {{ block.settings.description }}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Control & Compatibility",
+  "tag": "section",
+  "class": "section section-control-compatibility",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Control.Compatibility."
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "info": "Optional subtitle text below the main title"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "compatibility_item",
+      "name": "Content Item",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_aspect_ratio",
+          "label": "Use fixed aspect ratio (4:3)",
+          "default": true,
+          "info": "Maintains consistent image heights across items"
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Feature title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Describe your feature here with detailed information."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Control & Compatibility",
+      "blocks": [
+        {
+          "type": "compatibility_item",
+          "settings": {
+            "title": "Easily control.",
+            "description": "Easily control and set up all functions remotely via a dedicated mobile app."
+          }
+        },
+        {
+          "type": "compatibility_item",
+          "settings": {
+            "title": "High compatibility.",
+            "description": "Seamlessly integrates with Google and Amazon smart speakers, enabling voice-controlled temperature adjustments and home automation with other smart devices through the speaker."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

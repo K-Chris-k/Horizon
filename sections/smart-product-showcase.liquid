@@ -1,0 +1,867 @@
+<style>
+  .smart-product-showcase {
+    padding: 60px 20px;
+    background-color: {{ section.settings.background_color }};
+    overflow: hidden;
+  }
+
+  .smart-product-showcase__container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .smart-product-showcase__header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .smart-product-showcase__title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 600;
+    color: {{ section.settings.title_color }};
+    margin: 0 0 12px 0;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .smart-product-showcase__subtitle {
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    color: {{ section.settings.subtitle_color }};
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .smart-product-showcase__carousel-wrapper {
+    position: relative;
+    margin: 0 auto;
+    max-width: 1000px;
+  }
+
+  .smart-product-showcase__carousel {
+    position: relative;
+    min-height: 450px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .smart-product-showcase__slide {
+    position: absolute;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .smart-product-showcase__slide--visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Left preview - show only right half */
+  .smart-product-showcase__slide--left {
+    width: 150px;
+    opacity: 0.6;
+    overflow: hidden;
+    left: calc(50% - 240px - 150px);
+    transform: translateX(0);
+  }
+
+  .smart-product-showcase__slide--left .smart-product-showcase__image {
+    width: 300px;
+    margin-left: -150px;
+  }
+
+  /* Center active slide */
+  .smart-product-showcase__slide--center {
+    width: 480px;
+    opacity: 1;
+    z-index: 2;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+  }
+
+  .smart-product-showcase__slide--center:hover .smart-product-showcase__zoom-indicator {
+    opacity: 1;
+  }
+
+  /* Right preview - show only left half */
+  .smart-product-showcase__slide--right {
+    width: 150px;
+    opacity: 0.6;
+    overflow: hidden;
+    right: calc(50% - 240px - 150px);
+    transform: translateX(0);
+  }
+
+  .smart-product-showcase__slide--right .smart-product-showcase__image {
+    width: 300px;
+    margin-left: 0;
+  }
+
+  /* Single slide - center it */
+  .smart-product-showcase__slide--only {
+    width: 480px;
+    opacity: 1;
+    z-index: 2;
+    left: 50%;
+    transform: translateX(-50%);
+    position: absolute;
+  }
+
+  .smart-product-showcase__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 0;
+    object-fit: cover;
+    aspect-ratio: 3/4;
+  }
+
+  .smart-product-showcase__zoom-indicator {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .smart-product-showcase__zoom-icon {
+    width: 24px;
+    height: 24px;
+    stroke: #333;
+    stroke-width: 2;
+  }
+
+  .smart-product-showcase__controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .smart-product-showcase__arrow {
+    pointer-events: all;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .smart-product-showcase__arrow:hover {
+    background: #fff;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+    transform: scale(1.08);
+  }
+
+  .smart-product-showcase__arrow:active {
+    transform: scale(0.96);
+  }
+
+  .smart-product-showcase__arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .smart-product-showcase__arrow-icon {
+    width: 24px;
+    height: 24px;
+    stroke: #333;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .smart-product-showcase__arrow--prev .smart-product-showcase__arrow-icon {
+    transform: rotate(180deg);
+  }
+
+  /* Zoom Modal */
+  .smart-product-showcase__zoom-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .smart-product-showcase__zoom-modal--active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .smart-product-showcase__zoom-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    position: relative;
+  }
+
+  .smart-product-showcase__zoom-image {
+    max-width: 100%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+  }
+
+  .smart-product-showcase__zoom-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .smart-product-showcase__zoom-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+  }
+
+  .smart-product-showcase__zoom-close-icon {
+    width: 24px;
+    height: 24px;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .smart-product-showcase {
+      padding: 40px 16px;
+    }
+
+    .smart-product-showcase__carousel {
+      min-height: 380px;
+    }
+
+    .smart-product-showcase__slide--center {
+      width: 400px;
+    }
+
+    .smart-product-showcase__slide--left {
+      width: 120px;
+      left: calc(50% - 200px - 120px);
+    }
+
+    .smart-product-showcase__slide--right {
+      width: 120px;
+      right: calc(50% - 200px - 120px);
+    }
+
+    .smart-product-showcase__slide--left .smart-product-showcase__image {
+      width: 240px;
+      margin-left: -120px;
+    }
+
+    .smart-product-showcase__slide--right .smart-product-showcase__image {
+      width: 240px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .smart-product-showcase {
+      padding: 32px 12px;
+    }
+
+    .smart-product-showcase__carousel {
+      min-height: 320px;
+    }
+
+    .smart-product-showcase__slide--center {
+      width: 300px;
+    }
+
+    .smart-product-showcase__slide--left {
+      width: 90px;
+      left: calc(50% - 150px - 90px);
+    }
+
+    .smart-product-showcase__slide--right {
+      width: 90px;
+      right: calc(50% - 150px - 90px);
+    }
+
+    .smart-product-showcase__slide--left .smart-product-showcase__image {
+      width: 180px;
+      margin-left: -90px;
+    }
+
+    .smart-product-showcase__slide--right .smart-product-showcase__image {
+      width: 180px;
+    }
+
+    .smart-product-showcase__arrow {
+      width: 40px;
+      height: 40px;
+    }
+
+    .smart-product-showcase__arrow-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .smart-product-showcase__zoom-indicator {
+      width: 40px;
+      height: 40px;
+      bottom: 12px;
+      right: 12px;
+    }
+
+    .smart-product-showcase__zoom-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .smart-product-showcase__carousel {
+      min-height: 280px;
+    }
+
+    .smart-product-showcase__slide--center {
+      width: 240px;
+    }
+
+    .smart-product-showcase__slide--left {
+      width: 60px;
+      left: calc(50% - 120px - 60px);
+    }
+
+    .smart-product-showcase__slide--right {
+      width: 60px;
+      right: calc(50% - 120px - 60px);
+    }
+
+    .smart-product-showcase__slide--left .smart-product-showcase__image {
+      width: 120px;
+      margin-left: -60px;
+    }
+
+    .smart-product-showcase__slide--right .smart-product-showcase__image {
+      width: 120px;
+    }
+
+    .smart-product-showcase__arrow {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .smart-product-showcase__slide,
+    .smart-product-showcase__arrow,
+    .smart-product-showcase__zoom-modal {
+      transition: none !important;
+    }
+  }
+
+  /* Focus styles */
+  .smart-product-showcase__arrow:focus-visible,
+  .smart-product-showcase__zoom-close:focus-visible {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+  }
+
+  .smart-product-showcase__slide--center:focus-visible {
+    outline: 2px solid #0066cc;
+    outline-offset: 4px;
+  }
+</style>
+
+<smart-product-showcase class="smart-product-showcase" data-section-id="{{ section.id }}">
+  <div class="smart-product-showcase__container">
+    {% if section.settings.title != blank or section.settings.subtitle != blank %}
+      <header class="smart-product-showcase__header">
+        {% if section.settings.title != blank %}
+          <h2 class="smart-product-showcase__title">{{ section.settings.title }}</h2>
+        {% endif %}
+        {% if section.settings.subtitle != blank %}
+          <p class="smart-product-showcase__subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </header>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <div class="smart-product-showcase__carousel-wrapper">
+        <div class="smart-product-showcase__carousel" id="carousel-{{ section.id }}">
+          {% for block in section.blocks %}
+            <div 
+              class="smart-product-showcase__slide"
+              data-slide-index="{{ forloop.index0 }}"
+              data-block-id="{{ block.id }}"
+              {{ block.shopify_attributes }}
+            >
+              {% if block.settings.image %}
+                <img
+                  class="smart-product-showcase__image"
+                  src="{{ block.settings.image | image_url: width: 800 }}"
+                  srcset="{{ block.settings.image | image_url: width: 400 }} 400w,
+                          {{ block.settings.image | image_url: width: 600 }} 600w,
+                          {{ block.settings.image | image_url: width: 800 }} 800w,
+                          {{ block.settings.image | image_url: width: 1200 }} 1200w"
+                  sizes="(max-width: 768px) 300px, 480px"
+                  alt="{{ block.settings.image_alt | default: block.settings.image.alt | default: 'Product image' }}"
+                  loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                  width="{{ block.settings.image.width }}"
+                  height="{{ block.settings.image.height }}"
+                >
+                <div class="smart-product-showcase__zoom-indicator" aria-hidden="true">
+                  <svg class="smart-product-showcase__zoom-icon" fill="none" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7"/>
+                    <path d="M21 21l-4.35-4.35"/>
+                    <path d="M11 8v6M8 11h6"/>
+                  </svg>
+                </div>
+              {% else %}
+                <div class="smart-product-showcase__image" style="display: flex; align-items: center; justify-content: center; background: #f5f5f5;">
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if section.blocks.size > 1 %}
+          <div class="smart-product-showcase__controls">
+            <button 
+              class="smart-product-showcase__arrow smart-product-showcase__arrow--prev" 
+              id="prev-{{ section.id }}"
+              aria-label="Previous image"
+              type="button"
+            >
+              <svg class="smart-product-showcase__arrow-icon" fill="none" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+            <button 
+              class="smart-product-showcase__arrow smart-product-showcase__arrow--next" 
+              id="next-{{ section.id }}"
+              aria-label="Next image"
+              type="button"
+            >
+              <svg class="smart-product-showcase__arrow-icon" fill="none" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+        {% endif %}
+      </div>
+
+      {%- comment -%} Zoom Modal {%- endcomment -%}
+      <div 
+        class="smart-product-showcase__zoom-modal" 
+        id="zoom-modal-{{ section.id }}"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Zoomed image view"
+      >
+        <div class="smart-product-showcase__zoom-content">
+          <button 
+            class="smart-product-showcase__zoom-close" 
+            id="zoom-close-{{ section.id }}"
+            aria-label="Close zoomed view"
+            type="button"
+          >
+            <svg class="smart-product-showcase__zoom-close-icon" fill="none" viewBox="0 0 24 24">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+          <img 
+            class="smart-product-showcase__zoom-image" 
+            id="zoom-img-{{ section.id }}"
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E" 
+            alt=""
+            width="1200"
+            height="1600"
+          >
+        </div>
+      </div>
+
+      <script>
+        if (!customElements.get('smart-product-showcase')) {
+          class SmartProductShowcase extends HTMLElement {
+            constructor() {
+              super();
+              this.currentIndex = 0;
+              this.isTransitioning = false;
+            }
+
+            connectedCallback() {
+              // Wait for next tick to ensure DOM is ready
+              requestAnimationFrame(() => {
+                this.init();
+              });
+            }
+
+            init() {
+              // Initialize all DOM references
+              this.sectionId = this.dataset.sectionId;
+              this.carousel = this.querySelector(`#carousel-${this.sectionId}`);
+              this.slides = Array.from(this.querySelectorAll('.smart-product-showcase__slide'));
+              this.prevBtn = this.querySelector(`#prev-${this.sectionId}`);
+              this.nextBtn = this.querySelector(`#next-${this.sectionId}`);
+              this.zoomModal = this.querySelector(`#zoom-modal-${this.sectionId}`);
+              this.zoomImg = this.querySelector(`#zoom-img-${this.sectionId}`);
+              this.zoomClose = this.querySelector(`#zoom-close-${this.sectionId}`);
+
+              console.log('Smart Product Showcase initialized:', {
+                sectionId: this.sectionId,
+                slidesCount: this.slides.length,
+                hasPrevBtn: !!this.prevBtn,
+                hasNextBtn: !!this.nextBtn
+              });
+
+              if (this.slides.length === 0) {
+                console.warn('No slides found in carousel');
+                return;
+              }
+
+              // Arrow controls
+              if (this.prevBtn) {
+                this.prevBtn.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  console.log('Previous button clicked');
+                  this.prev();
+                });
+              }
+              if (this.nextBtn) {
+                this.nextBtn.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  console.log('Next button clicked');
+                  this.next();
+                });
+              }
+
+              // Keyboard navigation (only when not in input fields)
+              this.keydownHandler = (e) => {
+                // Don't interfere with typing in input fields
+                if (e.target.matches('input, textarea, select')) return;
+                
+                if (e.key === 'ArrowLeft') {
+                  e.preventDefault();
+                  console.log('Left arrow key pressed');
+                  this.prev();
+                } else if (e.key === 'ArrowRight') {
+                  e.preventDefault();
+                  console.log('Right arrow key pressed');
+                  this.next();
+                }
+              };
+              document.addEventListener('keydown', this.keydownHandler);
+
+              // Click on center slide to zoom
+              this.slides.forEach((slide, index) => {
+                slide.addEventListener('click', () => {
+                  const isCenter = slide.classList.contains('smart-product-showcase__slide--center');
+                  if (isCenter) {
+                    this.openZoom();
+                  }
+                });
+              });
+
+              // Zoom close
+              if (this.zoomClose) {
+                this.zoomClose.addEventListener('click', () => this.closeZoom());
+              }
+              if (this.zoomModal) {
+                this.zoomModal.addEventListener('click', (e) => {
+                  if (e.target === this.zoomModal) {
+                    this.closeZoom();
+                  }
+                });
+                document.addEventListener('keydown', (e) => {
+                  if (e.key === 'Escape' && this.zoomModal.classList.contains('smart-product-showcase__zoom-modal--active')) {
+                    this.closeZoom();
+                  }
+                });
+              }
+
+              // Initial render
+              this.updateSlides();
+            }
+
+            disconnectedCallback() {
+              // Clean up event listeners
+              if (this.keydownHandler) {
+                document.removeEventListener('keydown', this.keydownHandler);
+              }
+            }
+
+            prev() {
+              console.log('prev() called, current index:', this.currentIndex);
+              if (this.isTransitioning) {
+                console.log('Blocked: transitioning');
+                return;
+              }
+              if (this.slides.length === 0) {
+                console.log('Blocked: no slides');
+                return;
+              }
+              const oldIndex = this.currentIndex;
+              this.currentIndex = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
+              console.log('Index changed from', oldIndex, 'to', this.currentIndex);
+              this.updateSlides();
+            }
+
+            next() {
+              console.log('next() called, current index:', this.currentIndex);
+              if (this.isTransitioning) {
+                console.log('Blocked: transitioning');
+                return;
+              }
+              if (this.slides.length === 0) {
+                console.log('Blocked: no slides');
+                return;
+              }
+              const oldIndex = this.currentIndex;
+              this.currentIndex = (this.currentIndex + 1) % this.slides.length;
+              console.log('Index changed from', oldIndex, 'to', this.currentIndex);
+              this.updateSlides();
+            }
+
+            updateSlides() {
+              console.log('updateSlides() called, currentIndex:', this.currentIndex, 'totalSlides:', this.slides.length);
+              this.isTransitioning = true;
+              const totalSlides = this.slides.length;
+
+              // Handle single slide case
+              if (totalSlides === 1) {
+                console.log('Single slide mode');
+                this.slides[0].classList.add('smart-product-showcase__slide--visible', 'smart-product-showcase__slide--only');
+                this.slides[0].setAttribute('aria-current', 'true');
+                this.slides[0].setAttribute('tabindex', '0');
+                this.isTransitioning = false;
+                return;
+              }
+
+              // Handle two slides case
+              if (totalSlides === 2) {
+                this.slides.forEach((slide, index) => {
+                  slide.classList.remove(
+                    'smart-product-showcase__slide--visible',
+                    'smart-product-showcase__slide--left',
+                    'smart-product-showcase__slide--center',
+                    'smart-product-showcase__slide--right',
+                    'smart-product-showcase__slide--only'
+                  );
+
+                  if (index === this.currentIndex) {
+                    slide.classList.add('smart-product-showcase__slide--visible', 'smart-product-showcase__slide--center');
+                    slide.setAttribute('aria-current', 'true');
+                    slide.setAttribute('tabindex', '0');
+                  } else {
+                    // Show the other slide on the right
+                    slide.classList.add('smart-product-showcase__slide--visible', 'smart-product-showcase__slide--right');
+                    slide.removeAttribute('aria-current');
+                    slide.removeAttribute('tabindex');
+                  }
+                });
+
+                setTimeout(() => {
+                  this.isTransitioning = false;
+                }, 600);
+                return;
+              }
+
+              // Handle three or more slides
+              console.log('Three or more slides mode');
+              const leftIndex = (this.currentIndex - 1 + totalSlides) % totalSlides;
+              const rightIndex = (this.currentIndex + 1) % totalSlides;
+              console.log('Left index:', leftIndex, 'Center index:', this.currentIndex, 'Right index:', rightIndex);
+
+              this.slides.forEach((slide, index) => {
+                // Remove all position classes
+                slide.classList.remove(
+                  'smart-product-showcase__slide--visible',
+                  'smart-product-showcase__slide--left',
+                  'smart-product-showcase__slide--center',
+                  'smart-product-showcase__slide--right',
+                  'smart-product-showcase__slide--only'
+                );
+
+                if (index === this.currentIndex) {
+                  // Center slide
+                  console.log('Slide', index, '-> center');
+                  slide.classList.add('smart-product-showcase__slide--visible', 'smart-product-showcase__slide--center');
+                  slide.setAttribute('aria-current', 'true');
+                  slide.setAttribute('tabindex', '0');
+                } else if (index === leftIndex) {
+                  // Left preview
+                  console.log('Slide', index, '-> left');
+                  slide.classList.add('smart-product-showcase__slide--visible', 'smart-product-showcase__slide--left');
+                  slide.removeAttribute('aria-current');
+                  slide.removeAttribute('tabindex');
+                } else if (index === rightIndex) {
+                  // Right preview
+                  console.log('Slide', index, '-> right');
+                  slide.classList.add('smart-product-showcase__slide--visible', 'smart-product-showcase__slide--right');
+                  slide.removeAttribute('aria-current');
+                  slide.removeAttribute('tabindex');
+                } else {
+                  // Hidden slides
+                  console.log('Slide', index, '-> hidden');
+                  slide.removeAttribute('aria-current');
+                  slide.removeAttribute('tabindex');
+                }
+              });
+
+              setTimeout(() => {
+                console.log('Transition complete');
+                this.isTransitioning = false;
+              }, 600);
+            }
+
+            openZoom() {
+              const currentSlide = this.slides[this.currentIndex];
+              const img = currentSlide.querySelector('img');
+              if (!img || !this.zoomModal || !this.zoomImg) return;
+
+              // Use high-res version for zoom
+              const highResSrc = img.src.replace(/width=\d+/, 'width=2000');
+              this.zoomImg.src = highResSrc;
+              this.zoomImg.alt = img.alt;
+
+              this.zoomModal.classList.add('smart-product-showcase__zoom-modal--active');
+              document.body.style.overflow = 'hidden';
+
+              setTimeout(() => {
+                this.zoomClose?.focus();
+              }, 100);
+            }
+
+            closeZoom() {
+              if (!this.zoomModal) return;
+              this.zoomModal.classList.remove('smart-product-showcase__zoom-modal--active');
+              document.body.style.overflow = '';
+            }
+          }
+
+          customElements.define('smart-product-showcase', SmartProductShowcase);
+        }
+      </script>
+    {% else %}
+      <div style="text-align: center; padding: 40px; color: #999;">
+        <p>Add image blocks to display the carousel</p>
+      </div>
+    {% endif %}
+  </div>
+</smart-product-showcase>
+
+{% schema %}
+{
+  "name": "Smart Product Showcase",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Skin Feel Paint"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Designed with a triple-layer paint coating, delivering a premium skin-like feel, with surface feel that remains vibrant and fade-resistant over time."
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Color",
+      "default": "#666666"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image Alt Text",
+          "info": "Describe the image for accessibility"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Smart Product Showcase",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
