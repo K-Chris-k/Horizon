@@ -1,0 +1,749 @@
+<style>
+  .img-carousel-showcase {
+    padding: 60px 20px;
+    background-color: {{ section.settings.background_color }};
+    overflow: hidden;
+  }
+
+
+
+  .img-carousel-showcase__header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .img-carousel-showcase__title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 600;
+    color: {{ section.settings.title_color }};
+    margin: 0 0 12px 0;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .img-carousel-showcase__subtitle {
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    color: {{ section.settings.subtitle_color }};
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .img-carousel-showcase__carousel-wrapper {
+    position: relative;
+
+  }
+
+  .img-carousel-showcase__carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    overflow: hidden;
+    position: relative;
+    min-height: 400px;
+  }
+
+  .img-carousel-showcase__slide {
+    flex-shrink: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .img-carousel-showcase__slide--hidden {
+    display: none;
+  }
+
+
+  /* .img-carousel-showcase__slide--prev .img-carousel-showcase__image {
+    width: 200%;
+    transform: translateX(-50%);
+    border-radius: 0 12px 12px 0;
+  }
+
+  .img-carousel-showcase__slide--next .img-carousel-showcase__image {
+    width: 200%;
+    transform: translateX(0);
+    border-radius: 12px 0 0 12px;
+  } */
+
+  .img-carousel-showcase__slide--center {
+
+    max-width: 700px;
+    opacity: 1;
+    z-index: 2;
+  }
+
+  .img-carousel-showcase__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    object-fit: cover;
+    aspect-ratio: 4/3;
+  }
+
+  .img-carousel-showcase__zoom-indicator {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .img-carousel-showcase__slide--center:hover .img-carousel-showcase__zoom-indicator {
+    opacity: 1;
+  }
+
+  .img-carousel-showcase__slide--prev .img-carousel-showcase__zoom-indicator,
+  .img-carousel-showcase__slide--next .img-carousel-showcase__zoom-indicator {
+    display: none;
+  }
+
+  .img-carousel-showcase__zoom-icon {
+    width: 20px;
+    height: 20px;
+    stroke: #333;
+    stroke-width: 2;
+  }
+
+  .img-carousel-showcase__controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    pointer-events: none;
+  }
+
+  .img-carousel-showcase__arrow {
+    pointer-events: all;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .img-carousel-showcase__arrow:hover {
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
+  }
+
+  .img-carousel-showcase__arrow:active {
+    transform: scale(0.95);
+  }
+
+  .img-carousel-showcase__arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .img-carousel-showcase__arrow-icon {
+    width: 24px;
+    height: 24px;
+    stroke: #333;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .img-carousel-showcase__arrow--prev .img-carousel-showcase__arrow-icon {
+    transform: rotate(180deg);
+  }
+
+  /* Zoom Modal */
+  .img-carousel-showcase__zoom-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .img-carousel-showcase__zoom-modal--active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .img-carousel-showcase__zoom-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    position: relative;
+  }
+
+  .img-carousel-showcase__zoom-image {
+    max-width: 100%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+  }
+
+  .img-carousel-showcase__zoom-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .img-carousel-showcase__zoom-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+  }
+
+  .img-carousel-showcase__zoom-close-icon {
+    width: 24px;
+    height: 24px;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .img-carousel-showcase {
+      padding: 40px 16px;
+    }
+
+    .img-carousel-showcase__header {
+      margin-bottom: 32px;
+    }
+
+    .img-carousel-showcase__slide--center {
+      width: 60%;
+    }
+
+    .img-carousel-showcase__slide--prev,
+    .img-carousel-showcase__slide--next {
+      width: 20%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .img-carousel-showcase {
+      padding: 32px 12px;
+    }
+
+    .img-carousel-showcase__carousel {
+      min-height: 300px;
+    }
+
+    .img-carousel-showcase__slide--center {
+      width: 65%;
+    }
+
+    .img-carousel-showcase__slide--prev,
+    .img-carousel-showcase__slide--next {
+      width: 17.5%;
+    }
+
+    .img-carousel-showcase__arrow {
+      width: 40px;
+      height: 40px;
+    }
+
+    .img-carousel-showcase__arrow-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .img-carousel-showcase__controls {
+      padding: 0 8px;
+    }
+
+    .img-carousel-showcase__zoom-indicator {
+      width: 36px;
+      height: 36px;
+      bottom: 12px;
+      right: 12px;
+    }
+
+    .img-carousel-showcase__zoom-icon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .img-carousel-showcase__slide--center {
+      width: 70%;
+    }
+
+    .img-carousel-showcase__slide--prev,
+    .img-carousel-showcase__slide--next {
+      width: 15%;
+    }
+  }
+
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .img-carousel-showcase__slide,
+    .img-carousel-showcase__arrow,
+    .img-carousel-showcase__zoom-modal {
+      transition: none;
+    }
+  }
+
+  /* Focus styles for accessibility */
+  .img-carousel-showcase__arrow:focus-visible,
+  .img-carousel-showcase__zoom-close:focus-visible {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+  }
+
+  .img-carousel-showcase__slide:focus-visible {
+    outline: 2px solid #0066cc;
+    outline-offset: 4px;
+    border-radius: 12px;
+  }
+</style>
+
+<section class="img-carousel-showcase" data-section-id="{{ section.id }}">
+  <div class="img-carousel-showcase__container">
+    {% if section.settings.title != blank or section.settings.subtitle != blank %}
+      <header class="img-carousel-showcase__header">
+        {% if section.settings.title != blank %}
+          <h2 class="img-carousel-showcase__title">{{ section.settings.title }}</h2>
+        {% endif %}
+        {% if section.settings.subtitle != blank %}
+          <p class="img-carousel-showcase__subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </header>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <div class="img-carousel-showcase__carousel-wrapper">
+        <div class="img-carousel-showcase__carousel" id="carousel-{{ section.id }}" role="region" aria-label="{{ section.settings.title | default: 'Image carousel' }}">
+          {% for block in section.blocks %}
+            <div 
+              class="img-carousel-showcase__slide {% if forloop.first %}img-carousel-showcase__slide--center{% else %}img-carousel-showcase__slide--hidden{% endif %}"
+              data-slide-index="{{ forloop.index0 }}"
+              data-block-id="{{ block.id }}"
+              {{ block.shopify_attributes }}
+              tabindex="0"
+              role="button"
+              aria-label="View image {{ forloop.index }}"
+            >
+              {% if block.settings.image %}
+                <img
+                  class="img-carousel-showcase__image"
+                  src="{{ block.settings.image | image_url: width: 800 }}"
+                  srcset="{{ block.settings.image | image_url: width: 400 }} 400w,
+                          {{ block.settings.image | image_url: width: 600 }} 600w,
+                          {{ block.settings.image | image_url: width: 800 }} 800w,
+                          {{ block.settings.image | image_url: width: 1200 }} 1200w"
+                          {{ block.settings.image | image_url: width: 1500 }} 1500w"
+                          {{ block.settings.image | image_url: width: 1800 }} 1800w"
+                          {{ block.settings.image | image_url: width: 2100 }} 2100w"
+                          {{ block.settings.image | image_url: width: 2400 }} 2400w"
+                          {{ block.settings.image | image_url: width: 2700 }} 2700w"
+                          {{ block.settings.image | image_url: width: 3000 }} 3000w"
+                          {{ block.settings.image | image_url: width: 3300 }} 3300w"
+                          {{ block.settings.image | image_url: width: 3600 }} 3600w"
+                          {{ block.settings.image | image_url: width: 3900 }} 3900w"
+                          {{ block.settings.image | image_url: width: 4200 }} 4200w"
+                  sizes="(max-width: 768px) 80vw, (max-width: 1024px) 60vw, 600px,(min-width: 1025px) 100px"
+                  alt="{{ block.settings.image_alt | default: block.settings.image.alt | default: 'Product image' }}"
+                  loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                  width="{{ block.settings.image.width }}"
+                  height="{{ block.settings.image.height }}"
+                >
+                <div class="img-carousel-showcase__zoom-indicator" aria-hidden="true">
+                  <svg class="img-carousel-showcase__zoom-icon" fill="none" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7"/>
+                    <path d="M21 21l-4.35-4.35"/>
+                    <path d="M11 8v6M8 11h6"/>
+                  </svg>
+                </div>
+              {% else %}
+                <div class="img-carousel-showcase__image" style="display: flex; align-items: center; justify-content: center; color: #999;">
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if section.blocks.size > 1 %}
+          <div class="img-carousel-showcase__controls">
+            <button 
+              class="img-carousel-showcase__arrow img-carousel-showcase__arrow--prev" 
+              id="prev-{{ section.id }}"
+              aria-label="Previous image"
+              type="button"
+            >
+              <svg class="img-carousel-showcase__arrow-icon" fill="none" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+            <button 
+              class="img-carousel-showcase__arrow img-carousel-showcase__arrow--next" 
+              id="next-{{ section.id }}"
+              aria-label="Next image"
+              type="button"
+            >
+              <svg class="img-carousel-showcase__arrow-icon" fill="none" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+        {% endif %}
+      </div>
+
+      {%- comment -%} Zoom Modal {%- endcomment -%}
+      <div 
+        class="img-carousel-showcase__zoom-modal" 
+        id="zoom-modal-{{ section.id }}"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Zoomed image view"
+      >
+        <div class="img-carousel-showcase__zoom-content">
+          <button 
+            class="img-carousel-showcase__zoom-close" 
+            id="zoom-close-{{ section.id }}"
+            aria-label="Close zoomed view"
+            type="button"
+          >
+            <svg class="img-carousel-showcase__zoom-close-icon" fill="none" viewBox="0 0 24 24">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+          <img 
+            class="img-carousel-showcase__zoom-image" 
+            id="zoom-img-{{ section.id }}"
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3C/svg%3E" 
+            alt=""
+            width="800"
+            height="600"
+          >
+        </div>
+      </div>
+
+      <script>
+        (function() {
+          class ImageCarouselShowcase {
+            constructor(element) {
+              this.element = element;
+              this.sectionId = element.dataset.sectionId;
+              this.carousel = element.querySelector(`#carousel-${this.sectionId}`);
+              this.slides = Array.from(element.querySelectorAll('.img-carousel-showcase__slide'));
+              this.prevBtn = element.querySelector(`#prev-${this.sectionId}`);
+              this.nextBtn = element.querySelector(`#next-${this.sectionId}`);
+              this.zoomModal = element.querySelector(`#zoom-modal-${this.sectionId}`);
+              this.zoomImg = element.querySelector(`#zoom-img-${this.sectionId}`);
+              this.zoomClose = element.querySelector(`#zoom-close-${this.sectionId}`);
+              this.currentIndex = 0;
+              this.isTransitioning = false;
+              
+              this.init();
+            }
+
+            init() {
+              if (this.slides.length === 0) return;
+
+              // Arrow controls
+              if (this.prevBtn) {
+                this.prevBtn.addEventListener('click', () => this.prev());
+              }
+              if (this.nextBtn) {
+                this.nextBtn.addEventListener('click', () => this.next());
+              }
+
+              // Keyboard navigation
+              this.carousel.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                  this.prev();
+                } else if (e.key === 'ArrowRight') {
+                  this.next();
+                }
+              });
+
+              // Slide click to zoom (only center slide)
+              this.slides.forEach((slide, index) => {
+                slide.addEventListener('click', () => {
+                  if (index === this.currentIndex) {
+                    this.openZoom();
+                  } else {
+                    this.goToSlide(index);
+                  }
+                });
+
+                // Keyboard support for slides
+                slide.addEventListener('keydown', (e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    if (index === this.currentIndex) {
+                      this.openZoom();
+                    } else {
+                      this.goToSlide(index);
+                    }
+                  }
+                });
+              });
+
+              // Zoom close
+              if (this.zoomClose) {
+                this.zoomClose.addEventListener('click', () => this.closeZoom());
+              }
+              if (this.zoomModal) {
+                this.zoomModal.addEventListener('click', (e) => {
+                  if (e.target === this.zoomModal) {
+                    this.closeZoom();
+                  }
+                });
+                // ESC key to close
+                document.addEventListener('keydown', (e) => {
+                  if (e.key === 'Escape' && this.zoomModal.classList.contains('img-carousel-showcase__zoom-modal--active')) {
+                    this.closeZoom();
+                  }
+                });
+              }
+
+              // Initial render
+              this.updateSlides();
+            }
+
+            prev() {
+              if (this.isTransitioning || this.slides.length === 0) return;
+              this.currentIndex = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
+              this.updateSlides();
+            }
+
+            next() {
+              if (this.isTransitioning || this.slides.length === 0) return;
+              this.currentIndex = (this.currentIndex + 1) % this.slides.length;
+              this.updateSlides();
+            }
+
+            goToSlide(index) {
+              if (this.isTransitioning || index === this.currentIndex) return;
+              this.currentIndex = index;
+              this.updateSlides();
+            }
+
+            updateSlides() {
+              this.isTransitioning = true;
+              const totalSlides = this.slides.length;
+
+              this.slides.forEach((slide, index) => {
+                // Remove all state classes
+                slide.classList.remove(
+                  'img-carousel-showcase__slide--center',
+                  'img-carousel-showcase__slide--prev',
+                  'img-carousel-showcase__slide--next',
+                  'img-carousel-showcase__slide--hidden'
+                );
+
+                if (index === this.currentIndex) {
+                  // Center slide - fully visible
+                  slide.classList.add('img-carousel-showcase__slide--center');
+                  slide.setAttribute('aria-current', 'true');
+                } else {
+                  slide.removeAttribute('aria-current');
+                  
+                  // Calculate prev and next positions
+                  const prevIndex = (this.currentIndex - 1 + totalSlides) % totalSlides;
+                  const nextIndex = (this.currentIndex + 1) % totalSlides;
+
+                  if (index === prevIndex) {
+                    slide.classList.add('img-carousel-showcase__slide--prev');
+                  } else if (index === nextIndex) {
+                    slide.classList.add('img-carousel-showcase__slide--next');
+                  } else {
+                    slide.classList.add('img-carousel-showcase__slide--hidden');
+                  }
+                }
+              });
+
+              // Shorter transition time for smoother feel
+              setTimeout(() => {
+                this.isTransitioning = false;
+              }, 300);
+
+              // Update aria-live region for screen readers
+              this.announceSlide();
+            }
+
+            announceSlide() {
+              const currentSlide = this.currentIndex + 1;
+              const totalSlides = this.slides.length;
+              const message = `Showing image ${currentSlide} of ${totalSlides}`;
+              
+              // Create or update aria-live region
+              let liveRegion = this.element.querySelector('[aria-live]');
+              if (!liveRegion) {
+                liveRegion = document.createElement('div');
+                liveRegion.setAttribute('aria-live', 'polite');
+                liveRegion.setAttribute('aria-atomic', 'true');
+                liveRegion.className = 'sr-only';
+                liveRegion.style.cssText = 'position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;';
+                this.element.appendChild(liveRegion);
+              }
+              liveRegion.textContent = message;
+            }
+
+            openZoom() {
+              const currentSlide = this.slides[this.currentIndex];
+              const img = currentSlide.querySelector('img');
+              if (!img || !this.zoomModal || !this.zoomImg) return;
+
+              // Use high-res version for zoom
+              const highResSrc = img.src.replace(/width=\d+/, 'width=2000');
+              this.zoomImg.src = highResSrc;
+              this.zoomImg.alt = img.alt;
+
+              this.zoomModal.classList.add('img-carousel-showcase__zoom-modal--active');
+              document.body.style.overflow = 'hidden';
+
+              // Focus close button for accessibility
+              setTimeout(() => {
+                this.zoomClose?.focus();
+              }, 100);
+            }
+
+            closeZoom() {
+              if (!this.zoomModal) return;
+              this.zoomModal.classList.remove('img-carousel-showcase__zoom-modal--active');
+              document.body.style.overflow = '';
+
+              // Return focus to the slide
+              this.slides[this.currentIndex]?.focus();
+            }
+          }
+
+          // Initialize the carousel
+          const section = document.querySelector('.img-carousel-showcase[data-section-id="{{ section.id }}"]');
+          if (section) {
+            new ImageCarouselShowcase(section);
+          }
+        })();
+      </script>
+    {% else %}
+      <div style="text-align: center; padding: 40px; color: #999;">
+        <p>Add image blocks to display the carousel</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image Carousel Showcase",
+  "tag": "section",
+  "class": "section-image-carousel-showcase",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Skin Feel Paint"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Designed with a triple-layer paint coating, delivering a premium skin-like feel that ensures absolute luxury and premium edge."
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Color",
+      "default": "#666666"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image Alt Text",
+          "info": "Describe the image for accessibility"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image Carousel Showcase",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
