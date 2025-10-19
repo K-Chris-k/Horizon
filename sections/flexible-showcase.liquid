@@ -1,18 +1,18 @@
-{{ 'base.css' | asset_url | stylesheet_tag }}
+
 
 <style>
-  .flexible-showcase {
+  #shopify-section-{{ section.id }} .flexible-showcase {
     padding: var(--section-padding-block, 4rem) var(--section-padding-inline, 1.5rem);
     max-width: 1400px;
     margin: 0 auto;
   }
 
-  .flexible-showcase__header {
+  #shopify-section-{{ section.id }} .flexible-showcase__header {
     text-align: center;
     margin-bottom: 3rem;
   }
 
-  .flexible-showcase__title {
+  #shopify-section-{{ section.id }} .flexible-showcase__title {
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 600;
     line-height: 1.2;
@@ -20,7 +20,7 @@
     color: var(--color-foreground, #000);
   }
 
-  .flexible-showcase__subtitle {
+  #shopify-section-{{ section.id }} .flexible-showcase__subtitle {
     font-size: clamp(0.875rem, 2vw, 1rem);
     line-height: 1.6;
     color: var(--color-foreground-secondary, #666);
@@ -28,12 +28,12 @@
     margin: 0 auto;
   }
 
-  .flexible-showcase__content {
+  #shopify-section-{{ section.id }} .flexible-showcase__content {
     position: relative;
   }
 
   /* Desktop Layout */
-  .flexible-showcase__images-wrapper {
+  #shopify-section-{{ section.id }} .flexible-showcase__images-wrapper {
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 1rem;
     overflow: hidden;
@@ -41,27 +41,25 @@
   }
 
   @media screen and (min-width: 750px) {
-    .flexible-showcase__images-wrapper {
+    #shopify-section-{{ section.id }} .flexible-showcase__images-wrapper {
       display: block;
     }
   }
 
-
-
-  .flexible-showcase__image-item {
+  #shopify-section-{{ section.id }} .flexible-showcase__image-item {
     position: relative;
     aspect-ratio: 16 / 9;
     overflow: hidden;
   }
 
-  .flexible-showcase__image-item img {
+  #shopify-section-{{ section.id }} .flexible-showcase__image-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
   }
 
-  .flexible-showcase__image-description {
+  #shopify-section-{{ section.id }} .flexible-showcase__image-description {
     position: absolute;
     top: 34%;
     left: 44%;
@@ -77,34 +75,34 @@
   }
 
   /* Mobile Layout */
-  .flexible-showcase__mobile-wrapper {
+  #shopify-section-{{ section.id }} .flexible-showcase__mobile-wrapper {
     display: block;
   }
 
   @media screen and (min-width: 750px) {
-    .flexible-showcase__mobile-wrapper {
+    #shopify-section-{{ section.id }} .flexible-showcase__mobile-wrapper {
       display: none;
     }
   }
 
-  .flexible-showcase__mobile-image {
+  #shopify-section-{{ section.id }} .flexible-showcase__mobile-image {
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 0.75rem;
     overflow: hidden;
     margin-bottom: 1rem;
   }
 
-  .flexible-showcase__mobile-image:last-of-type {
+  #shopify-section-{{ section.id }} .flexible-showcase__mobile-image:last-of-type {
     margin-bottom: 1.5rem;
   }
 
-  .flexible-showcase__mobile-image img {
+  #shopify-section-{{ section.id }} .flexible-showcase__mobile-image img {
     width: 100%;
     height: auto;
     display: block;
   }
 
-  .flexible-showcase__mobile-description {
+  #shopify-section-{{ section.id }} .flexible-showcase__mobile-description {
     text-align: center;
     font-size: 0.875rem;
     line-height: 1.6;
@@ -113,40 +111,40 @@
   }
 
   /* Annotations for desktop images */
-  .flexible-showcase__image-item--right {
+  #shopify-section-{{ section.id }} .flexible-showcase__image-item--right {
     position: relative;
   }
 
-  .flexible-showcase__annotation {
+  #shopify-section-{{ section.id }} .flexible-showcase__annotation {
     position: absolute;
     font-size: 0.75rem;
     color: #000;
     font-weight: 500;
   }
 
-  .flexible-showcase__annotation--boost {
+  #shopify-section-{{ section.id }} .flexible-showcase__annotation--boost {
     top: 15%;
     right: 5%;
   }
 
-  .flexible-showcase__annotation--menu {
+  #shopify-section-{{ section.id }} .flexible-showcase__annotation--menu {
     bottom: 30%;
     right: 5%;
   }
 
-  .flexible-showcase__annotation-line {
+  #shopify-section-{{ section.id }} .flexible-showcase__annotation-line {
     width: 40px;
     height: 1px;
     background-color: #000;
     position: absolute;
   }
 
-  .flexible-showcase__annotation--boost .flexible-showcase__annotation-line {
+  #shopify-section-{{ section.id }} .flexible-showcase__annotation--boost .flexible-showcase__annotation-line {
     top: 50%;
     right: -45px;
   }
 
-  .flexible-showcase__annotation--menu .flexible-showcase__annotation-line {
+  #shopify-section-{{ section.id }} .flexible-showcase__annotation--menu .flexible-showcase__annotation-line {
     top: 50%;
     right: -45px;
   }
