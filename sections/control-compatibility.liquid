@@ -13,21 +13,35 @@
   }
 
   #shopify-section-{{ section.id }} .control-compatibility__title {
-    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    font-size: {{ section.settings.title_font_size_desktop | default: '56px' }};
     font-weight: 400;
-    line-height: 1.2;
+    line-height: {{ section.settings.title_line_height_desktop | default: '1.2' }};
     margin: 0;
     color: var(--color-foreground, #1a1a1a);
     letter-spacing: -0.02em;
   }
 
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .control-compatibility__title {
+      font-size: {{ section.settings.title_font_size_mobile | default: '32px' }};
+      line-height: {{ section.settings.title_line_height_mobile | default: '1.3' }};
+    }
+  }
+
   {% if section.settings.subtitle != blank %}
   #shopify-section-{{ section.id }} .control-compatibility__subtitle {
-    font-size: clamp(0.875rem, 1.8vw, 1.125rem);
-    line-height: 1.6;
+    font-size: {{ section.settings.subtitle_font_size_desktop | default: '18px' }};
+    line-height: {{ section.settings.subtitle_line_height_desktop | default: '1.6' }};
     color: var(--color-foreground-secondary, #666);
     max-width: 700px;
     margin: 1rem auto 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .control-compatibility__subtitle {
+      font-size: {{ section.settings.subtitle_font_size_mobile | default: '16px' }};
+      line-height: {{ section.settings.subtitle_line_height_mobile | default: '1.5' }};
+    }
   }
   {% endif %}
 
@@ -103,18 +117,32 @@
   }
 
   #shopify-section-{{ section.id }} .control-compatibility__item-title {
-    font-size: clamp(1.25rem, 2vw, 1.75rem);
+    font-size: {{ section.settings.content_title_font_size_desktop | default: '28px' }};
     font-weight: 600;
-    line-height: 1.3;
+    line-height: {{ section.settings.content_title_line_height_desktop | default: '1.3' }};
     margin: 0 0 1rem 0;
     color: var(--color-foreground, #1a1a1a);
   }
 
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .control-compatibility__item-title {
+      font-size: {{ section.settings.content_title_font_size_mobile | default: '24px' }};
+      line-height: {{ section.settings.content_title_line_height_mobile | default: '1.4' }};
+    }
+  }
+
   #shopify-section-{{ section.id }} .control-compatibility__description {
-    font-size: clamp(0.875rem, 1.5vw, 1rem);
-    line-height: 1.7;
+    font-size: {{ section.settings.content_description_font_size_desktop | default: '16px' }};
+    line-height: {{ section.settings.content_description_line_height_desktop | default: '1.7' }};
     color: var(--color-foreground-secondary, #4a4a4a);
     margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .control-compatibility__description {
+      font-size: {{ section.settings.content_description_font_size_mobile | default: '14px' }};
+      line-height: {{ section.settings.content_description_line_height_mobile | default: '1.6' }};
+    }
   }
 
   /* Placeholder for empty image */
@@ -252,6 +280,138 @@
       "id": "subtitle",
       "label": "Subtitle",
       "info": "Optional subtitle text below the main title"
+    },
+    {
+      "type": "header",
+      "content": "Typography Settings"
+    },
+    {
+      "type": "header",
+      "content": "Main Title Typography"
+    },
+    {
+      "type": "text",
+      "id": "title_font_size_desktop",
+      "label": "Title Font Size (Desktop)",
+      "info": "Font size for desktop in pixels (e.g., '56px' or '3.5rem')",
+      "default": "56px"
+    },
+    {
+      "type": "text",
+      "id": "title_line_height_desktop",
+      "label": "Title Line Height (Desktop)",
+      "info": "CSS line-height value for desktop (e.g., '1.2' or '1.5')",
+      "default": "1.2"
+    },
+    {
+      "type": "text",
+      "id": "title_font_size_mobile",
+      "label": "Title Font Size (Mobile)",
+      "info": "Font size for mobile devices in pixels (e.g., '32px' or '2rem')",
+      "default": "32px"
+    },
+    {
+      "type": "text",
+      "id": "title_line_height_mobile",
+      "label": "Title Line Height (Mobile)",
+      "info": "CSS line-height value for mobile devices (e.g., '1.3' or '1.4')",
+      "default": "1.3"
+    },
+    {
+      "type": "header",
+      "content": "Subtitle Typography"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_font_size_desktop",
+      "label": "Subtitle Font Size (Desktop)",
+      "info": "Font size for desktop subtitle in pixels (e.g., '18px' or '1.125rem')",
+      "default": "18px"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_line_height_desktop",
+      "label": "Subtitle Line Height (Desktop)",
+      "info": "CSS line-height value for desktop subtitle (e.g., '1.6' or '1.5')",
+      "default": "1.6"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_font_size_mobile",
+      "label": "Subtitle Font Size (Mobile)",
+      "info": "Font size for mobile subtitle in pixels (e.g., '16px' or '1rem')",
+      "default": "16px"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_line_height_mobile",
+      "label": "Subtitle Line Height (Mobile)",
+      "info": "CSS line-height value for mobile subtitle (e.g., '1.5' or '1.4')",
+      "default": "1.5"
+    },
+    {
+      "type": "header",
+      "content": "Content Item Title Typography"
+    },
+    {
+      "type": "text",
+      "id": "content_title_font_size_desktop",
+      "label": "Content Title Font Size (Desktop)",
+      "info": "Font size for desktop content item titles in pixels (e.g., '28px' or '1.75rem')",
+      "default": "28px"
+    },
+    {
+      "type": "text",
+      "id": "content_title_line_height_desktop",
+      "label": "Content Title Line Height (Desktop)",
+      "info": "CSS line-height value for desktop content item titles (e.g., '1.3' or '1.4')",
+      "default": "1.3"
+    },
+    {
+      "type": "text",
+      "id": "content_title_font_size_mobile",
+      "label": "Content Title Font Size (Mobile)",
+      "info": "Font size for mobile content item titles in pixels (e.g., '24px' or '1.5rem')",
+      "default": "24px"
+    },
+    {
+      "type": "text",
+      "id": "content_title_line_height_mobile",
+      "label": "Content Title Line Height (Mobile)",
+      "info": "CSS line-height value for mobile content item titles (e.g., '1.4' or '1.5')",
+      "default": "1.4"
+    },
+    {
+      "type": "header",
+      "content": "Content Description Typography"
+    },
+    {
+      "type": "text",
+      "id": "content_description_font_size_desktop",
+      "label": "Content Description Font Size (Desktop)",
+      "info": "Font size for desktop content descriptions in pixels (e.g., '16px' or '1rem')",
+      "default": "16px"
+    },
+    {
+      "type": "text",
+      "id": "content_description_line_height_desktop",
+      "label": "Content Description Line Height (Desktop)",
+      "info": "CSS line-height value for desktop content descriptions (e.g., '1.7' or '1.6')",
+      "default": "1.7"
+    },
+    {
+      "type": "text",
+      "id": "content_description_font_size_mobile",
+      "label": "Content Description Font Size (Mobile)",
+      "info": "Font size for mobile content descriptions in pixels (e.g., '14px' or '0.875rem')",
+      "default": "14px"
+    },
+    {
+      "type": "text",
+      "id": "content_description_line_height_mobile",
+      "label": "Content Description Line Height (Mobile)",
+      "info": "CSS line-height value for mobile content descriptions (e.g., '1.6' or '1.5')",
+      "default": "1.6"
     },
     {
       "type": "header",

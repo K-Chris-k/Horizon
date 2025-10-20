@@ -1,6 +1,26 @@
 
 
 <style>
+  :root {
+    --title-font-size-desktop: {{ section.settings.title_font_size_desktop }}px;
+    --title-line-height-desktop: {{ section.settings.title_line_height_desktop }};
+    --title-font-size-mobile: {{ section.settings.title_font_size_mobile }}px;
+    --title-line-height-mobile: {{ section.settings.title_line_height_mobile }};
+    
+    --subtitle-font-size-desktop: {{ section.settings.subtitle_font_size_desktop }}px;
+    --subtitle-line-height-desktop: {{ section.settings.subtitle_line_height_desktop }};
+    --subtitle-font-size-mobile: {{ section.settings.subtitle_font_size_mobile }}px;
+    --subtitle-line-height-mobile: {{ section.settings.subtitle_line_height_mobile }};
+    
+    --description-font-size-desktop: {{ section.settings.description_font_size_desktop }}px;
+    --description-line-height-desktop: {{ section.settings.description_line_height_desktop }};
+    --description-font-size-mobile: {{ section.settings.description_font_size_mobile }}px;
+    --description-line-height-mobile: {{ section.settings.description_line_height_mobile }};
+    
+    --annotation-font-size-desktop: {{ section.settings.annotation_font_size_desktop }}px;
+    --annotation-font-size-mobile: {{ section.settings.annotation_font_size_mobile }}px;
+  }
+
   #shopify-section-{{ section.id }} .flexible-showcase {
     padding: var(--section-padding-block, 4rem) var(--section-padding-inline, 1.5rem);
     max-width: 1400px;
@@ -15,14 +35,23 @@
   #shopify-section-{{ section.id }} .flexible-showcase__title {
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 600;
-    line-height: 1.2;
+    line-height: var(--title-line-height-mobile, 1.2);
     margin: 0 0 1rem 0;
     color: var(--color-foreground, #000);
+  }
+  
+  @media screen and (min-width: 750px) {
+    .flexible-showcase__title {
+      font-size: var(--title-font-size-desktop, 3.5rem);
+      line-height: var(--title-line-height-desktop, 1.2);
+    }
   }
 
   #shopify-section-{{ section.id }} .flexible-showcase__subtitle {
     font-size: clamp(0.875rem, 2vw, 1rem);
     line-height: 1.6;
+    font-size: var(--subtitle-font-size-mobile, 0.875rem);
+    line-height: var(--subtitle-line-height-mobile, 1.6);
     color: var(--color-foreground-secondary, #666);
     max-width: 600px;
     margin: 0 auto;
@@ -64,14 +93,13 @@
     top: 34%;
     left: 44%;
     transform: translate(-50%, -50%);
-    max-width: 80%;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     max-width: 370px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     color: #FFF;
     text-align: right;
-    font-size: 16px;
+    font-size: var(--description-font-size-desktop, 16px);
     font-weight: 400;
-    line-height: 21px;
+    line-height: var(--description-line-height-desktop, 1.3);
   }
 
   /* Mobile Layout */
@@ -104,8 +132,8 @@
 
   #shopify-section-{{ section.id }} .flexible-showcase__mobile-description {
     text-align: center;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    font-size: var(--description-font-size-mobile, 0.875rem);
+    line-height: var(--description-line-height-mobile, 1.6);
     color: var(--color-foreground-secondary, #666);
     padding: 0 1rem;
   }
@@ -117,7 +145,7 @@
 
   #shopify-section-{{ section.id }} .flexible-showcase__annotation {
     position: absolute;
-    font-size: 0.75rem;
+    font-size: var(--annotation-font-size-mobile, 0.75rem);
     color: #000;
     font-weight: 500;
   }
@@ -284,6 +312,162 @@
       "id": "mobile_description",
       "label": "Mobile Description",
       "info": "This text will appear below the images on mobile"
+    },
+    {
+      "type": "header",
+      "content": "Typography - Desktop"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_desktop",
+      "min": 16,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "label": "Title Font Size (Desktop)",
+      "default": 56,
+      "info": "Set the font size for the title on desktop devices"
+    },
+    {
+      "type": "range",
+      "id": "title_line_height_desktop",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Title Line Height (Desktop)",
+      "default": 1.2,
+      "info": "Set the line height for the title on desktop devices"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size_desktop",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Desktop)",
+      "default": 16,
+      "info": "Set the font size for the subtitle on desktop devices"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_line_height_desktop",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Subtitle Line Height (Desktop)",
+      "default": 1.6,
+      "info": "Set the line height for the subtitle on desktop devices"
+    },
+    {
+      "type": "range",
+      "id": "description_font_size_desktop",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Description Font Size (Desktop)",
+      "default": 16,
+      "info": "Set the font size for the description text on desktop devices"
+    },
+    {
+      "type": "range",
+      "id": "description_line_height_desktop",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Description Line Height (Desktop)",
+      "default": 1.3,
+      "info": "Set the line height for the description text on desktop devices"
+    },
+    {
+      "type": "range",
+      "id": "annotation_font_size_desktop",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Annotation Font Size (Desktop)",
+      "default": 12,
+      "info": "Set the font size for annotations on desktop devices"
+    },
+    {
+      "type": "header",
+      "content": "Typography - Mobile"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_mobile",
+      "min": 16,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Title Font Size (Mobile)",
+      "default": 32,
+      "info": "Set the font size for the title on mobile devices"
+    },
+    {
+      "type": "range",
+      "id": "title_line_height_mobile",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Title Line Height (Mobile)",
+      "default": 1.2,
+      "info": "Set the line height for the title on mobile devices"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size_mobile",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size (Mobile)",
+      "default": 14,
+      "info": "Set the font size for the subtitle on mobile devices"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_line_height_mobile",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Subtitle Line Height (Mobile)",
+      "default": 1.6,
+      "info": "Set the line height for the subtitle on mobile devices"
+    },
+    {
+      "type": "range",
+      "id": "description_font_size_mobile",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Description Font Size (Mobile)",
+      "default": 14,
+      "info": "Set the font size for the description text on mobile devices"
+    },
+    {
+      "type": "range",
+      "id": "description_line_height_mobile",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Description Line Height (Mobile)",
+      "default": 1.6,
+      "info": "Set the line height for the description text on mobile devices"
+    },
+    {
+      "type": "range",
+      "id": "annotation_font_size_mobile",
+      "min": 8,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Annotation Font Size (Mobile)",
+      "default": 12,
+      "info": "Set the font size for annotations on mobile devices"
     },
     {
       "type": "header",
