@@ -30,18 +30,18 @@
 }
 
 #shopify-section-{{ section.id }} .feature-accordion__section-title {
-  font-size: 2.5rem;
+  font-size: {{ section.settings.desktop_title_font_size }}px;
   font-weight: 700;
   margin: 0 0 1rem 0;
   color: #1a1a1a;
-  line-height: 1.2;
+  line-height: {{ section.settings.desktop_title_line_height }};
 }
 
 #shopify-section-{{ section.id }} .feature-accordion__section-subtitle {
-  font-size: 1.125rem;
+  font-size: {{ section.settings.desktop_subtitle_font_size }}px;
   color: #666;
   margin: 0;
-  line-height: 1.6;
+  line-height: {{ section.settings.desktop_subtitle_line_height }};
 }
 
 #shopify-section-{{ section.id }} .feature-accordion__items {
@@ -67,11 +67,12 @@
 }
 
 #shopify-section-{{ section.id }} .feature-accordion__item-title {
-  font-size: 1.25rem;
+  font-size: {{ section.settings.desktop_tab_title_font_size }}px;
   font-weight: 600;
   color: #000;
   margin: 0;
   transition: color 0.3s ease;
+  line-height: {{ section.settings.desktop_tab_title_line_height }};
 }
 
 
@@ -110,8 +111,8 @@
 
 #shopify-section-{{ section.id }} .feature-accordion__item-description {
   color: #4a4a4a;
-  line-height: 1.6;
-  font-size: 0.95rem;
+  line-height: {{ section.settings.desktop_tab_content_line_height }};
+  font-size: {{ section.settings.desktop_tab_content_font_size }}px;
   margin: 0;
 }
 
@@ -175,14 +176,6 @@
   #shopify-section-{{ section.id }} .feature-accordion__content {
     gap: 2.5rem;
   }
-
-  #shopify-section-{{ section.id }} .feature-accordion__section-title {
-    font-size: 2rem;
-  }
-
-  #shopify-section-{{ section.id }} .feature-accordion__item-title {
-    font-size: 1.125rem;
-  }
 }
 
 /* Mobile Layout */
@@ -227,18 +220,18 @@
   }
 
   #shopify-section-{{ section.id }} .feature-accordion__mobile-title {
-    font-size: 1.75rem;
+    font-size: {{ section.settings.mobile_title_font_size }}px;
     font-weight: 700;
     margin: 0 0 0.75rem 0;
     color: #1a1a1a;
-    line-height: 1.3;
+    line-height: {{ section.settings.mobile_title_line_height }};
   }
 
   #shopify-section-{{ section.id }} .feature-accordion__mobile-subtitle {
-    font-size: 1rem;
+    font-size: {{ section.settings.mobile_subtitle_font_size }}px;
     color: #666;
     margin: 0;
-    line-height: 1.5;
+    line-height: {{ section.settings.mobile_subtitle_line_height }};
   }
 
   #shopify-section-{{ section.id }} .feature-accordion__item {
@@ -246,11 +239,13 @@
   }
 
   #shopify-section-{{ section.id }} .feature-accordion__item-title {
-    font-size: 1.1rem;
+    font-size: {{ section.settings.mobile_tab_title_font_size }}px;
+    line-height: {{ section.settings.mobile_tab_title_line_height }};
   }
 
   #shopify-section-{{ section.id }} .feature-accordion__item-description {
-    font-size: 0.9rem;
+    font-size: {{ section.settings.mobile_tab_content_font_size }}px;
+    line-height: {{ section.settings.mobile_tab_content_line_height }};
   }
 }
 </style>
@@ -401,6 +396,174 @@
       "id": "background_color",
       "label": "Background Color",
       "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Typography"
+    },
+    {
+      "type": "range",
+      "id": "desktop_title_font_size",
+      "label": "Desktop Title Font Size",
+      "min": 16,
+      "max": 60,
+      "step": 1,
+      "default": 40,
+      "info": "Font size in pixels for the section title on desktop"
+    },
+    {
+      "type": "range",
+      "id": "desktop_title_line_height",
+      "label": "Desktop Title Line Height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.2,
+      "info": "Line height for the section title on desktop"
+    },
+    {
+      "type": "range",
+      "id": "desktop_subtitle_font_size",
+      "label": "Desktop Subtitle Font Size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "default": 18,
+      "info": "Font size in pixels for the section subtitle on desktop"
+    },
+    {
+      "type": "range",
+      "id": "desktop_subtitle_line_height",
+      "label": "Desktop Subtitle Line Height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6,
+      "info": "Line height for the section subtitle on desktop"
+    },
+    {
+      "type": "range",
+      "id": "desktop_tab_title_font_size",
+      "label": "Desktop Tab Title Font Size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "default": 20,
+      "info": "Font size in pixels for accordion tab titles on desktop"
+    },
+    {
+      "type": "range",
+      "id": "desktop_tab_title_line_height",
+      "label": "Desktop Tab Title Line Height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.4,
+      "info": "Line height for accordion tab titles on desktop"
+    },
+    {
+      "type": "range",
+      "id": "desktop_tab_content_font_size",
+      "label": "Desktop Tab Content Font Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 15,
+      "info": "Font size in pixels for accordion tab content on desktop"
+    },
+    {
+      "type": "range",
+      "id": "desktop_tab_content_line_height",
+      "label": "Desktop Tab Content Line Height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6,
+      "info": "Line height for accordion tab content on desktop"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Typography"
+    },
+    {
+      "type": "range",
+      "id": "mobile_title_font_size",
+      "label": "Mobile Title Font Size",
+      "min": 14,
+      "max": 42,
+      "step": 1,
+      "default": 28,
+      "info": "Font size in pixels for the section title on mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_title_line_height",
+      "label": "Mobile Title Line Height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.3,
+      "info": "Line height for the section title on mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_subtitle_font_size",
+      "label": "Mobile Subtitle Font Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 16,
+      "info": "Font size in pixels for the section subtitle on mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_subtitle_line_height",
+      "label": "Mobile Subtitle Line Height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5,
+      "info": "Line height for the section subtitle on mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_tab_title_font_size",
+      "label": "Mobile Tab Title Font Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "info": "Font size in pixels for accordion tab titles on mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_tab_title_line_height",
+      "label": "Mobile Tab Title Line Height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.4,
+      "info": "Line height for accordion tab titles on mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_tab_content_font_size",
+      "label": "Mobile Tab Content Font Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "info": "Font size in pixels for accordion tab content on mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_tab_content_line_height",
+      "label": "Mobile Tab Content Line Height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5,
+      "info": "Line height for accordion tab content on mobile"
     }
   ],
   "blocks": [

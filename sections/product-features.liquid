@@ -100,18 +100,18 @@
 }
 
 #shopify-section-{{ section.id }} .product-features__title {
-  font-size: 1.25rem;
+  font-size: {{ section.settings.title_font_size_desktop }}px;
   font-weight: 600;
   margin: 0;
   color: #1a1a1a;
-  line-height: 1.3;
+  line-height: {{ section.settings.title_line_height_desktop }};
 }
 
 #shopify-section-{{ section.id }} .product-features__description {
   color: #4a4a4a;
-  line-height: 1.6;
+  line-height: {{ section.settings.description_line_height_desktop }};
   margin-bottom: 1rem;
-  font-size: 0.95rem;
+  font-size: {{ section.settings.description_font_size_desktop }}px;
 }
 
 #shopify-section-{{ section.id }} .product-features__list {
@@ -125,8 +125,8 @@
   align-items: flex-start;
   margin-bottom: 0.75rem;
   color: #4a4a4a;
-  line-height: 1.5;
-  font-size: 0.9rem;
+  line-height: {{ section.settings.list_line_height_desktop }};
+  font-size: {{ section.settings.list_font_size_desktop }}px;
 }
 
 #shopify-section-{{ section.id }} .product-features__list-item::before {
@@ -150,10 +150,6 @@
   #shopify-section-{{ section.id }} .product-features__item {
     gap: 2.5rem;
     margin-bottom: 3rem;
-  }
-
-  #shopify-section-{{ section.id }} .product-features__title {
-    font-size: 1.15rem;
   }
 
   #shopify-section-{{ section.id }} .product-features__icon {
@@ -198,16 +194,19 @@
   }
 
   #shopify-section-{{ section.id }} .product-features__title {
-    font-size: 1.1rem;
+    font-size: {{ section.settings.title_font_size_mobile }}px;
+    line-height: {{ section.settings.title_line_height_mobile }};
   }
 
   #shopify-section-{{ section.id }} .product-features__description {
-    font-size: 0.9rem;
+    font-size: {{ section.settings.description_font_size_mobile }}px;
+    line-height: {{ section.settings.description_line_height_mobile }};
     margin-bottom: 0.75rem;
   }
 
   #shopify-section-{{ section.id }} .product-features__list-item {
-    font-size: 0.85rem;
+    font-size: {{ section.settings.list_font_size_mobile }}px;
+    line-height: {{ section.settings.list_line_height_mobile }};
     margin-bottom: 0.5rem;
   }
 }
@@ -221,14 +220,6 @@
   #shopify-section-{{ section.id }} .product-features__images {
     flex-direction: column;
     gap: 0.75rem;
-  }
-
-  #shopify-section-{{ section.id }} .product-features__title {
-    font-size: 1rem;
-  }
-
-  #shopify-section-{{ section.id }} .product-features__description {
-    font-size: 0.875rem;
   }
 }
 </style>
@@ -315,6 +306,140 @@
       "id": "background_color",
       "label": "Background Color",
       "default": "#f5f5f5"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_desktop",
+      "label": "Title Font Size",
+      "min": 12,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "info": "Font size for feature titles on desktop, default 20px"
+    },
+    {
+      "type": "range",
+      "id": "title_line_height_desktop",
+      "label": "Title Line Height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.3,
+      "info": "Line height for feature titles on desktop, default 1.3"
+    },
+    {
+      "type": "range",
+      "id": "description_font_size_desktop",
+      "label": "Description Font Size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 15,
+      "info": "Font size for feature descriptions on desktop, default 15px"
+    },
+    {
+      "type": "range",
+      "id": "description_line_height_desktop",
+      "label": "Description Line Height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.6,
+      "info": "Line height for feature descriptions on desktop, default 1.6"
+    },
+    {
+      "type": "range",
+      "id": "list_font_size_desktop",
+      "label": "List Items Font Size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 14,
+      "info": "Font size for list items on desktop, default 14px"
+    },
+    {
+      "type": "range",
+      "id": "list_line_height_desktop",
+      "label": "List Items Line Height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.5,
+      "info": "Line height for list items on desktop, default 1.5"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_mobile",
+      "label": "Title Font Size",
+      "min": 12,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 18,
+      "info": "Font size for feature titles on mobile (≤749px), default 18px"
+    },
+    {
+      "type": "range",
+      "id": "title_line_height_mobile",
+      "label": "Title Line Height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.3,
+      "info": "Line height for feature titles on mobile, default 1.3"
+    },
+    {
+      "type": "range",
+      "id": "description_font_size_mobile",
+      "label": "Description Font Size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 14,
+      "info": "Font size for feature descriptions on mobile (≤749px), default 14px"
+    },
+    {
+      "type": "range",
+      "id": "description_line_height_mobile",
+      "label": "Description Line Height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.6,
+      "info": "Line height for feature descriptions on mobile, default 1.6"
+    },
+    {
+      "type": "range",
+      "id": "list_font_size_mobile",
+      "label": "List Items Font Size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 14,
+      "info": "Font size for list items on mobile (≤749px), default 14px"
+    },
+    {
+      "type": "range",
+      "id": "list_line_height_mobile",
+      "label": "List Items Line Height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.5,
+      "info": "Line height for list items on mobile, default 1.5"
     }
   ],
   "blocks": [

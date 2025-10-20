@@ -1,5 +1,5 @@
 <style>
-  .img-carousel-showcase {
+  #shopify-section-{{ section.id }} .img-carousel-showcase {
     padding: 60px 20px;
     background-color: {{ section.settings.background_color }};
     overflow: hidden;
@@ -7,34 +7,34 @@
 
 
 
-  .img-carousel-showcase__header {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__header {
     text-align: center;
     margin-bottom: 48px;
   }
 
-  .img-carousel-showcase__title {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  #shopify-section-{{ section.id }} .img-carousel-showcase__title {
+    font-size: {{ section.settings.title_font_size_desktop }}px;
     font-weight: 600;
     color: {{ section.settings.title_color }};
     margin: 0 0 12px 0;
-    line-height: 1.2;
+    line-height: {{ section.settings.title_line_height_desktop }};
     letter-spacing: -0.02em;
   }
 
-  .img-carousel-showcase__subtitle {
-    font-size: clamp(0.875rem, 2vw, 1rem);
+  #shopify-section-{{ section.id }} .img-carousel-showcase__subtitle {
+    font-size: {{ section.settings.subtitle_font_size_desktop }}px;
     color: {{ section.settings.subtitle_color }};
     max-width: 600px;
     margin: 0 auto;
-    line-height: 1.6;
+    line-height: {{ section.settings.subtitle_line_height_desktop }};
   }
 
-  .img-carousel-showcase__carousel-wrapper {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__carousel-wrapper {
     position: relative;
 
   }
 
-  .img-carousel-showcase__carousel {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__carousel {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -44,7 +44,7 @@
     min-height: 400px;
   }
 
-  .img-carousel-showcase__slide {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__slide {
     flex-shrink: 0;
     transition: opacity 0.3s ease;
     cursor: pointer;
@@ -52,31 +52,30 @@
     overflow: hidden;
   }
 
-  .img-carousel-showcase__slide--hidden {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__slide--hidden {
     display: none;
   }
 
 
-  /* .img-carousel-showcase__slide--prev .img-carousel-showcase__image {
+  /* #shopify-section-{{ section.id }} .img-carousel-showcase__slide--prev .img-carousel-showcase__image {
     width: 200%;
     transform: translateX(-50%);
     border-radius: 0 12px 12px 0;
   }
 
-  .img-carousel-showcase__slide--next .img-carousel-showcase__image {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__slide--next .img-carousel-showcase__image {
     width: 200%;
     transform: translateX(0);
     border-radius: 12px 0 0 12px;
   } */
 
-  .img-carousel-showcase__slide--center {
-
+  #shopify-section-{{ section.id }} .img-carousel-showcase__slide--center {
     max-width: 700px;
     opacity: 1;
     z-index: 2;
   }
 
-  .img-carousel-showcase__image {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__image {
     width: 100%;
     height: auto;
     display: block;
@@ -85,7 +84,7 @@
     aspect-ratio: 4/3;
   }
 
-  .img-carousel-showcase__zoom-indicator {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-indicator {
     position: absolute;
     bottom: 16px;
     right: 16px;
@@ -103,23 +102,23 @@
     pointer-events: none;
   }
 
-  .img-carousel-showcase__slide--center:hover .img-carousel-showcase__zoom-indicator {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__slide--center:hover .img-carousel-showcase__zoom-indicator {
     opacity: 1;
   }
 
-  .img-carousel-showcase__slide--prev .img-carousel-showcase__zoom-indicator,
-  .img-carousel-showcase__slide--next .img-carousel-showcase__zoom-indicator {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__slide--prev .img-carousel-showcase__zoom-indicator,
+  #shopify-section-{{ section.id }} .img-carousel-showcase__slide--next .img-carousel-showcase__zoom-indicator {
     display: none;
   }
 
-  .img-carousel-showcase__zoom-icon {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-icon {
     width: 20px;
     height: 20px;
     stroke: #333;
     stroke-width: 2;
   }
 
-  .img-carousel-showcase__controls {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__controls {
     position: absolute;
     top: 50%;
     left: 0;
@@ -131,7 +130,7 @@
     pointer-events: none;
   }
 
-  .img-carousel-showcase__arrow {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__arrow {
     pointer-events: all;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
@@ -148,23 +147,23 @@
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   }
 
-  .img-carousel-showcase__arrow:hover {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__arrow:hover {
     background: #fff;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     transform: scale(1.05);
   }
 
-  .img-carousel-showcase__arrow:active {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__arrow:active {
     transform: scale(0.95);
   }
 
-  .img-carousel-showcase__arrow:disabled {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__arrow:disabled {
     opacity: 0.3;
     cursor: not-allowed;
     pointer-events: none;
   }
 
-  .img-carousel-showcase__arrow-icon {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__arrow-icon {
     width: 24px;
     height: 24px;
     stroke: #333;
@@ -173,12 +172,12 @@
     stroke-linejoin: round;
   }
 
-  .img-carousel-showcase__arrow--prev .img-carousel-showcase__arrow-icon {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__arrow--prev .img-carousel-showcase__arrow-icon {
     transform: rotate(180deg);
   }
 
   /* Zoom Modal */
-  .img-carousel-showcase__zoom-modal {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-modal {
     display: none;
     position: fixed;
     top: 0;
@@ -193,27 +192,38 @@
     transition: opacity 0.3s ease;
   }
 
-  .img-carousel-showcase__zoom-modal--active {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-modal--active {
     display: flex;
     opacity: 1;
   }
 
-  .img-carousel-showcase__zoom-content {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-content {
     max-width: 90vw;
     max-height: 90vh;
     position: relative;
   }
 
-  .img-carousel-showcase__zoom-image {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-image {
     max-width: 100%;
     max-height: 90vh;
     width: auto;
     height: auto;
     border-radius: 8px;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-image img,
+  #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-image svg {
+    max-width: 100%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
   }
 
-  .img-carousel-showcase__zoom-close {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-close {
     position: absolute;
     top: -50px;
     right: 0;
@@ -231,12 +241,12 @@
     transition: all 0.3s ease;
   }
 
-  .img-carousel-showcase__zoom-close:hover {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-close:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: scale(1.05);
   }
 
-  .img-carousel-showcase__zoom-close-icon {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-close-icon {
     width: 24px;
     height: 24px;
     stroke: #fff;
@@ -246,97 +256,107 @@
 
   /* Responsive Design */
   @media (max-width: 1024px) {
-    .img-carousel-showcase {
+    #shopify-section-{{ section.id }} .img-carousel-showcase {
       padding: 40px 16px;
     }
 
-    .img-carousel-showcase__header {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__header {
       margin-bottom: 32px;
     }
 
-    .img-carousel-showcase__slide--center {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__slide--center {
       width: 60%;
     }
 
-    .img-carousel-showcase__slide--prev,
-    .img-carousel-showcase__slide--next {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__slide--prev,
+    #shopify-section-{{ section.id }} .img-carousel-showcase__slide--next {
       width: 20%;
     }
   }
 
   @media (max-width: 768px) {
-    .img-carousel-showcase {
+    #shopify-section-{{ section.id }} .img-carousel-showcase {
       padding: 32px 12px;
     }
 
-    .img-carousel-showcase__carousel {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__title {
+      font-size: {{ section.settings.title_font_size_mobile }}px;
+      line-height: {{ section.settings.title_line_height_mobile }};
+    }
+
+    #shopify-section-{{ section.id }} .img-carousel-showcase__subtitle {
+      font-size: {{ section.settings.subtitle_font_size_mobile }}px;
+      line-height: {{ section.settings.subtitle_line_height_mobile }};
+    }
+
+    #shopify-section-{{ section.id }} .img-carousel-showcase__carousel {
       min-height: 300px;
     }
 
-    .img-carousel-showcase__slide--center {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__slide--center {
       width: 65%;
     }
 
-    .img-carousel-showcase__slide--prev,
-    .img-carousel-showcase__slide--next {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__slide--prev,
+    #shopify-section-{{ section.id }} .img-carousel-showcase__slide--next {
       width: 17.5%;
     }
 
-    .img-carousel-showcase__arrow {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__arrow {
       width: 40px;
       height: 40px;
     }
 
-    .img-carousel-showcase__arrow-icon {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__arrow-icon {
       width: 20px;
       height: 20px;
     }
 
-    .img-carousel-showcase__controls {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__controls {
       padding: 0 8px;
     }
 
-    .img-carousel-showcase__zoom-indicator {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-indicator {
       width: 36px;
       height: 36px;
       bottom: 12px;
       right: 12px;
     }
 
-    .img-carousel-showcase__zoom-icon {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-icon {
       width: 18px;
       height: 18px;
     }
   }
 
   @media (max-width: 480px) {
-    .img-carousel-showcase__slide--center {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__slide--center {
       width: 70%;
     }
 
-    .img-carousel-showcase__slide--prev,
-    .img-carousel-showcase__slide--next {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__slide--prev,
+    #shopify-section-{{ section.id }} .img-carousel-showcase__slide--next {
       width: 15%;
     }
   }
 
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .img-carousel-showcase__slide,
-    .img-carousel-showcase__arrow,
-    .img-carousel-showcase__zoom-modal {
+    #shopify-section-{{ section.id }} .img-carousel-showcase__slide,
+    #shopify-section-{{ section.id }} .img-carousel-showcase__arrow,
+    #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-modal {
       transition: none;
     }
   }
 
   /* Focus styles for accessibility */
-  .img-carousel-showcase__arrow:focus-visible,
-  .img-carousel-showcase__zoom-close:focus-visible {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__arrow:focus-visible,
+  #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-close:focus-visible {
     outline: 2px solid #0066cc;
     outline-offset: 2px;
   }
 
-  .img-carousel-showcase__slide:focus-visible {
+  #shopify-section-{{ section.id }} .img-carousel-showcase__slide:focus-visible {
     outline: 2px solid #0066cc;
     outline-offset: 4px;
     border-radius: 12px;
@@ -376,16 +396,16 @@
                   srcset="{{ block.settings.image | image_url: width: 400 }} 400w,
                           {{ block.settings.image | image_url: width: 600 }} 600w,
                           {{ block.settings.image | image_url: width: 800 }} 800w,
-                          {{ block.settings.image | image_url: width: 1200 }} 1200w"
-                          {{ block.settings.image | image_url: width: 1500 }} 1500w"
-                          {{ block.settings.image | image_url: width: 1800 }} 1800w"
-                          {{ block.settings.image | image_url: width: 2100 }} 2100w"
-                          {{ block.settings.image | image_url: width: 2400 }} 2400w"
-                          {{ block.settings.image | image_url: width: 2700 }} 2700w"
-                          {{ block.settings.image | image_url: width: 3000 }} 3000w"
-                          {{ block.settings.image | image_url: width: 3300 }} 3300w"
-                          {{ block.settings.image | image_url: width: 3600 }} 3600w"
-                          {{ block.settings.image | image_url: width: 3900 }} 3900w"
+                          {{ block.settings.image | image_url: width: 1200 }} 1200w,
+                          {{ block.settings.image | image_url: width: 1500 }} 1500w,
+                          {{ block.settings.image | image_url: width: 1800 }} 1800w,
+                          {{ block.settings.image | image_url: width: 2100 }} 2100w,
+                          {{ block.settings.image | image_url: width: 2400 }} 2400w,
+                          {{ block.settings.image | image_url: width: 2700 }} 2700w,
+                          {{ block.settings.image | image_url: width: 3000 }} 3000w,
+                          {{ block.settings.image | image_url: width: 3300 }} 3300w,
+                          {{ block.settings.image | image_url: width: 3600 }} 3600w,
+                          {{ block.settings.image | image_url: width: 3900 }} 3900w,
                           {{ block.settings.image | image_url: width: 4200 }} 4200w"
                   sizes="(max-width: 768px) 80vw, (max-width: 1024px) 60vw, 600px,(min-width: 1025px) 100px"
                   alt="{{ block.settings.image_alt | default: block.settings.image.alt | default: 'Product image' }}"
@@ -454,14 +474,9 @@
               <path d="M18 6L6 18M6 6l12 12"/>
             </svg>
           </button>
-          <img 
-            class="img-carousel-showcase__zoom-image" 
-            id="zoom-img-{{ section.id }}"
-            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3C/svg%3E" 
-            alt=""
-            width="800"
-            height="600"
-          >
+          <div class="img-carousel-showcase__zoom-image" id="zoom-img-{{ section.id }}">
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
         </div>
       </div>
 
@@ -635,8 +650,15 @@
 
               // Use high-res version for zoom
               const highResSrc = img.src.replace(/width=\d+/, 'width=2000');
-              this.zoomImg.src = highResSrc;
-              this.zoomImg.alt = img.alt;
+              
+              // Clear previous content and add the high-res image
+              this.zoomImg.innerHTML = '';
+              const zoomImage = document.createElement('img');
+              zoomImage.src = highResSrc;
+              zoomImage.alt = img.alt;
+              zoomImage.style.maxWidth = '100%';
+              zoomImage.style.maxHeight = '90vh';
+              this.zoomImg.appendChild(zoomImage);
 
               this.zoomModal.classList.add('img-carousel-showcase__zoom-modal--active');
               document.body.style.overflow = 'hidden';
@@ -689,6 +711,98 @@
       "id": "subtitle",
       "label": "Subtitle",
       "default": "Designed with a triple-layer paint coating, delivering a premium skin-like feel that ensures absolute luxury and premium edge."
+    },
+    {
+      "type": "header",
+      "content": "Typography - Desktop"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_desktop",
+      "label": "Title font size (desktop)",
+      "min": 16,
+      "max": 72,
+      "step": 1,
+      "default": 40,
+      "info": "Font size in pixels for desktop devices"
+    },
+    {
+      "type": "range",
+      "id": "title_line_height_desktop",
+      "label": "Title line height (desktop)",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.2,
+      "info": "Line height multiplier for desktop devices"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size_desktop",
+      "label": "Subtitle font size (desktop)",
+      "min": 12,
+      "max": 36,
+      "step": 1,
+      "default": 16,
+      "info": "Font size in pixels for desktop devices"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_line_height_desktop",
+      "label": "Subtitle line height (desktop)",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6,
+      "info": "Line height multiplier for desktop devices"
+    },
+    {
+      "type": "header",
+      "content": "Typography - Mobile"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_mobile",
+      "label": "Title font size (mobile)",
+      "min": 14,
+      "max": 42,
+      "step": 1,
+      "default": 28,
+      "info": "Font size in pixels for mobile devices"
+    },
+    {
+      "type": "range",
+      "id": "title_line_height_mobile",
+      "label": "Title line height (mobile)",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.3,
+      "info": "Line height multiplier for mobile devices"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size_mobile",
+      "label": "Subtitle font size (mobile)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 14,
+      "info": "Font size in pixels for mobile devices"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_line_height_mobile",
+      "label": "Subtitle line height (mobile)",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5,
+      "info": "Line height multiplier for mobile devices"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
     },
     {
       "type": "color",

@@ -1,18 +1,10 @@
 
 {% assign block_settings = block.settings %}
 
-<accordion-custom
-  {% if block_settings.open_by_default %}
-    open-by-default-on-desktop
-    open-by-default-on-mobile
-  {% endif %}
->
-  <details
-    class="details"
-    data-testid="accordion-details"
-    {{ block.shopify_attributes }}
-  >
-    <summary class="details__header">
+{% if block_settings.anchor_target_class != blank %}
+  {%- comment -%} Anchor jump mode {%- endcomment -%}
+  <div class="accordion-anchor-link" {{ block.shopify_attributes }}>
+    <a href="#" class="details__header anchor-jump-link" data-anchor-class="{{ block_settings.anchor_target_class }}">
       {% render 'icon-or-image',
         icon: block_settings.icon,
         image_upload: block_settings.image_upload,
@@ -21,25 +13,98 @@
       %}
       {{ block_settings.heading }}
       <span class="svg-wrapper icon-caret icon-animated">
-        {{- 'icon-caret.svg' | inline_asset_content -}}
+        {{- 'icon-arrow.svg' | inline_asset_content -}}
       </span>
-      <span class="svg-wrapper icon-plus">
-        {{- 'icon-plus.svg' | inline_asset_content -}}
-      </span>
-    </summary>
+    </a>
+  </div>
+{% else %}
+  {%- comment -%} Normal expand mode {%- endcomment -%}
+  <accordion-custom
+    {% if block_settings.open_by_default %}
+      open-by-default-on-desktop
+      open-by-default-on-mobile
+    {% endif %}
+  >
+    <details
+      class="details"
+      data-testid="accordion-details"
+      {{ block.shopify_attributes }}
+    >
+      <summary class="details__header">
+        {% render 'icon-or-image',
+          icon: block_settings.icon,
+          image_upload: block_settings.image_upload,
+          width: block_settings.width,
+          class_name: 'details__icon'
+        %}
+        {{ block_settings.heading }}
+        <span class="svg-wrapper icon-caret icon-animated">
+          {{- 'icon-caret.svg' | inline_asset_content -}}
+        </span>
+        <span class="svg-wrapper icon-plus">
+          {{- 'icon-plus.svg' | inline_asset_content -}}
+        </span>
+      </summary>
 
-    <div class="details-content">
-      {% content_for 'blocks' %}
-    </div>
-  </details>
-</accordion-custom>
+      <div class="details-content">
+        {% content_for 'blocks' %}
+      </div>
+    </details>
+  </accordion-custom>
+{% endif %}
 
 {% stylesheet %}
   .details__icon {
     height: auto;
     margin-inline-end: var(--margin-xs);
   }
+
+  .accordion-anchor-link .details__header {
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+  }
+
+  .accordion-anchor-link .details__header:hover {
+    opacity: 0.8;
+  }
+
+  .accordion-anchor-link .icon-caret {
+    transform: rotate(-90deg);
+  }
 {% endstylesheet %}
+
+{% javascript %}
+  document.addEventListener('DOMContentLoaded', function() {
+    const anchorLinks = document.querySelectorAll('.anchor-jump-link');
+    
+    anchorLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetClass = this.getAttribute('data-anchor-class');
+        if (!targetClass) return;
+        
+        const targetElement = document.querySelector('.' + targetClass);
+        
+        if (targetElement) {
+          targetElement.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+          
+          // Optional: Add a highlight effect
+          targetElement.classList.add('anchor-highlight');
+          setTimeout(() => {
+            targetElement.classList.remove('anchor-highlight');
+          }, 2000);
+        }
+      });
+    });
+  });
+{% endjavascript %}
 
 {% schema %}
 {
@@ -65,6 +130,17 @@
       "id": "open_by_default",
       "label": "t:settings.open_row_by_default",
       "default": false
+    },
+    {
+      "type": "header",
+      "content": "Anchor Jump Settings"
+    },
+    {
+      "type": "text",
+      "id": "anchor_target_class",
+      "label": "Target Element Class Name",
+      "info": "When filled, clicking will scroll to the element with this class instead of expanding content. Example: product-info",
+      "placeholder": "e.g. product-info"
     },
     {
       "type": "header",
