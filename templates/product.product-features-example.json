@@ -1,27 +1,17 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "product_features": {
       "type": "product-features",
-      "settings": {
-        "top_layout": "left_image",
-        "top_title": "High-end texture",
-        "top_description": "<ul><li>Full solid metal panels (copper / stainless steel), 1.5mm thick, with a stable and textured appearance</li><li>The knobs are made with embossed design, providing a premium feel and a refined visual appeal</li></ul>",
-        "top_icon_type": "svg",
-        "top_custom_svg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"2\" y=\"2\" width=\"20\" height=\"20\" rx=\"4\" stroke=\"currentColor\" stroke-width=\"2\" fill=\"none\"/><circle cx=\"12\" cy=\"12\" r=\"6\" stroke=\"currentColor\" stroke-width=\"2\" fill=\"none\"/><line x1=\"12\" y1=\"6\" x2=\"12\" y2=\"8\" stroke=\"currentColor\" stroke-width=\"2\"/><line x1=\"12\" y1=\"16\" x2=\"12\" y2=\"18\" stroke=\"currentColor\" stroke-width=\"2\"/></svg>",
-        "bottom_layout": "left_text",
-        "bottom_title": "Multifunctional dimming",
-        "bottom_description": "Advanced dimming technology with multiple features",
-        "bottom_icon_type": "image",
-        "bottom_icon_image": "path/to/your/icon-image.png",
-        "bottom_point_1": "Minimum brightness adjustment to avoid flickering of the light",
-        "bottom_point_2": "Maximum brightness adaptive, automatically eliminating flickering",
-        "bottom_point_3": "BACKLIGHT function, enabling stable lighting even at low brightness",
-        "bottom_point_4": "Forward and backward cut mode (automatically/manually switchable), compatible with more lamps",
-        "bottom_point_5": "Soft and gradual lighting on, protecting the lamps and extending their lifespan",
-        "bottom_point_6": "Lighting memory function, maintaining the preferred brightness at any time",
-        "bottom_point_7": "Support for multi-channel linkage control (Master + Master)",
-        "bottom_point_8": "Advanced safety features and certifications"
-      }
+      "settings": {}
     }
   },
   "order": [
