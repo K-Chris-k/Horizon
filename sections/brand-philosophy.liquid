@@ -60,10 +60,14 @@
             {% if block.settings.heading != blank or block.settings.text != blank %}
               <div class="brand-philosophy-text-overlay brand-philosophy-text-overlay--{{ block.settings.text_position }}">
                 {% if block.settings.heading != blank %}
-                  <h2 class="brand-philosophy-heading">{{ block.settings.heading }}</h2>
+                  <h2 class="brand-philosophy-heading" style="font-size: {{ block.settings.heading_font_size }}px;">
+                    {{ block.settings.heading }}
+                  </h2>
                 {% endif %}
                 {% if block.settings.text != blank %}
-                  <div class="brand-philosophy-text">{{ block.settings.text }}</div>
+                  <div class="brand-philosophy-text" style="font-size: {{ block.settings.text_font_size }}px;">
+                    {{ block.settings.text }}
+                  </div>
                 {% endif %}
               </div>
             {% endif %}
@@ -189,10 +193,30 @@
           "default": "WE KNOW"
         },
         {
+          "type": "range",
+          "id": "heading_font_size",
+          "label": "Heading Font Size",
+          "min": 12,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 32
+        },
+        {
           "type": "textarea",
           "id": "text",
           "label": "Text",
           "default": "What you desire is not merely intelligence, but rather designs that carry stories, embody spirit, and can withstand the test of time."
+        },
+        {
+          "type": "range",
+          "id": "text_font_size",
+          "label": "Text Font Size",
+          "min": 12,
+          "max": 60,
+          "step": 1,
+          "unit": "px",
+          "default": 16
         },
         {
           "type": "select",
@@ -322,7 +346,9 @@
           "type": "text_overlay",
           "settings": {
             "heading": "WE KNOW",
+            "heading_font_size": 32,
             "text": "What you desire is not merely intelligence, but rather designs that carry stories, embody spirit, and can withstand the test of time.",
+            "text_font_size": 16,
             "text_position": "bottom-left",
             "flex_ratio": "2"
           }
