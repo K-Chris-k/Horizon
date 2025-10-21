@@ -1,0 +1,104 @@
+{{ 'collection-extra-content.css' | asset_url | stylesheet_tag }}
+{%- style -%}
+  ._collection-extra-content-text {
+    font-size: {{ block.settings.text_size | default: 14 }}px;
+    color: var(--color-foreground);
+    margin: 0;
+  }
+
+  ._collection-extra-content-title {
+    font-size: {{ block.settings.title_size | default: 28 }}px;
+    font-weight: 700;
+    color: var(--color-foreground);
+    margin: 10px 0 ;
+  }
+
+  ._collection-extra-content-button {
+    background-color: {{ block.settings.button_bg | default: '#111111' }};
+    color: {{ block.settings.button_color | default: '#ffffff' }};
+    text-decoration: none;
+    width: {{ block.settings.button_width | default: 140 }}px;
+    height: {{ block.settings.button_height | default: 40 }}px;
+  }
+{%- endstyle -%}
+
+<div class="_collection-extra-content-container">
+  {% if block.settings.text != blank %}
+    <p class="_collection-extra-content-text">{{ block.settings.text }}</p>
+  {% endif %}
+
+  {% if block.settings.title != blank %}
+    <h2 class="_collection-extra-content-title">{{ block.settings.title }}</h2>
+  {% endif %}
+
+  {% if block.settings.button_text != blank %}
+    {% if block.settings.button_link != blank %}
+      <a href="{{ block.settings.button_link }}" class="_collection-extra-content-button">
+        {{- block.settings.button_text -}}
+      </a>
+    {% else %}
+      <button class="_collection-extra-content-button">{{ block.settings.button_text }}</button>
+    {% endif %}
+  {% endif %}
+</div>
+{% schema %}
+{
+  "name": "Collection Extra Content",
+  "tag": null,
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Description Text",
+      "default": "But why is the dream of a home that combines outstanding design and top-notch intelligence"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text Size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    { "type": "text", "id": "title", "label": "Title", "default": "ALWAYS HINDERED BY HIGH PRICES" },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title Size",
+      "min": 16,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    { "type": "text", "id": "button_text", "label": "Button Text", "default": "SHOP NOW" },
+    { "type": "url", "id": "button_link", "label": "Button Link" },
+    { "type": "color", "id": "button_bg", "label": "Button Background", "default": "#111111" },
+    { "type": "color", "id": "button_color", "label": "Button Text Color", "default": "#ffffff" },
+    {
+      "type": "range",
+      "id": "button_width",
+      "label": "Button Width",
+      "min": 80,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "default": 140
+    },
+    {
+      "type": "range",
+      "id": "button_height",
+      "label": "Button Height",
+      "min": 28,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "blocks": [],
+  "presets": [{ "name": "Collection Extra Content" }]
+}
+{% endschema %}
