@@ -116,15 +116,25 @@
           const currentVisibleItems = parseInt(section.getAttribute('data-visible-items')) || itemsPerRow;
 
           if (section.classList.contains('is-fully-expanded')) {
-            section.classList.remove('is-fully-expanded');
-            section.setAttribute('data-visible-items', itemsPerRow);
-            this.querySelector('.flow-box-media__show-more-text').textContent = showText;
+            // 收缩动画：先添加收缩状态类，然后延迟更新
+            section.classList.add('is-collapsing');
+            section.classList.remove('is-expanded');
+
+            // 延迟执行，让CSS过渡动画有时间执行
+            setTimeout(() => {
+              section.classList.remove('is-fully-expanded');
+              section.classList.remove('is-collapsing');
+              section.setAttribute('data-visible-items', itemsPerRow);
+              this.querySelector('.flow-box-media__show-more-text').textContent = showText;
+            }, 300);
           } else {
             const nextVisibleItems = Math.min(currentVisibleItems + itemsPerRow, totalBlocks);
             section.setAttribute('data-visible-items', nextVisibleItems);
 
             if (nextVisibleItems >= totalBlocks) {
+              // 只有当所有项目都显示时，才添加展开状态类和显示向上箭头
               section.classList.add('is-fully-expanded');
+              section.classList.add('is-expanded');
               this.querySelector('.flow-box-media__show-more-text').textContent = hideText;
             }
           }
@@ -185,6 +195,8 @@
           const itemsPerRow = isMobile ? itemsPerRowMobile : itemsPerRowDesktop;
 
           section.classList.remove('is-fully-expanded');
+          section.classList.remove('is-expanded');
+          section.classList.remove('is-collapsing');
           section.setAttribute('data-visible-items', itemsPerRow);
 
           const button = section.querySelector('.flow-box-media__show-more');
