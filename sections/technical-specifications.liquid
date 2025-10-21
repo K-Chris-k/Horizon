@@ -22,7 +22,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 60px;
-    margin-bottom: 60px;
+    margin-bottom: 0;
   }
 
   .specs-left {
@@ -115,7 +115,7 @@
 
   .specs-tab-content {
     display: none;
-    padding-top: 20px;
+    padding-top: 40px;
   }
 
   .specs-tab-content.active {
@@ -328,7 +328,11 @@
     .technical-specs-content {
       grid-template-columns: 1fr;
       gap: 30px;
-      margin-bottom: 40px;
+      margin-bottom: 0;
+    }
+
+    .specs-tab-content {
+      padding-top: 30px;
     }
 
     .specs-subtitle {
@@ -408,45 +412,6 @@
       <h2 class="technical-specs-title">{{ section.settings.title }}</h2>
     {%- endif -%}
 
-    <!-- Specification content - always visible at top -->
-    <div class="technical-specs-content">
-      <div class="specs-left">
-        {%- if section.settings.subtitle != blank -%}
-          <h3 class="specs-subtitle">{{ section.settings.subtitle }}</h3>
-        {%- endif -%}
-        
-        <div class="specs-grid">
-          {%- for block in section.blocks -%}
-            {%- if block.type == 'tech_spec' -%}
-              <div class="spec-item" {{ block.shopify_attributes }}>
-                <div class="spec-label" style="color: {{ block.settings.label_color }};">
-                  {{ block.settings.label }}
-                </div>
-                <div class="spec-value" style="color: {{ block.settings.value_color }};">
-                  {{ block.settings.value }}
-                </div>
-              </div>
-            {%- endif -%}
-          {%- endfor -%}
-        </div>
-      </div>
-
-      <div class="specs-right">
-        {%- if section.settings.image != blank -%}
-          <img 
-            src="{{ section.settings.image | image_url: width: 800 }}" 
-            alt="{{ section.settings.image.alt | escape }}"
-            class="specs-image"
-            width="{{ section.settings.image.width }}"
-            height="{{ section.settings.image.height }}"
-            loading="lazy"
-          >
-        {%- else -%}
-          <div class="video-placeholder">📐</div>
-        {%- endif -%}
-      </div>
-    </div>
-
     {%- assign has_specifications = false -%}
     {%- assign has_downloads = false -%}
     {%- assign has_faqs = false -%}
@@ -477,6 +442,7 @@
 
     {%- if tab_order != "" -%}
     <div class="specs-tabs-wrapper">
+      <!-- Tabs navigation at the top -->
       <div class="specs-tabs">
         {%- assign first_tab = tab_array[0] -%}
         {%- for tab in tab_array -%}
@@ -493,6 +459,44 @@
 
       {%- if has_specifications -%}
         <div class="specs-tab-content{% if tab_array[0] == 'specification' %} active{% endif %}" data-content="specification">
+          <!-- Specification content inside tab -->
+          <div class="technical-specs-content">
+            <div class="specs-left">
+              {%- if section.settings.subtitle != blank -%}
+                <h3 class="specs-subtitle">{{ section.settings.subtitle }}</h3>
+              {%- endif -%}
+              
+              <div class="specs-grid">
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'tech_spec' -%}
+                    <div class="spec-item" {{ block.shopify_attributes }}>
+                      <div class="spec-label" style="color: {{ block.settings.label_color }};">
+                        {{ block.settings.label }}
+                      </div>
+                      <div class="spec-value" style="color: {{ block.settings.value_color }};">
+                        {{ block.settings.value }}
+                      </div>
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+
+            <div class="specs-right">
+              {%- if section.settings.image != blank -%}
+                <img 
+                  src="{{ section.settings.image | image_url: width: 800 }}" 
+                  alt="{{ section.settings.image.alt | escape }}"
+                  class="specs-image"
+                  width="{{ section.settings.image.width }}"
+                  height="{{ section.settings.image.height }}"
+                  loading="lazy"
+                >
+              {%- else -%}
+                <div class="video-placeholder">📐</div>
+              {%- endif -%}
+            </div>
+          </div>
         </div>
       {%- endif -%}
 
@@ -911,7 +915,7 @@
             }
           ],
           "default": "specification",
-          "info": "Note: Specification content is always displayed at the top. The Specification tab shows the same content."
+          "info": "Select the type of content for this tab"
         },
         {
           "type": "text",

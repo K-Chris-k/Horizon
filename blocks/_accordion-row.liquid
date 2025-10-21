@@ -15,6 +15,9 @@
       <span class="svg-wrapper icon-caret icon-animated">
         {{- 'icon-arrow.svg' | inline_asset_content -}}
       </span>
+      <span class="svg-wrapper icon-plus">
+        {{- 'icon-plus.svg' | inline_asset_content -}}
+      </span>
     </a>
   </div>
 {% else %}
@@ -58,13 +61,18 @@
     height: auto;
     margin-inline-end: var(--margin-xs);
   }
-
+  a.details__header.anchor-jump-link svg {
+    width: 14px;
+    height: 14px;
+}
   .accordion-anchor-link .details__header {
     cursor: pointer;
     text-decoration: none;
     color: inherit;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    
   }
 
   .accordion-anchor-link .details__header:hover {
