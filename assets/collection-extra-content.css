@@ -1,0 +1,43 @@
+._collection-extra-content-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+._collection-extra-content-container * {
+  box-sizing: border-box;
+}
+
+._collection-extra-content-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 10%;
+  border: 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  ._collection-extra-content-container {
+    text-align: center;
+    margin: 10px 0;
+    gap: 5px;
+  }
+
+  ._collection-extra-content-text,
+  ._collection-extra-content-title {
+    text-align: center;
+  }
+
+  ._collection-extra-content-button {
+    display: none;
+  }
+}
