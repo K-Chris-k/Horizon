@@ -1219,7 +1219,7 @@
       "name": "Flow Box Media",
       "settings": {
         "items_per_row_desktop": 4,
-        "items_per_row_mobile": 2,
+        "items_per_row_mobile": 1,
         "gap": 8,
         "show_more_text": "Show More",
         "show_less_text": "Show Less",
