@@ -1,0 +1,908 @@
+{% comment %}
+  Smart Thermostat Features Section
+  Displays a centered title with learn more link, feature blocks with icons,
+  and a content box with image overlay
+{% endcomment %}
+
+{% liquid
+  assign section_id = section.id
+%}
+
+<style>
+  /* Section Container */
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }} {
+    background-color: {{ section.settings.background_color }};
+    padding: {{ section.settings.padding_top_mobile }}px 0 {{ section.settings.padding_bottom_mobile }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }} {
+      padding: {{ section.settings.padding_top_desktop }}px 0 {{ section.settings.padding_bottom_desktop }}px;
+    }
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__container {
+    max-width: {{ section.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__container {
+      padding: 0 40px;
+    }
+  }
+
+  /* Header Section */
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__header {
+    text-align: center;
+    margin-bottom: {{ section.settings.header_margin_mobile }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__header {
+      margin-bottom: {{ section.settings.header_margin_desktop }}px;
+    }
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__title {
+    font-size: {{ section.settings.title_font_size_mobile }}px;
+    font-weight: {{ section.settings.title_font_weight }};
+    line-height: {{ section.settings.title_line_height_mobile }};
+    color: {{ section.settings.title_color }};
+    margin: 0 0 {{ section.settings.link_margin_mobile }}px 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__title {
+      font-size: {{ section.settings.title_font_size_desktop }}px;
+      line-height: {{ section.settings.title_line_height_desktop }};
+      margin-bottom: {{ section.settings.link_margin_desktop }}px;
+    }
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: {{ section.settings.link_font_size_mobile }}px;
+    color: {{ section.settings.link_color }};
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__link {
+      font-size: {{ section.settings.link_font_size_desktop }}px;
+    }
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__link:hover {
+    opacity: 0.7;
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__link-arrow {
+    transition: transform 0.3s ease;
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__link:hover .smart-features-{{ section_id }}__link-arrow {
+    transform: translateX(4px);
+  }
+
+  /* Features Grid - Desktop at top, Mobile at bottom */
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: {{ section.settings.features_gap_mobile }}px;
+    margin-bottom: {{ section.settings.features_margin_mobile }}px;
+    order: 2;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__features {
+      grid-template-columns: repeat({{ section.settings.features_columns_desktop }}, 1fr);
+      gap: {{ section.settings.features_gap_desktop }}px;
+      margin-bottom: {{ section.settings.features_margin_desktop }}px;
+      order: 1;
+    }
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__feature-item {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: {{ section.settings.feature_icon_text_gap }}px;
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__feature-icon {
+    width: {{ section.settings.icon_size_mobile }}px;
+    height: {{ section.settings.icon_size_mobile }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__feature-icon {
+      width: {{ section.settings.icon_size_desktop }}px;
+      height: {{ section.settings.icon_size_desktop }}px;
+    }
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__feature-icon img,
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__feature-icon svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__feature-text {
+    font-size: {{ section.settings.feature_text_font_size_mobile }}px;
+    line-height: {{ section.settings.feature_text_line_height_mobile }};
+    color: {{ section.settings.feature_text_color }};
+    margin: 0;
+    max-width: 200px;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__feature-text {
+      font-size: {{ section.settings.feature_text_font_size_desktop }}px;
+      line-height: {{ section.settings.feature_text_line_height_desktop }};
+    }
+  }
+
+  /* Content Box with Image Overlay */
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content {
+    order: 1;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content {
+      order: 2;
+    }
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content-wrapper {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 40px;
+    }
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content-image {
+    width: {{ section.settings.content_image_width_mobile }}px;
+    height: auto;
+    flex-shrink: 0;
+    z-index: 2;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content-image {
+      width: {{ section.settings.content_image_width_desktop }}px;
+      position: absolute;
+      left: {{ section.settings.content_image_offset_desktop }}px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content-box {
+    background-color: {{ section.settings.content_box_background }};
+    border: {{ section.settings.content_box_border_width }}px solid {{ section.settings.content_box_border_color }};
+    border-radius: {{ section.settings.content_box_border_radius }}px;
+    box-shadow: {{ section.settings.content_box_shadow }};
+    padding: {{ section.settings.content_box_padding_mobile }}px;
+    width: 100%;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content-box {
+      padding: {{ section.settings.content_box_padding_desktop }}px;
+      padding-left: calc({{ section.settings.content_image_width_desktop }}px + {{ section.settings.content_image_offset_desktop }}px + {{ section.settings.content_box_padding_desktop }}px);
+    }
+  }
+
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content-text {
+    font-size: {{ section.settings.content_text_font_size_mobile }}px;
+    line-height: {{ section.settings.content_text_line_height_mobile }};
+    color: {{ section.settings.content_text_color }};
+    margin: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content-text {
+      font-size: {{ section.settings.content_text_font_size_desktop }}px;
+      line-height: {{ section.settings.content_text_line_height_desktop }};
+    }
+  }
+
+  /* Mobile layout wrapper */
+  #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__layout {
+    display: flex;
+    flex-direction: column;
+  }
+</style>
+
+<div class="smart-features-{{ section_id }}">
+  <div class="smart-features-{{ section_id }}__container">
+    
+    {%- comment -%} Header: Title and Learn More Link {%- endcomment -%}
+    {% if section.settings.title != blank or section.settings.link_text != blank %}
+      <div class="smart-features-{{ section_id }}__header">
+        {% if section.settings.title != blank %}
+          <h2 class="smart-features-{{ section_id }}__title">
+            {{ section.settings.title }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.link_text != blank and section.settings.link_url != blank %}
+          <a 
+            href="{{ section.settings.link_url }}" 
+            class="smart-features-{{ section_id }}__link"
+            {% if section.settings.link_open_new_window %}target="_blank" rel="noopener noreferrer"{% endif %}
+          >
+            <span>{{ section.settings.link_text }}</span>
+            <span class="smart-features-{{ section_id }}__link-arrow">›</span>
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="smart-features-{{ section_id }}__layout">
+      {%- comment -%} Feature Blocks {%- endcomment -%}
+      {% if section.blocks.size > 0 %}
+        <div class="smart-features-{{ section_id }}__features">
+          {% for block in section.blocks %}
+            {% if block.type == 'feature' %}
+              <div class="smart-features-{{ section_id }}__feature-item" {{ block.shopify_attributes }}>
+                {% if block.settings.icon != blank %}
+                  <div class="smart-features-{{ section_id }}__feature-icon">
+                    {{
+                      block.settings.icon
+                      | image_url: width: 200
+                      | image_tag:
+                        loading: 'lazy',
+                        alt: block.settings.text | escape
+                    }}
+                  </div>
+                {% endif %}
+                
+                {% if block.settings.text != blank %}
+                  <p class="smart-features-{{ section_id }}__feature-text">
+                    {{ block.settings.text }}
+                  </p>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {%- comment -%} Content Box with Image {%- endcomment -%}
+      {% if section.settings.content_text != blank or section.settings.content_image != blank %}
+        <div class="smart-features-{{ section_id }}__content">
+          <div class="smart-features-{{ section_id }}__content-wrapper">
+            {% if section.settings.content_image != blank %}
+              <div class="smart-features-{{ section_id }}__content-image">
+                {{
+                  section.settings.content_image
+                  | image_url: width: 600
+                  | image_tag:
+                    loading: 'lazy',
+                    alt: section.settings.content_image.alt | default: section.settings.title,
+                    widths: '200, 300, 400, 500, 600'
+                }}
+              </div>
+            {% endif %}
+
+            {% if section.settings.content_text != blank %}
+              <div class="smart-features-{{ section_id }}__content-box">
+                <p class="smart-features-{{ section_id }}__content-text">
+                  {{ section.settings.content_text }}
+                </p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Smart Thermostat Features",
+  "tag": "section",
+  "class": "section-smart-thermostat-features",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container Max Width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "header",
+      "content": "Spacing - Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top Padding",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom Padding",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "header_margin_desktop",
+      "label": "Header Bottom Margin",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Spacing - Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top Padding",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom Padding",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "header_margin_mobile",
+      "label": "Header Bottom Margin",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Title Settings"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Title",
+      "default": "Intelligent Temperature Control, Easy To ManageA Smart Thermostat"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_desktop",
+      "label": "Title Font Size (Desktop)",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_mobile",
+      "label": "Title Font Size (Mobile)",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Title Font Weight",
+      "options": [
+        {"value": "300", "label": "Light"},
+        {"value": "400", "label": "Normal"},
+        {"value": "500", "label": "Medium"},
+        {"value": "600", "label": "Semi Bold"},
+        {"value": "700", "label": "Bold"}
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "title_line_height_desktop",
+      "label": "Title Line Height (Desktop)",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.3
+    },
+    {
+      "type": "range",
+      "id": "title_line_height_mobile",
+      "label": "Title Line Height (Mobile)",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.4
+    },
+    {
+      "type": "header",
+      "content": "Learn More Link"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link Text",
+      "default": "Learn more"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "link_open_new_window",
+      "label": "Open in new window",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link Color",
+      "default": "#0066cc"
+    },
+    {
+      "type": "range",
+      "id": "link_font_size_desktop",
+      "label": "Link Font Size (Desktop)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "link_font_size_mobile",
+      "label": "Link Font Size (Mobile)",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "link_margin_desktop",
+      "label": "Link Bottom Margin (Desktop)",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "link_margin_mobile",
+      "label": "Link Bottom Margin (Mobile)",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Features Layout"
+    },
+    {
+      "type": "range",
+      "id": "features_columns_desktop",
+      "label": "Columns (Desktop)",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "features_gap_desktop",
+      "label": "Gap Between Features (Desktop)",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "features_gap_mobile",
+      "label": "Gap Between Features (Mobile)",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "features_margin_desktop",
+      "label": "Features Bottom Margin (Desktop)",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "features_margin_mobile",
+      "label": "Features Bottom Margin (Mobile)",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Feature Icon & Text"
+    },
+    {
+      "type": "range",
+      "id": "icon_size_desktop",
+      "label": "Icon Size (Desktop)",
+      "min": 40,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "icon_size_mobile",
+      "label": "Icon Size (Mobile)",
+      "min": 30,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "feature_icon_text_gap",
+      "label": "Gap Between Icon and Text",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "color",
+      "id": "feature_text_color",
+      "label": "Feature Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "feature_text_font_size_desktop",
+      "label": "Feature Text Font Size (Desktop)",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "feature_text_font_size_mobile",
+      "label": "Feature Text Font Size (Mobile)",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "feature_text_line_height_desktop",
+      "label": "Feature Text Line Height (Desktop)",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "feature_text_line_height_mobile",
+      "label": "Feature Text Line Height (Mobile)",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.4
+    },
+    {
+      "type": "header",
+      "content": "Content Box Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "content_image",
+      "label": "Content Image",
+      "info": "Image that overlays the content box border"
+    },
+    {
+      "type": "range",
+      "id": "content_image_width_desktop",
+      "label": "Image Width (Desktop)",
+      "min": 150,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 250
+    },
+    {
+      "type": "range",
+      "id": "content_image_width_mobile",
+      "label": "Image Width (Mobile)",
+      "min": 100,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "default": 180
+    },
+    {
+      "type": "range",
+      "id": "content_image_offset_desktop",
+      "label": "Image Offset from Left (Desktop)",
+      "min": -50,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20,
+      "info": "Negative values will position the image outside the box"
+    },
+    {
+      "type": "richtext",
+      "id": "content_text",
+      "label": "Content Text",
+      "default": "<p>This is a wireless Wi-Fi smart thermostat compatible with mainstream UK plumbing systems, featuring hot water, heating, and cooling control.</p>"
+    },
+    {
+      "type": "color",
+      "id": "content_text_color",
+      "label": "Content Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "content_text_font_size_desktop",
+      "label": "Content Text Font Size (Desktop)",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "content_text_font_size_mobile",
+      "label": "Content Text Font Size (Mobile)",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "content_text_line_height_desktop",
+      "label": "Content Text Line Height (Desktop)",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "range",
+      "id": "content_text_line_height_mobile",
+      "label": "Content Text Line Height (Mobile)",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "header",
+      "content": "Content Box Styling"
+    },
+    {
+      "type": "color",
+      "id": "content_box_background",
+      "label": "Box Background Color",
+      "default": "#f8f8f8"
+    },
+    {
+      "type": "color",
+      "id": "content_box_border_color",
+      "label": "Box Border Color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "content_box_border_width",
+      "label": "Box Border Width",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "content_box_border_radius",
+      "label": "Box Border Radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "text",
+      "id": "content_box_shadow",
+      "label": "Box Shadow",
+      "default": "0 4px 20px rgba(0, 0, 0, 0.08)",
+      "info": "CSS box-shadow value"
+    },
+    {
+      "type": "range",
+      "id": "content_box_padding_desktop",
+      "label": "Box Padding (Desktop)",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "content_box_padding_mobile",
+      "label": "Box Padding (Mobile)",
+      "min": 15,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 25
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Feature Text",
+          "default": "Feature description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Smart Thermostat Features",
+      "settings": {
+        "title": "Intelligent Temperature Control,\nEasy To ManageA Smart Thermostat",
+        "link_text": "Learn more",
+        "content_text": "<p>This is a wireless Wi-Fi smart thermostat compatible with mainstream UK plumbing systems, featuring hot water, heating, and cooling control.</p>"
+      },
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "text": "Smarter ways to save and stay comfy."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "text": "Inspired by award-winning designs."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "text": "Looks out for your whole system."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "text": "It's easy to install yourself."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "text": "Easily control and set up all functions."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

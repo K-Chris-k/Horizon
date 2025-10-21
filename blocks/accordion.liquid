@@ -24,10 +24,13 @@
     width: 100%;
   }
 
-  .accordion--dividers accordion-custom:not(:first-child) .details {
-    border-block-start: var(--style-border-width) solid var(--color-border);
+  .accordion--dividers accordion-custom .details {
+    border-bottom: var(--style-border-width) solid var(--color-border);
   }
+  .accordion-anchor-link .details__header{
+    border-bottom: var(--style-border-width) solid var(--color-border);
 
+  }
   /* When accordion borders are not set, show fallback borders */
   .accordion--dividers {
     /* stylelint-disable-next-line declaration-property-value-disallowed-list */
