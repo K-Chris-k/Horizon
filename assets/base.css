@@ -4410,6 +4410,11 @@ text-component {
   box-shadow: none;
 }
 
+
+@media screen and (max-width: 1366px) {
+
+}
+
 /* Prevent iOS zoom on input focus by ensuring minimum 16px font size on mobile */
 @media screen and (max-width: 1200px) {
   input,
@@ -4445,3 +4450,5 @@ text-component {
 label.variant-option__button-label.variant-option__button-label--has-swatch {
   background: transparent;
 }
+
+
