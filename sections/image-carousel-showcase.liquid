@@ -38,7 +38,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 22px;
     overflow: hidden;
     position: relative;
     min-height: 400px;
@@ -47,7 +47,6 @@
   #shopify-section-{{ section.id }} .img-carousel-showcase__slide {
     flex-shrink: 0;
     transition: opacity 0.3s ease;
-    cursor: pointer;
     position: relative;
     overflow: hidden;
   }
@@ -86,36 +85,27 @@
 
   #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-indicator {
     position: absolute;
-    bottom: 16px;
+    top: 16px;
     right: 16px;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    background: transparent;
+    border-radius: 0;
+    width: 42px;
+    height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-  }
-
-  #shopify-section-{{ section.id }} .img-carousel-showcase__slide--center:hover .img-carousel-showcase__zoom-indicator {
     opacity: 1;
+    transition: opacity 0.3s ease;
+    pointer-events: all;
+    cursor: pointer;
+    z-index: 10;
   }
 
-  #shopify-section-{{ section.id }} .img-carousel-showcase__slide--prev .img-carousel-showcase__zoom-indicator,
-  #shopify-section-{{ section.id }} .img-carousel-showcase__slide--next .img-carousel-showcase__zoom-indicator {
-    display: none;
-  }
 
   #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-icon {
-    width: 20px;
-    height: 20px;
-    stroke: #333;
-    stroke-width: 2;
+    width: 42px;
+    height: 42px;
+    display: block;
   }
 
   #shopify-section-{{ section.id }} .img-carousel-showcase__controls {
@@ -225,8 +215,8 @@
 
   #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-close {
     position: absolute;
-    top: -50px;
-    right: 0;
+    top: 0px;
+    right:-70px;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -319,13 +309,13 @@
     #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-indicator {
       width: 36px;
       height: 36px;
-      bottom: 12px;
+      top: 12px;
       right: 12px;
     }
 
     #shopify-section-{{ section.id }} .img-carousel-showcase__zoom-icon {
-      width: 18px;
-      height: 18px;
+      width: 36px;
+      height: 36px;
     }
   }
 
@@ -414,10 +404,14 @@
                   height="{{ block.settings.image.height }}"
                 >
                 <div class="img-carousel-showcase__zoom-indicator" aria-hidden="true">
-                  <svg class="img-carousel-showcase__zoom-icon" fill="none" viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="7"/>
-                    <path d="M21 21l-4.35-4.35"/>
-                    <path d="M11 8v6M8 11h6"/>
+                  <svg class="img-carousel-showcase__zoom-icon" width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <rect width="41.59" height="41.59" fill="url(#pattern0_zoom_{{ section.id }}_{{ block.id }})"/>
+                    <defs>
+                      <pattern id="pattern0_zoom_{{ section.id }}_{{ block.id }}" patternContentUnits="objectBoundingBox" width="1" height="1">
+                        <use xlink:href="#image0_zoom_{{ section.id }}_{{ block.id }}" transform="scale(0.0178571)"/>
+                      </pattern>
+                      <image id="image0_zoom_{{ section.id }}_{{ block.id }}" width="56" height="56" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAARVBMVEVHcEwWFhYICAgPDw8EBATc2tnm5OLn5uTV1NJ5eHji4d/f3tykoqHEw8Ho5uXp5+Xo5uTn5uTCwcAzMzOOjYxmZWWNjYyWP5NtAAAADnRSTlMAAwkGDZHb8HQeuaYtTNiLbrcAAAJqSURBVHhezdbblqsgDAbgdpSDtCaA7bz/o+4cKKOIbudusmrvvvWHkOl4+0t1p8/9d4KLkBbjS76QgUq/7heDi/oqJZbqglI0fkowy1Nb2LgtpSeKmarZB+sQnQ1mXqUepqmbDBmtCIj28dTQMygMAZsSypH9PiXOO+yU9SSFHjmD3QI0KvtzGaeAeCTt1M0UN9qu0SeF3jkpsO2z1drtMHQG6s8UAESaEF3KLvBpDx2qdBM3uzvhA/FMchk9ZhOI/4MRYBJ4ITAvXOJYRiNXsh2phQ6MOb8FIimCbtsrwxkAe/J7eQuUwAjzDhqEHn0tr7zoUCNQ+fVcZUsDkuw5zAuAMIQEYZ14eEQyLwDMApFttDKduuAEHfYqI2ifpZJjuEmUPjupUCsmiDHJWNe30TuiSr17jCmmFGFzH0Ov1ax5AnWkibzjPd8sjpWufsz3wrK4SCSRTMlK4BqGVdiSyb20UcaRKyWgJ+ygl0AoUJ1SiHoVbJPZQFm51Uxpy16A8IGsiktzA3U6NXF556wKmUXB7Gy75LKstRYuljWR0/h58P03vxxTGSuUJPmSyZQDcj2bP2SNhPbmRRND4DgJFNhGOjmS5pZgQL0JlbYGVkjLU34eKxJXL18C/ThuXF10A9WoVvaZqdEFb6DIgNAmypcsjd27Op/Jwk/YT6/ALkzkhvuBXP30SFjtVfrUyRxIb4XUNSVDzPlR8hR0jkny+dDMEqirTW2yO4CaydSCwsgfR4zz1J3TcTbBOgRng59J1f/F55KqfT+iuKsvcuNXQcqortGhfQcs7Nze1A5N1AWpwXt0nd/+UP0DWC9Q2RGjAmQAAAAASUVORK5CYII="/>
+                    </defs>
                   </svg>
                 </div>
               {% else %}
@@ -480,212 +474,250 @@
         </div>
       </div>
 
-      <script>
-        (function() {
-          class ImageCarouselShowcase {
-            constructor(element) {
-              this.element = element;
-              this.sectionId = element.dataset.sectionId;
-              this.carousel = element.querySelector(`#carousel-${this.sectionId}`);
-              this.slides = Array.from(element.querySelectorAll('.img-carousel-showcase__slide'));
-              this.prevBtn = element.querySelector(`#prev-${this.sectionId}`);
-              this.nextBtn = element.querySelector(`#next-${this.sectionId}`);
-              this.zoomModal = element.querySelector(`#zoom-modal-${this.sectionId}`);
-              this.zoomImg = element.querySelector(`#zoom-img-${this.sectionId}`);
-              this.zoomClose = element.querySelector(`#zoom-close-${this.sectionId}`);
-              this.currentIndex = 0;
-              this.isTransitioning = false;
+
+       <script>
+  (function() {
+    class ImageCarouselShowcase {
+      constructor(element) {
+        this.element = element;
+        this.sectionId = element.dataset.sectionId;
+        this.carousel = element.querySelector(`#carousel-${this.sectionId}`);
+        this.slides = Array.from(element.querySelectorAll('.img-carousel-showcase__slide'));
+        this.prevBtn = element.querySelector(`#prev-${this.sectionId}`);
+        this.nextBtn = element.querySelector(`#next-${this.sectionId}`);
+        this.zoomModal = element.querySelector(`#zoom-modal-${this.sectionId}`);
+        this.zoomImg = element.querySelector(`#zoom-img-${this.sectionId}`);
+        this.zoomClose = element.querySelector(`#zoom-close-${this.sectionId}`);
+        this.currentIndex = 0;
+        this.isTransitioning = false;
+        
+        this.init();
+      }
+
+      init() {
+        if (this.slides.length === 0) return;
+
+        // Duplicate slides to make content *5 for seamless infinite feel
+        const originalCount = this.slides.length;
+        const multiplier = 5;
+        if (originalCount > 0) {
+          for (let i = 1; i < multiplier; i++) { // Start from 1 to add copies, total *5
+            const originalSlides = this.slides.slice(0, originalCount);
+            originalSlides.forEach((slide, idx) => {
+              const clone = slide.cloneNode(true);
               
-              this.init();
-            }
-
-            init() {
-              if (this.slides.length === 0) return;
-
-              // Arrow controls
-              if (this.prevBtn) {
-                this.prevBtn.addEventListener('click', () => this.prev());
-              }
-              if (this.nextBtn) {
-                this.nextBtn.addEventListener('click', () => this.next());
-              }
-
-              // Keyboard navigation
-              this.carousel.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft') {
-                  this.prev();
-                } else if (e.key === 'ArrowRight') {
-                  this.next();
-                }
-              });
-
-              // Slide click to zoom (only center slide)
-              this.slides.forEach((slide, index) => {
-                slide.addEventListener('click', () => {
-                  if (index === this.currentIndex) {
-                    this.openZoom();
-                  } else {
-                    this.goToSlide(index);
-                  }
-                });
-
-                // Keyboard support for slides
-                slide.addEventListener('keydown', (e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    if (index === this.currentIndex) {
-                      this.openZoom();
-                    } else {
-                      this.goToSlide(index);
+              // Update SVG IDs to make them unique for cloned slides
+              const zoomIndicator = clone.querySelector('.img-carousel-showcase__zoom-indicator');
+              if (zoomIndicator) {
+                const svg = zoomIndicator.querySelector('svg');
+                if (svg) {
+                  const defs = svg.querySelector('defs');
+                  if (defs) {
+                    const pattern = defs.querySelector('pattern');
+                    const image = defs.querySelector('image');
+                    const rect = svg.querySelector('rect');
+                    const use = pattern ? pattern.querySelector('use') : null;
+                    
+                    if (pattern && image && rect && use) {
+                      const uniqueSuffix = `_clone${i}_${idx}`;
+                      const oldPatternId = pattern.getAttribute('id');
+                      const oldImageId = image.getAttribute('id');
+                      const newPatternId = oldPatternId + uniqueSuffix;
+                      const newImageId = oldImageId + uniqueSuffix;
+                      
+                      // Update IDs
+                      pattern.setAttribute('id', newPatternId);
+                      image.setAttribute('id', newImageId);
+                      
+                      // Update references
+                      rect.setAttribute('fill', `url(#${newPatternId})`);
+                      use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `#${newImageId}`);
                     }
                   }
-                });
-              });
-
-              // Zoom close
-              if (this.zoomClose) {
-                this.zoomClose.addEventListener('click', () => this.closeZoom());
-              }
-              if (this.zoomModal) {
-                this.zoomModal.addEventListener('click', (e) => {
-                  if (e.target === this.zoomModal) {
-                    this.closeZoom();
-                  }
-                });
-                // ESC key to close
-                document.addEventListener('keydown', (e) => {
-                  if (e.key === 'Escape' && this.zoomModal.classList.contains('img-carousel-showcase__zoom-modal--active')) {
-                    this.closeZoom();
-                  }
-                });
-              }
-
-              // Initial render
-              this.updateSlides();
-            }
-
-            prev() {
-              if (this.isTransitioning || this.slides.length === 0) return;
-              this.currentIndex = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
-              this.updateSlides();
-            }
-
-            next() {
-              if (this.isTransitioning || this.slides.length === 0) return;
-              this.currentIndex = (this.currentIndex + 1) % this.slides.length;
-              this.updateSlides();
-            }
-
-            goToSlide(index) {
-              if (this.isTransitioning || index === this.currentIndex) return;
-              this.currentIndex = index;
-              this.updateSlides();
-            }
-
-            updateSlides() {
-              this.isTransitioning = true;
-              const totalSlides = this.slides.length;
-
-              this.slides.forEach((slide, index) => {
-                // Remove all state classes
-                slide.classList.remove(
-                  'img-carousel-showcase__slide--center',
-                  'img-carousel-showcase__slide--prev',
-                  'img-carousel-showcase__slide--next',
-                  'img-carousel-showcase__slide--hidden'
-                );
-
-                if (index === this.currentIndex) {
-                  // Center slide - fully visible
-                  slide.classList.add('img-carousel-showcase__slide--center');
-                  slide.setAttribute('aria-current', 'true');
-                } else {
-                  slide.removeAttribute('aria-current');
-                  
-                  // Calculate prev and next positions
-                  const prevIndex = (this.currentIndex - 1 + totalSlides) % totalSlides;
-                  const nextIndex = (this.currentIndex + 1) % totalSlides;
-
-                  if (index === prevIndex) {
-                    slide.classList.add('img-carousel-showcase__slide--prev');
-                  } else if (index === nextIndex) {
-                    slide.classList.add('img-carousel-showcase__slide--next');
-                  } else {
-                    slide.classList.add('img-carousel-showcase__slide--hidden');
-                  }
                 }
-              });
-
-              // Shorter transition time for smoother feel
-              setTimeout(() => {
-                this.isTransitioning = false;
-              }, 300);
-
-              // Update aria-live region for screen readers
-              this.announceSlide();
-            }
-
-            announceSlide() {
-              const currentSlide = this.currentIndex + 1;
-              const totalSlides = this.slides.length;
-              const message = `Showing image ${currentSlide} of ${totalSlides}`;
-              
-              // Create or update aria-live region
-              let liveRegion = this.element.querySelector('[aria-live]');
-              if (!liveRegion) {
-                liveRegion = document.createElement('div');
-                liveRegion.setAttribute('aria-live', 'polite');
-                liveRegion.setAttribute('aria-atomic', 'true');
-                liveRegion.className = 'sr-only';
-                liveRegion.style.cssText = 'position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;';
-                this.element.appendChild(liveRegion);
               }
-              liveRegion.textContent = message;
-            }
-
-            openZoom() {
-              const currentSlide = this.slides[this.currentIndex];
-              const img = currentSlide.querySelector('img');
-              if (!img || !this.zoomModal || !this.zoomImg) return;
-
-              // Use high-res version for zoom
-              const highResSrc = img.src.replace(/width=\d+/, 'width=2000');
               
-              // Clear previous content and add the high-res image
-              this.zoomImg.innerHTML = '';
-              const zoomImage = document.createElement('img');
-              zoomImage.src = highResSrc;
-              zoomImage.alt = img.alt;
-              zoomImage.style.maxWidth = '100%';
-              zoomImage.style.maxHeight = '90vh';
-              this.zoomImg.appendChild(zoomImage);
+              this.carousel.appendChild(clone);
+              this.slides.push(clone);
+            });
+          }
+        }
 
-              this.zoomModal.classList.add('img-carousel-showcase__zoom-modal--active');
-              document.body.style.overflow = 'hidden';
+        // Arrow controls
+        if (this.prevBtn) {
+          this.prevBtn.addEventListener('click', () => this.prev());
+        }
+        if (this.nextBtn) {
+          this.nextBtn.addEventListener('click', () => this.next());
+        }
 
-              // Focus close button for accessibility
-              setTimeout(() => {
-                this.zoomClose?.focus();
-              }, 100);
+        // Keyboard navigation
+        this.carousel.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft') {
+            this.prev();
+          } else if (e.key === 'ArrowRight') {
+            this.next();
+          }
+        });
+
+        // Zoom indicator click to zoom directly
+        this.slides.forEach((slide, index) => {
+          const zoomIndicator = slide.querySelector('.img-carousel-showcase__zoom-indicator');
+          if (zoomIndicator) {
+            zoomIndicator.addEventListener('click', (e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              // Directly open zoom without changing carousel position
+              this.openZoom(slide);
+            });
+          }
+        });
+
+        // Zoom close
+        if (this.zoomClose) {
+          this.zoomClose.addEventListener('click', () => this.closeZoom());
+        }
+        if (this.zoomModal) {
+          this.zoomModal.addEventListener('click', (e) => {
+            if (e.target === this.zoomModal) {
+              this.closeZoom();
             }
+          });
+          // ESC key to close
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.zoomModal.classList.contains('img-carousel-showcase__zoom-modal--active')) {
+              this.closeZoom();
+            }
+          });
+        }
 
-            closeZoom() {
-              if (!this.zoomModal) return;
-              this.zoomModal.classList.remove('img-carousel-showcase__zoom-modal--active');
-              document.body.style.overflow = '';
+        // Initial render
+        this.updateSlides();
+      }
 
-              // Return focus to the slide
-              this.slides[this.currentIndex]?.focus();
+      prev() {
+        if (this.isTransitioning || this.slides.length === 0) return;
+        this.currentIndex = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
+        this.updateSlides();
+      }
+
+      next() {
+        if (this.isTransitioning || this.slides.length === 0) return;
+        this.currentIndex = (this.currentIndex + 1) % this.slides.length;
+        this.updateSlides();
+      }
+
+      goToSlide(index) {
+        if (this.isTransitioning || index === this.currentIndex) return;
+        this.currentIndex = index;
+        this.updateSlides();
+      }
+
+      updateSlides() {
+        this.isTransitioning = true;
+        const totalSlides = this.slides.length;
+
+        this.slides.forEach((slide, index) => {
+          // Remove all state classes
+          slide.classList.remove(
+            'img-carousel-showcase__slide--center',
+            'img-carousel-showcase__slide--prev',
+            'img-carousel-showcase__slide--next',
+            'img-carousel-showcase__slide--hidden'
+          );
+
+          if (index === this.currentIndex) {
+            // Center slide - fully visible
+            slide.classList.add('img-carousel-showcase__slide--center');
+            slide.setAttribute('aria-current', 'true');
+          } else {
+            slide.removeAttribute('aria-current');
+            
+            // Calculate prev and next positions
+            const prevIndex = (this.currentIndex - 1 + totalSlides) % totalSlides;
+            const nextIndex = (this.currentIndex + 1) % totalSlides;
+
+            if (index === prevIndex) {
+              slide.classList.add('img-carousel-showcase__slide--prev');
+            } else if (index === nextIndex) {
+              slide.classList.add('img-carousel-showcase__slide--next');
+            } else {
+              slide.classList.add('img-carousel-showcase__slide--hidden');
             }
           }
+        });
 
-          // Initialize the carousel
-          const section = document.querySelector('.img-carousel-showcase[data-section-id="{{ section.id }}"]');
-          if (section) {
-            new ImageCarouselShowcase(section);
-          }
-        })();
-      </script>
+        // Shorter transition time for smoother feel
+        setTimeout(() => {
+          this.isTransitioning = false;
+        }, 300);
+
+        // Update aria-live region for screen readers
+        this.announceSlide();
+      }
+
+      announceSlide() {
+        const currentSlide = this.currentIndex + 1;
+        const totalSlides = this.slides.length;
+        const message = `Showing image ${currentSlide} of ${totalSlides}`;
+        
+        // Create or update aria-live region
+        let liveRegion = this.element.querySelector('[aria-live]');
+        if (!liveRegion) {
+          liveRegion = document.createElement('div');
+          liveRegion.setAttribute('aria-live', 'polite');
+          liveRegion.setAttribute('aria-atomic', 'true');
+          liveRegion.className = 'sr-only';
+          liveRegion.style.cssText = 'position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;';
+          this.element.appendChild(liveRegion);
+        }
+        liveRegion.textContent = message;
+      }
+
+      openZoom(targetSlide = null) {
+        const slideToZoom = targetSlide || this.slides[this.currentIndex];
+        const img = slideToZoom.querySelector('img');
+        if (!img || !this.zoomModal || !this.zoomImg) return;
+
+        // Use high-res version for zoom
+        const highResSrc = img.src.replace(/width=\d+/, 'width=2000');
+        
+        // Clear previous content and add the high-res image
+        this.zoomImg.innerHTML = '';
+        const zoomImage = document.createElement('img');
+        zoomImage.src = highResSrc;
+        zoomImage.alt = img.alt;
+        zoomImage.style.maxWidth = '100%';
+        zoomImage.style.maxHeight = '90vh';
+        this.zoomImg.appendChild(zoomImage);
+
+        this.zoomModal.classList.add('img-carousel-showcase__zoom-modal--active');
+        document.body.style.overflow = 'hidden';
+
+        // Focus close button for accessibility
+        setTimeout(() => {
+          this.zoomClose?.focus();
+        }, 100);
+      }
+
+      closeZoom() {
+        if (!this.zoomModal) return;
+        this.zoomModal.classList.remove('img-carousel-showcase__zoom-modal--active');
+        document.body.style.overflow = '';
+
+        // Return focus to the slide
+        this.slides[this.currentIndex]?.focus();
+      }
+    }
+
+    // Initialize the carousel
+    const section = document.querySelector('.img-carousel-showcase[data-section-id="{{ section.id }}"]');
+    if (section) {
+      new ImageCarouselShowcase(section);
+    }
+  })();
+</script>
+   
     {% else %}
       <div style="text-align: center; padding: 40px; color: #999;">
         <p>Add image blocks to display the carousel</p>

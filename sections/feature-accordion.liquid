@@ -1,8 +1,4 @@
-{% comment %}
-  Feature Accordion Section
-  Desktop: Clickable titles on left with descriptions, images on right
-  Mobile: Image on top, section title/subtitle, accordion content below
-{% endcomment %}
+
 
 <style>
 /* Feature Accordion Section Styles */
@@ -10,7 +6,9 @@
   padding: 4rem 0;
   background-color: {{ section.settings.background_color }};
 }
-
+.section-feature-accordion{
+  background-color: {{ section.settings.background_color }};
+}
 
 /* Desktop Layout */
 #shopify-section-{{ section.id }} .feature-accordion__content {
@@ -33,13 +31,13 @@
   font-size: {{ section.settings.desktop_title_font_size }}px;
   font-weight: 700;
   margin: 0 0 1rem 0;
-  color: #1a1a1a;
+  color: #191C1D;
   line-height: {{ section.settings.desktop_title_line_height }};
 }
 
 #shopify-section-{{ section.id }} .feature-accordion__section-subtitle {
   font-size: {{ section.settings.desktop_subtitle_font_size }}px;
-  color: #666;
+  color: #191C1D;
   margin: 0;
   line-height: {{ section.settings.desktop_subtitle_line_height }};
 }
@@ -426,7 +424,7 @@
       "id": "desktop_subtitle_font_size",
       "label": "Desktop Subtitle Font Size",
       "min": 12,
-      "max": 32,
+      "max": 60,
       "step": 1,
       "default": 18,
       "info": "Font size in pixels for the section subtitle on desktop"
