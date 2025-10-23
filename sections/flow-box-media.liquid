@@ -30,21 +30,43 @@
 -%}
 
 <div class="flow-box-media section section--{{ section.settings.content_width }}" data-section-id="{{ section.id }}">
-  <div
-    class="flow-box-media__grid"
-    data-items-per-row-desktop="{{ items_per_row_desktop }}"
-    data-items-per-row-mobile="{{ items_per_row_mobile }}"
-    data-total-blocks="{{ total_blocks }}"
-  >
-    {%- for block in section.blocks -%}
-      <div
-        class="flow-box-media__item flow-box-media__item--group"
-        data-block-index="{{ forloop.index }}"
-        {{ block.shopify_attributes }}
+  <div class="flow-box-media__mobile-slider">
+    <div
+      class="flow-box-media__grid"
+      data-items-per-row-desktop="{{ items_per_row_desktop }}"
+      data-items-per-row-mobile="{{ items_per_row_mobile }}"
+      data-total-blocks="{{ total_blocks }}"
+    >
+      {%- for block in section.blocks -%}
+        <div
+          class="flow-box-media__item flow-box-media__item--group"
+          data-block-index="{{ forloop.index }}"
+          {{ block.shopify_attributes }}
+        >
+          {% render block %}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <!-- 移动端导航按钮 -->
+    <div class="flow-box-media__mobile-nav">
+      <button
+        class="flow-box-media__mobile-nav-btn flow-box-media__mobile-nav-btn--prev"
+        data-section="{{ section.id }}"
       >
-        {% render block %}
-      </div>
-    {%- endfor -%}
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button
+        class="flow-box-media__mobile-nav-btn flow-box-media__mobile-nav-btn--next"
+        data-section="{{ section.id }}"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
   </div>
 
   {%- if show_more_needed -%}
@@ -91,6 +113,87 @@
           const isMobile = window.innerWidth <= 749;
           const initialVisibleItems = isMobile ? actualItemsMobile : actualItemsDesktop;
           section.setAttribute('data-visible-items', initialVisibleItems);
+
+          // 初始化移动端滑动状态
+          if (isMobile) {
+            section.setAttribute('data-current-slide', '0');
+            updateMobileNavButtons(section);
+            // 移动端不应用桌面端的隐藏逻辑，显示所有内容
+            section.classList.add('mobile-mode');
+          } else {
+            section.classList.remove('mobile-mode');
+          }
+        });
+      }
+
+      // 更新移动端导航按钮状态
+      function updateMobileNavButtons(section) {
+        const currentSlide = parseInt(section.getAttribute('data-current-slide')) || 0;
+        const totalBlocks = parseInt(section.querySelector('.flow-box-media__grid').getAttribute('data-total-blocks'));
+        const itemsPerRowMobile = parseInt(
+          section.querySelector('.flow-box-media__grid').getAttribute('data-items-per-row-mobile')
+        );
+
+        const maxSlides = Math.ceil(totalBlocks / itemsPerRowMobile) - 1;
+
+        const prevBtn = section.querySelector('.flow-box-media__mobile-nav-btn--prev');
+        const nextBtn = section.querySelector('.flow-box-media__mobile-nav-btn--next');
+
+        if (prevBtn) {
+          prevBtn.disabled = currentSlide <= 0;
+        }
+        if (nextBtn) {
+          nextBtn.disabled = currentSlide >= maxSlides;
+        }
+      }
+
+      // 移动端滑动功能
+      function initMobileSlider() {
+        const sections = document.querySelectorAll('.flow-box-media');
+
+        sections.forEach((section) => {
+          const prevBtn = section.querySelector('.flow-box-media__mobile-nav-btn--prev');
+          const nextBtn = section.querySelector('.flow-box-media__mobile-nav-btn--next');
+          const grid = section.querySelector('.flow-box-media__grid');
+
+          if (!prevBtn || !nextBtn || !grid) return;
+
+          prevBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const currentSlide = parseInt(section.getAttribute('data-current-slide')) || 0;
+            if (currentSlide > 0) {
+              const newSlide = currentSlide - 1;
+              section.setAttribute('data-current-slide', newSlide);
+
+              const itemsPerRowMobile = parseInt(grid.getAttribute('data-items-per-row-mobile'));
+              const slideWidth = 100 / itemsPerRowMobile;
+              grid.style.transform = `translateX(-${newSlide * slideWidth}%)`;
+
+              updateMobileNavButtons(section);
+            }
+          });
+
+          nextBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const currentSlide = parseInt(section.getAttribute('data-current-slide')) || 0;
+            const totalBlocks = parseInt(grid.getAttribute('data-total-blocks'));
+            const itemsPerRowMobile = parseInt(grid.getAttribute('data-items-per-row-mobile'));
+            const maxSlides = Math.ceil(totalBlocks / itemsPerRowMobile) - 1;
+
+            if (currentSlide < maxSlides) {
+              const newSlide = currentSlide + 1;
+              section.setAttribute('data-current-slide', newSlide);
+
+              const slideWidth = 100 / itemsPerRowMobile;
+              grid.style.transform = `translateX(-${newSlide * slideWidth}%)`;
+
+              updateMobileNavButtons(section);
+            }
+          });
         });
       }
 
@@ -194,10 +297,24 @@
           const isMobile = window.innerWidth <= 749;
           const itemsPerRow = isMobile ? itemsPerRowMobile : itemsPerRowDesktop;
 
+          // 重置所有状态
           section.classList.remove('is-fully-expanded');
           section.classList.remove('is-expanded');
           section.classList.remove('is-collapsing');
           section.setAttribute('data-visible-items', itemsPerRow);
+
+          // 重置移动端滑动状态
+          if (isMobile) {
+            section.setAttribute('data-current-slide', '0');
+            grid.style.transform = 'translateX(0)';
+            updateMobileNavButtons(section);
+            // 移动端不应用桌面端的隐藏逻辑，显示所有内容
+            section.classList.add('mobile-mode');
+          } else {
+            // 桌面端重置滑动状态
+            grid.style.transform = '';
+            section.classList.remove('mobile-mode');
+          }
 
           const button = section.querySelector('.flow-box-media__show-more');
           if (button) {
@@ -208,6 +325,7 @@
       });
 
       initFlowBoxMedia();
+      initMobileSlider();
     });
   }
 </script>

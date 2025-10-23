@@ -465,6 +465,22 @@
   transform: rotate(180deg);
 }
 
+/* 桌面端隐藏移动端导航按钮 */
+@media screen and (min-width: 750px) {
+  .flow-box-media__mobile-nav {
+    display: none;
+  }
+
+  .flow-box-media__mobile-slider {
+    overflow: visible;
+  }
+
+  .flow-box-media__mobile-slider .flow-box-media__grid {
+    display: grid;
+    transform: none !important;
+  }
+}
+
 
 @media screen and (max-width: 749px) {
   .flow-box-media__item {
@@ -479,13 +495,95 @@
     min-height: 150px;
   }
 
-  .flow-box-media__show-more {
-    padding: 12px 24px;
-    font-size: 13px;
+  /* 移动端隐藏Show More按钮 */
+  .flow-box-media__show-more-wrapper {
+    display: none;
   }
 
-  .flow-box-media__show-more-wrapper {
-    margin-top: 16px;
+  /* 移动端显示所有内容，不应用隐藏逻辑 */
+  .flow-box-media .flow-box-media__item {
+    height: auto !important;
+    min-height: 150px !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
+    overflow: visible !important;
+    margin: initial !important;
+    padding: initial !important;
+  }
+
+  /* 移动端模式下覆盖所有隐藏规则 */
+  .flow-box-media.mobile-mode .flow-box-media__item {
+    height: auto !important;
+    min-height: 150px !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
+    overflow: visible !important;
+    margin: initial !important;
+    padding: initial !important;
+  }
+
+  /* 移动端滑动容器 */
+  .flow-box-media__mobile-slider {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .flow-box-media__mobile-slider .flow-box-media__grid {
+    display: flex;
+    transition: transform 0.3s ease;
+    gap: 0 !important;
+  }
+
+  .flow-box-media__mobile-slider .flow-box-media__item {
+    flex: 0 0 calc(100% / var(--items-per-row-mobile, 2));
+    min-width: 0;
+  }
+
+  /* 移动端导航按钮 */
+  .flow-box-media__mobile-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .flow-box-media__mobile-nav-btn {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    opacity: 0.8;
+  }
+
+  .flow-box-media__mobile-nav-btn:hover {
+    background-color: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+    opacity: 1;
+  }
+
+  .flow-box-media__mobile-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .flow-box-media__mobile-nav-btn svg {
+    width: 16px;
+    height: 16px;
   }
 
   .flow-box-media__grid[data-items-per-row-mobile="1"] .flow-box-media__item--group .flow-box-media__group {
