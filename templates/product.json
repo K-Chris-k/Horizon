@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "main": {
       "type": "product-information",
@@ -70,7 +71,6 @@
               "type": "group",
               "name": "Header",
               "settings": {
-                "open_in_new_tab": false,
                 "content_direction": "column",
                 "vertical_on_mobile": true,
                 "horizontal_alignment": "flex-start",
@@ -98,6 +98,9 @@
                 "overlay_color": "#00000026",
                 "overlay_style": "solid",
                 "gradient_direction": "to top",
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -174,7 +177,8 @@
               "type": "variant-picker",
               "settings": {
                 "variant_style": "buttons",
-                "show_swatches": false,
+                "show_swatches": true,
+                "swatch_display_style": "image",
                 "alignment": "left",
                 "padding-block-start": 0,
                 "padding-block-end": 0,
@@ -188,6 +192,7 @@
               "settings": {
                 "stacking": true,
                 "show_pickup_availability": false,
+                "gift_card_form": true,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -210,6 +215,7 @@
                 },
                 "accelerated-checkout": {
                   "type": "accelerated-checkout",
+                  "disabled": true,
                   "static": true,
                   "settings": {},
                   "blocks": {}
@@ -220,6 +226,7 @@
             "text_aEtTtq": {
               "type": "text",
               "name": "Product description",
+              "disabled": true,
               "settings": {
                 "text": "{{ closest.product.description }}",
                 "width": "100%",
@@ -242,6 +249,248 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "accordion_zFcPLC": {
+              "type": "accordion",
+              "name": "t:names.accordion",
+              "settings": {
+                "icon": "plus",
+                "dividers": true,
+                "type_preset": "h6",
+                "inherit_color_scheme": true,
+                "color_scheme": "",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "accordion_row_dDn7Dd": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Return policy",
+                    "open_by_default": true,
+                    "anchor_target_class": "",
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_PhK3qq": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Our goal is for every customer to be totally satisfied with their purchase. If this isn't the case, let us know and we'll do our best to work with you to make it right.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_PhK3qq"
+                  ]
+                },
+                "accordion_row_WfBwwf": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Shipping",
+                    "open_by_default": false,
+                    "anchor_target_class": "",
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_G3RzKP": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>We will work quickly to ship your order as soon as possible. Once your order has shipped, you will receive an email with further information. Delivery times vary depending on your location.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_G3RzKP"
+                  ]
+                },
+                "accordion_row_BwYf6E": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Manufacturing",
+                    "open_by_default": false,
+                    "anchor_target_class": "",
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_jRf7HV": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Our products are manufactured both locally and globally. We carefully select our manufacturing partners to ensure our products are high quality and a fair value.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_jRf7HV"
+                  ]
+                },
+                "accordion_row_jxiXf7": {
+                  "type": "_accordion-row",
+                  "name": "t:names.accordion_row",
+                  "settings": {
+                    "heading": "Technical Specifications",
+                    "open_by_default": false,
+                    "anchor_target_class": "technical-specs-section",
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_CykEQU": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>We will work quickly to ship your order as soon as possible. Once your order has shipped, you will receive an email with further information. Delivery times vary depending on your location.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_CykEQU"
+                  ]
+                }
+              },
+              "block_order": [
+                "accordion_row_dDn7Dd",
+                "accordion_row_WfBwwf",
+                "accordion_row_BwYf6E",
+                "accordion_row_jxiXf7"
+              ]
+            },
+            "text_birtyr": {
+              "type": "text",
+              "name": "t:names.text",
+              "settings": {
+                "text": "<p><strong>Pairs well with</strong><br/></p>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "product_card_custom_HQYMHd": {
+              "type": "product-card-custom",
+              "name": "Custom Product Card",
+              "settings": {
+                "product": "dimmer-switch-solid-brass-series",
+                "custom_title": "",
+                "custom_image": "shopify://shop_images/3_1.png",
+                "custom_link": "",
+                "button_text": "Add to cart",
+                "button_added_text": "Added",
+                "button_soldout_text": "Sold out"
+              },
+              "blocks": {}
+            },
+            "product_card_custom_XWTiTt": {
+              "type": "product-card-custom",
+              "name": "Custom Product Card",
+              "settings": {
+                "product": "dimmer-switch-black-steel-series",
+                "custom_title": "",
+                "custom_image": "shopify://shop_images/Rectangle_54.png",
+                "custom_link": "",
+                "button_text": "Add to cart",
+                "button_added_text": "Added",
+                "button_soldout_text": "Sold out"
+              },
+              "blocks": {}
             }
           },
           "block_order": [
@@ -249,7 +498,11 @@
             "divider_VJhene",
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi",
-            "text_aEtTtq"
+            "text_aEtTtq",
+            "accordion_zFcPLC",
+            "text_birtyr",
+            "product_card_custom_HQYMHd",
+            "product_card_custom_XWTiTt"
           ]
         }
       },
@@ -262,6 +515,451 @@
         "color_scheme": "",
         "padding-block-start": 0,
         "padding-block-end": 0
+      }
+    },
+    "product_carousel_wifGp6": {
+      "type": "product-carousel",
+      "blocks": {
+        "slide_8QJXdy": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide_KQq7Wq": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide_jhcQFr": {
+          "type": "slide",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "slide_8QJXdy",
+        "slide_KQq7Wq",
+        "slide_jhcQFr"
+      ],
+      "name": "Product Carousel",
+      "settings": {
+        "image_aspect_ratio": "4/3",
+        "image_border_radius": 12,
+        "background_color": "#f5f5f5",
+        "show_counter": true,
+        "autoplay": false,
+        "autoplay_speed": 5
+      }
+    },
+    "technical_specifications_G9GYYY": {
+      "type": "technical-specifications",
+      "blocks": {
+        "tech_spec_PXyV7m": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "WEIGHT (KG)",
+            "label_color": "#333333",
+            "value": "12,6",
+            "value_color": "#666666"
+          }
+        },
+        "tech_spec_ypgcVy": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "Finishing",
+            "label_color": "#333333",
+            "value": "Stainless Steel",
+            "value_color": "#666666"
+          }
+        },
+        "tech_spec_cFRVGn": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "Dimensions (cm)",
+            "label_color": "#333333",
+            "value": "120",
+            "value_color": "#666666"
+          }
+        },
+        "tech_spec_Wjkk6M": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "Energy Class",
+            "label_color": "#333333",
+            "value": "A",
+            "value_color": "#666666"
+          }
+        },
+        "tech_spec_H7KH8q": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "Minimum distance from wall unitinduction/radiant hob",
+            "label_color": "#333333",
+            "value": "50cm",
+            "value_color": "#666666"
+          }
+        },
+        "tech_spec_AjxmiG": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "Minimum distance from wall unit gas hob",
+            "label_color": "#333333",
+            "value": "50cm",
+            "value_color": "#666666"
+          }
+        },
+        "tech_spec_8EmDRd": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "Duct Transition",
+            "label_color": "#333333",
+            "value": "150mm",
+            "value_color": "#666666"
+          }
+        },
+        "tech_spec_fdRAFk": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "Lighting",
+            "label_color": "#333333",
+            "value": "Led 2x2.5 W - 3500 K - 381 LUX",
+            "value_color": "#666666"
+          }
+        },
+        "tech_spec_AjjRNe": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "Absorption",
+            "label_color": "#333333",
+            "value": "255W",
+            "value_color": "#666666"
+          }
+        },
+        "download_AyFqar": {
+          "type": "download",
+          "settings": {
+            "label": "Product datasheets",
+            "file": "https://cdn.shopify.com/s/files/1/0081/6932/4641/files/Two-Way_Dimmer_Fitting_Instructions_Recycled_Green_Dimmer_Module_v0.pdf?v=1728026334"
+          }
+        },
+        "download_KyTE74": {
+          "type": "download",
+          "settings": {
+            "label": "Instructions",
+            "file": "https://cdn.shopify.com/s/files/1/0081/6932/4641/files/Two-Way_Dimmer_Fitting_Instructions_Recycled_Green_Dimmer_Module_v0.pdf?v=1728026334"
+          }
+        },
+        "faq_zGtq4z": {
+          "type": "faq",
+          "settings": {
+            "question": "How do I install Corston electrical products?",
+            "answer": "<p>You can view and print instructions from our mobile-friendly<a href=\"https://www.corston.com/pages/instructions\">support page.</a>We recommend using a professional to fit all Corston products. Electrical items must be installed by a qualified electrician.</p>"
+          }
+        },
+        "faq_R7Lcdx": {
+          "type": "faq",
+          "settings": {
+            "question": "How do I install Corston Clear Switches and Sockets?",
+            "answer": "<p>Our clear switches and sockets come with backing paper that you can either paint, or use as a wallpaper template.<br/>When you're happy with your chosen look, secure the clear front plate over the backing paper to conceal the wires.<br/>All Corston electrical products should be installed by a qualified electrician.</p>"
+          }
+        },
+        "faq_4NkKPj": {
+          "type": "faq",
+          "settings": {
+            "question": "Do I need to use Corston back boxes for your electrical products?",
+            "answer": "<p>All Corston switches and sockets require a back box with a minimum depth of 35-47mm. It's the only way you'll achieve a flush finish. Our 6G and 8G switches must be used with a<a href=\"https://corston.com/collections/corston-back-boxes\">Corston double metal back box.</a>because of the bespoke size.</p>"
+          }
+        },
+        "video_3AQDTi": {
+          "type": "video",
+          "settings": {
+            "title": "Installation Guide",
+            "video_url": ""
+          }
+        },
+        "tab_item_pmPGa8": {
+          "type": "tab_item",
+          "settings": {
+            "tab_type": "specification",
+            "tab_label": "Specification"
+          }
+        },
+        "tab_item_GKbMg4": {
+          "type": "tab_item",
+          "settings": {
+            "tab_type": "pdf",
+            "tab_label": "PDF"
+          }
+        },
+        "tab_item_NR3Xpy": {
+          "type": "tab_item",
+          "settings": {
+            "tab_type": "faq",
+            "tab_label": "FAQ"
+          }
+        },
+        "tab_item_HNyLCJ": {
+          "type": "tab_item",
+          "settings": {
+            "tab_type": "video",
+            "tab_label": "Installation video"
+          }
+        }
+      },
+      "block_order": [
+        "tech_spec_PXyV7m",
+        "tech_spec_ypgcVy",
+        "tech_spec_cFRVGn",
+        "tech_spec_Wjkk6M",
+        "tech_spec_H7KH8q",
+        "tech_spec_AjxmiG",
+        "tech_spec_8EmDRd",
+        "tech_spec_fdRAFk",
+        "tech_spec_AjjRNe",
+        "download_AyFqar",
+        "download_KyTE74",
+        "faq_zGtq4z",
+        "faq_R7Lcdx",
+        "faq_4NkKPj",
+        "video_3AQDTi",
+        "tab_item_pmPGa8",
+        "tab_item_GKbMg4",
+        "tab_item_NR3Xpy",
+        "tab_item_HNyLCJ"
+      ],
+      "name": "Technical Specifications",
+      "settings": {
+        "title": "Technical Specifications",
+        "subtitle": "Generic Data",
+        "image": "shopify://shop_images/Cooker_Hoods_Integrated_cooker_hoods_Boxin_black_120_tech_sheet.jpg",
+        "faq_title": "Frequently Asked Questions",
+        "title_font_size_desktop": 32,
+        "title_line_height_desktop": 1.2,
+        "subtitle_font_size_desktop": 24,
+        "subtitle_line_height_desktop": 1.4,
+        "content_font_size_desktop": 14,
+        "content_line_height_desktop": 1.6,
+        "tab_font_size_desktop": 16,
+        "tab_line_height_desktop": 1.5,
+        "title_font_size_mobile": 24,
+        "title_line_height_mobile": 1.2,
+        "subtitle_font_size_mobile": 18,
+        "subtitle_line_height_mobile": 1.4,
+        "content_font_size_mobile": 12,
+        "content_line_height_mobile": 1.6,
+        "tab_font_size_mobile": 14,
+        "tab_line_height_mobile": 1.5
+      }
+    },
+    "product_features_CKq9ce": {
+      "type": "product-features",
+      "blocks": {
+        "feature_AEArGk": {
+          "type": "feature",
+          "settings": {
+            "layout": "left",
+            "image_1": "shopify://shop_images/20251013115425_28_639.png",
+            "custom_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewbox=\"0 0 32 32\" fill=\"none\">\n  <g clip-path=\"url(#clip0_13_101)\">\n    <path d=\"M3.67107 25.7778C3.19996 26.6044 2.66663 27.5378 2.66663 29.3333H4.4444C4.4444 28.0178 4.79996 27.3866 5.21774 26.6666C5.68885 25.84 6.22218 24.9066 6.22218 23.1111H4.4444C4.4444 24.4266 4.08885 25.0578 3.67107 25.7778Z\" fill=\"#010101\"></path>\n    <path d=\"M8.11553 25.7778C7.64442 26.6044 7.11108 27.5378 7.11108 29.3333H8.88886C8.88886 28.0178 9.24442 27.3866 9.66219 26.6666C10.1333 25.84 10.6666 24.9066 10.6666 23.1111H8.88886C8.88886 24.4266 8.53331 25.0578 8.11553 25.7778Z\" fill=\"#010101\"></path>\n    <path d=\"M32 0H0V5.33333H1.77778V20.4444H10.6667V18.6667H3.55556V5.33333H15.1111V15.1111H16.8889V5.33333H28.4444V19.5556H30.2222V5.33333H32V0ZM30.2222 3.55556H1.77778V1.77778H30.2222V3.55556Z\" fill=\"#010101\"></path>\n    <path d=\"M13.3334 7.11108H9.77783V8.88886H13.3334V7.11108Z\" fill=\"#010101\"></path>\n    <path d=\"M22.2222 7.11108H18.6666V8.88886H22.2222V7.11108Z\" fill=\"#010101\"></path>\n    <path d=\"M26.16 18.649L19.9289 16.0801C19.68 15.9646 19.3689 15.9823 19.1289 16.1068L12.96 18.649C12.64 18.7823 12.4267 19.0846 12.4089 19.4312C12.32 21.3512 12.56 25.0668 15.0933 28.409C16.1689 29.8312 17.5111 30.9868 19.0933 31.8579C19.2356 31.9468 19.3956 31.9912 19.5645 31.9912C19.76 31.9912 19.9378 31.929 20.08 31.8223C21.6267 30.9512 22.9511 29.8046 24.0178 28.409C26.5511 25.0668 26.7911 21.3512 26.7022 19.4312C26.6845 19.0846 26.4711 18.7823 26.1511 18.649H26.16ZM22.6045 27.3423C21.7689 28.4446 20.7467 29.3601 19.5556 30.0801C18.3645 29.3601 17.3422 28.4357 16.5067 27.3423C14.5333 24.7468 14.1689 21.8579 14.1689 20.0801L19.5556 17.8579L24.9422 20.0801C24.9422 21.8579 24.5778 24.7468 22.6045 27.3423Z\" fill=\"#010101\"></path>\n  </g>\n  <defs>\n    <clippath id=\"clip0_13_101\">\n      <rect width=\"32\" height=\"32\" fill=\"white\"></rect>\n    </clippath>\n  </defs>\n</svg>",
+            "title": "High-end texture",
+            "description": "<p>•\tFull solid metal panels (copper / stainless steel), 1.5mm thick, with a stable and textured appearance<br/>•\tThe knobs are made with embossed design, providing a premium feel and a refined visual appeal</p>",
+            "list_items": ""
+          }
+        },
+        "feature_fajGhG": {
+          "type": "feature",
+          "settings": {
+            "layout": "right",
+            "image_1": "shopify://shop_images/20251013115425_29_639.png",
+            "custom_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewbox=\"0 0 32 32\" fill=\"none\">\n  <g clip-path=\"url(#clip0_13_119)\">\n    <path d=\"M18 8H24V14H26V6H18V8Z\" fill=\"#010101\"></path>\n    <path d=\"M8 18H6V26H14V24H8V18Z\" fill=\"#010101\"></path>\n    <path d=\"M28 0H10C7.79 0 6 1.79 6 4V6H4C1.79 6 0 7.79 0 10V28C0 30.21 1.79 32 4 32H22C24.21 32 26 30.21 26 28V26H28C30.21 26 32 24.21 32 22V4C32 1.79 30.21 0 28 0ZM30 22C30 23.1 29.1 24 28 24H26V17.98H24V24H17.97V26H24V28C24 29.1 23.1 30 22 30H4C2.9 30 2 29.1 2 28V10C2 8.9 2.9 8 4 8H6V14.03H8V8H14.02V6H8V4C8 2.9 8.9 2 10 2H28C29.1 2 30 2.9 30 4V22Z\" fill=\"#010101\"></path>\n    <path d=\"M17 11H15V15H10.99V17H15V21H17V17H20.99V15H17V11Z\" fill=\"#010101\"></path>\n  </g>\n  <defs>\n    <clippath id=\"clip0_13_119\">\n      <rect width=\"32\" height=\"32\" fill=\"white\"></rect>\n    </clippath>\n  </defs>\n</svg>",
+            "title": "Multifunctional dimming",
+            "description": "<p>•\tMinimum brightness adjustment to avoid flickering of the light<br/>•\tMaximum brightness adaptive, automatically eliminating flickering<br/>•\tBACKLIGHT function, enabling stable lighting even at low brightness<br/>•\tForward and backward cut mode (automatically/manually switchable), compatible with more lamps<br/>•\tSoft and gradual lighting on, protecting the lamps and extending their lifespan<br/>•\tLighting memory function, maintaining the preferred brightness at any time<br/>•\tSupport for multi-channel linkage control (Master + Master)</p>",
+            "list_items": ""
+          }
+        },
+        "feature_PXLYRk": {
+          "type": "feature",
+          "settings": {
+            "layout": "left",
+            "image_1": "shopify://shop_images/Rectangle_13.png",
+            "custom_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewbox=\"0 0 32 32\" fill=\"none\">\n  <g clip-path=\"url(#clip0_13_119)\">\n    <path d=\"M18 8H24V14H26V6H18V8Z\" fill=\"#010101\"></path>\n    <path d=\"M8 18H6V26H14V24H8V18Z\" fill=\"#010101\"></path>\n    <path d=\"M28 0H10C7.79 0 6 1.79 6 4V6H4C1.79 6 0 7.79 0 10V28C0 30.21 1.79 32 4 32H22C24.21 32 26 30.21 26 28V26H28C30.21 26 32 24.21 32 22V4C32 1.79 30.21 0 28 0ZM30 22C30 23.1 29.1 24 28 24H26V17.98H24V24H17.97V26H24V28C24 29.1 23.1 30 22 30H4C2.9 30 2 29.1 2 28V10C2 8.9 2.9 8 4 8H6V14.03H8V8H14.02V6H8V4C8 2.9 8.9 2 10 2H28C29.1 2 30 2.9 30 4V22Z\" fill=\"#010101\"></path>\n    <path d=\"M17 11H15V15H10.99V17H15V21H17V17H20.99V15H17V11Z\" fill=\"#010101\"></path>\n  </g>\n  <defs>\n    <clippath id=\"clip0_13_119\">\n      <rect width=\"32\" height=\"32\" fill=\"white\"></rect>\n    </clippath>\n  </defs>\n</svg>",
+            "title": "Easy installation",
+            "description": "<p>• The module is only 23mm thick, compatible with 25mm back boxes without the need for replacement<br/>• Recessed side design, compatible with more back boxes<br/>• Supports 9 types of UK Grid panels for more flexible installation<br/>• No neutral wire required, saving time and effort<br/><br/></p>",
+            "list_items": ""
+          }
+        },
+        "feature_CYdLKr": {
+          "type": "feature",
+          "settings": {
+            "layout": "right",
+            "image_1": "shopify://shop_images/Rectangle_12.png",
+            "custom_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewbox=\"0 0 32 32\" fill=\"none\">\n  <g clip-path=\"url(#clip0_13_119)\">\n    <path d=\"M18 8H24V14H26V6H18V8Z\" fill=\"#010101\"></path>\n    <path d=\"M8 18H6V26H14V24H8V18Z\" fill=\"#010101\"></path>\n    <path d=\"M28 0H10C7.79 0 6 1.79 6 4V6H4C1.79 6 0 7.79 0 10V28C0 30.21 1.79 32 4 32H22C24.21 32 26 30.21 26 28V26H28C30.21 26 32 24.21 32 22V4C32 1.79 30.21 0 28 0ZM30 22C30 23.1 29.1 24 28 24H26V17.98H24V24H17.97V26H24V28C24 29.1 23.1 30 22 30H4C2.9 30 2 29.1 2 28V10C2 8.9 2.9 8 4 8H6V14.03H8V8H14.02V6H8V4C8 2.9 8.9 2 10 2H28C29.1 2 30 2.9 30 4V22Z\" fill=\"#010101\"></path>\n    <path d=\"M17 11H15V15H10.99V17H15V21H17V17H20.99V15H17V11Z\" fill=\"#010101\"></path>\n  </g>\n  <defs>\n    <clippath id=\"clip0_13_119\">\n      <rect width=\"32\" height=\"32\" fill=\"white\"></rect>\n    </clippath>\n  </defs>\n</svg>",
+            "title": "Smooth dimming experience",
+            "description": "<p>• Over-temperature / over-current / overload / short-circuit protection<br/>• V0-level fireproof material<br/>• Lightning protection, safe and reliable<br/>• Smooth and stable light without flickering<br/>• The dimming effect is comparable to that of international brands<br/><br/></p>",
+            "list_items": ""
+          }
+        }
+      },
+      "block_order": [
+        "feature_AEArGk",
+        "feature_fajGhG",
+        "feature_PXLYRk",
+        "feature_CYdLKr"
+      ],
+      "name": "Product Features",
+      "settings": {
+        "background_color": "#efefef",
+        "title_font_size_desktop": 20,
+        "title_line_height_desktop": 1.3,
+        "description_font_size_desktop": 15,
+        "description_line_height_desktop": 1.6,
+        "list_font_size_desktop": 14,
+        "list_line_height_desktop": 1.5,
+        "title_font_size_mobile": 18,
+        "title_line_height_mobile": 1.3,
+        "description_font_size_mobile": 14,
+        "description_line_height_mobile": 1.6,
+        "list_font_size_mobile": 14,
+        "list_line_height_mobile": 1.5
+      }
+    },
+    "featured_blog_posts_WLJgz7": {
+      "type": "featured-blog-posts",
+      "blocks": {
+        "static-blog-title": {
+          "type": "_featured-blog-posts-title",
+          "name": "t:names.title",
+          "static": true,
+          "settings": {
+            "text": "<h3>{{ closest.blog.title }}</h3>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "static-blog-post-card": {
+          "type": "_featured-blog-posts-card",
+          "name": "t:names.blog_card",
+          "static": true,
+          "settings": {
+            "alignment": "left",
+            "gap": 8,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "image": {
+              "type": "_featured-blog-posts-image",
+              "static": true,
+              "settings": {
+                "image_ratio": "square",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0
+              },
+              "blocks": {}
+            },
+            "title": {
+              "type": "_heading",
+              "name": "t:names.title",
+              "static": true,
+              "settings": {
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "text": "<h4>{{ closest.article.title }}</h4>",
+                "read_only": false,
+                "alignment": "left",
+                "show_alignment": false,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "blog-post-info-text": {
+              "type": "_blog-post-info-text",
+              "name": "t:names.details",
+              "disabled": true,
+              "static": true,
+              "settings": {
+                "show_date": true,
+                "show_author": true,
+                "type_preset": "",
+                "alignment": "left",
+                "show_alignment": false,
+                "padding-block-start": 0,
+                "padding-block-end": 0
+              },
+              "blocks": {}
+            },
+            "blog-post-description": {
+              "type": "_blog-post-description",
+              "name": "t:names.excerpt",
+              "static": true,
+              "settings": {
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "padding-block-start": 8,
+                "padding-block-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": []
+        }
+      },
+      "name": "t:names.blog_posts_carousel",
+      "settings": {
+        "blog": "",
+        "layout_type": "grid",
+        "carousel_on_mobile": true,
+        "post_limit": 3,
+        "columns": 3,
+        "mobile_columns": "2",
+        "mobile_card_size": "60cqw",
+        "columns_gap": 8,
+        "rows_gap": 16,
+        "icons_style": "arrow",
+        "icons_shape": "circle",
+        "section_width": "page-width",
+        "gap": 12,
+        "color_scheme": "",
+        "padding-block-start": 48,
+        "padding-block-end": 48
       }
     },
     "product_recommendations_qggXJq": {
@@ -408,6 +1106,10 @@
   },
   "order": [
     "main",
+    "product_carousel_wifGp6",
+    "technical_specifications_G9GYYY",
+    "product_features_CKq9ce",
+    "featured_blog_posts_WLJgz7",
     "product_recommendations_qggXJq"
   ]
 }
