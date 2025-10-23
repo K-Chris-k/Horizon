@@ -1,8 +1,4 @@
-{% comment %}
-  Smart Thermostat Features Section
-  Displays a centered title with learn more link, feature blocks with icons,
-  and a content box with image overlay
-{% endcomment %}
+
 
 {% liquid
   assign section_id = section.id
@@ -161,6 +157,8 @@
   @media screen and (min-width: 750px) {
     #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content {
       order: 2;
+      width: 1000px;
+      margin: 0 auto;
     }
   }
 
@@ -192,7 +190,7 @@
       width: {{ section.settings.content_image_width_desktop }}px;
       position: absolute;
       left: {{ section.settings.content_image_offset_desktop }}px;
-      top: 50%;
+      top: 20%;
       transform: translateY(-50%);
     }
   }

@@ -18,11 +18,18 @@
   assign feature_desc_line_height_desktop = section.settings.feature_desc_line_height_desktop | default: 1.5
   assign feature_desc_font_size_mobile = section.settings.feature_desc_font_size_mobile | default: 13
   assign feature_desc_line_height_mobile = section.settings.feature_desc_line_height_mobile | default: 1.4
+  
+  assign padding_top_desktop = section.settings.padding_top | default: 48
+  assign padding_bottom_desktop = section.settings.padding_bottom | default: 48
+  assign padding_top_mobile = section.settings.padding_top_mobile | default: 32
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile | default: 32
+  assign bg_color = section.settings.background_color | default: '#ffffff'
 -%}
 
 {%- style -%}
   .pft-section-{{ section.id }} {
-    padding: var(--spacing-12) 0;
+    padding: {{ padding_top_desktop }}px 0 {{ padding_bottom_desktop }}px 0;
+    background-color: {{ bg_color }};
   }
   
   .pft-section-{{ section.id }} .pft-container-{{ section.id }} {
@@ -40,6 +47,7 @@
   
   .pft-section-{{ section.id }} .pft-image-wrapper-{{ section.id }} {
     position: relative;
+    top: -28%;
   }
   
   .pft-section-{{ section.id }} .pft-image-desktop-{{ section.id }} {
@@ -67,11 +75,11 @@
   .pft-section-{{ section.id }} .pft-features-grid-{{ section.id }} {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-6);
+    gap: var(--spacing-2);
   }
   
   .pft-section-{{ section.id }} .pft-feature-item-{{ section.id }} {
-    padding: var(--spacing-4);
+    padding: var(--spacing-3);
     border-bottom: 1px solid #e5e5e5;
   }
   
@@ -102,9 +110,29 @@
     font-size: {{ feature_desc_font_size_desktop }}px;
     line-height: {{ feature_desc_line_height_desktop }};
     color: #666;
+    margin:0px;
   }
   
   /* Tablet Responsive */
+  @media (max-width: 1440px) {
+    .pft-section-{{ section.id }} .pft-image-wrapper-{{ section.id }} {
+    position: relative;
+    top: -30%;
+  }
+  }
+  @media (max-width: 1280px) {
+    .pft-section-{{ section.id }} .pft-image-wrapper-{{ section.id }} {
+    position: relative;
+    top: -32%;
+  }
+    
+  .pft-section-{{ section.id }} .pft-main-content-{{ section.id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-6);
+    align-items: center;
+  }
+  }
   @media (max-width: 1024px) {
     .pft-section-{{ section.id }} {
       padding: var(--spacing-10) 0;
@@ -117,12 +145,16 @@
     .pft-section-{{ section.id }} .pft-features-grid-{{ section.id }} {
       gap: var(--spacing-5);
     }
+    .pft-section-{{ section.id }} .pft-image-wrapper-{{ section.id }} {
+    position: relative;
+    top: -30%;
+  }
   }
   
   /* Mobile Responsive */
   @media (max-width: 768px) {
     .pft-section-{{ section.id }} {
-      padding: var(--spacing-8) 0;
+      padding: {{ padding_top_mobile }}px 0 {{ padding_bottom_mobile }}px 0;
     }
     
     .pft-section-{{ section.id }} .pft-container-{{ section.id }} {
@@ -188,7 +220,7 @@
   /* Small Mobile Responsive */
   @media (max-width: 480px) {
     .pft-section-{{ section.id }} {
-      padding: var(--spacing-6) 0;
+      padding: {{ padding_top_mobile }}px 0 {{ padding_bottom_mobile }}px 0;
     }
     
     .pft-section-{{ section.id }} .pft-container-{{ section.id }} {
@@ -329,6 +361,56 @@
       "type": "image_picker",
       "id": "mobile_image",
       "label": "Mobile Image (Different from desktop)"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top (Desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom (Desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding Top (Mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding Bottom (Mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
     },
     {
       "type": "header",

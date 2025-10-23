@@ -5,7 +5,18 @@
 {% endcomment %}
 
 <style>
+  /* Section Spacing */
+  #shopify-section-{{ section.id }} .control-compatibility {
+    padding-top: {{ section.settings.padding_top | default: 64 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | default: 64 }}px;
+  }
 
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .control-compatibility {
+      padding-top: {{ section.settings.padding_top_mobile | default: 40 }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile | default: 40 }}px;
+    }
+  }
 
   #shopify-section-{{ section.id }} .control-compatibility__header {
     text-align: center;
@@ -415,7 +426,7 @@
     },
     {
       "type": "header",
-      "content": "Section Spacing"
+      "content": "Section Spacing - Desktop"
     },
     {
       "type": "range",
@@ -424,7 +435,7 @@
       "max": 120,
       "step": 8,
       "unit": "px",
-      "label": "Padding Top",
+      "label": "Padding Top (Desktop)",
       "default": 64
     },
     {
@@ -434,8 +445,32 @@
       "max": 120,
       "step": 8,
       "unit": "px",
-      "label": "Padding Bottom",
+      "label": "Padding Bottom (Desktop)",
       "default": 64
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing - Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding Top (Mobile)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding Bottom (Mobile)",
+      "default": 40
     }
   ],
   "blocks": [
