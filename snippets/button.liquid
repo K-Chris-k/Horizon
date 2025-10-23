@@ -21,6 +21,7 @@
     size-style
     {{ block_settings.style_class }}
     {{ block_settings.style_class }}--{{ block.id }}
+    {% if block_settings.show_underline  %}show-underline{% endif %}
   "
   style="{% render 'size-style', settings: block_settings %}"
   {%- if block_settings.open_in_new_tab -%}
@@ -40,6 +41,14 @@
     &:hover {
       color: var(--color-primary-hover);
       text-decoration-color: transparent;
+    }
+  }
+
+  .show-underline {
+    text-decoration: underline !important;
+
+    &:hover {
+      text-decoration: underline !important;
     }
   }
 {% endstylesheet %}
