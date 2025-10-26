@@ -1,0 +1,151 @@
+{%- comment -%}
+  Color name to RGB mapping
+  Returns RGB value for common color names
+  
+  @param {string} color_name - The color name to map
+  @returns {string} RGB color value
+{%- endcomment -%}
+
+{%- liquid
+  assign color_name_lower = color_name | downcase | strip
+  assign rgb_value = null
+  
+  # Common colors mapping
+  case color_name_lower
+    when 'black'
+      assign rgb_value = '0, 0, 0'
+    when 'white'
+      assign rgb_value = '255, 255, 255'
+    when 'red'
+      assign rgb_value = '255, 0, 0'
+    when 'blue'
+      assign rgb_value = '0, 0, 255'
+    when 'green'
+      assign rgb_value = '0, 128, 0'
+    when 'yellow'
+      assign rgb_value = '255, 255, 0'
+    when 'orange'
+      assign rgb_value = '255, 165, 0'
+    when 'purple'
+      assign rgb_value = '128, 0, 128'
+    when 'pink'
+      assign rgb_value = '255, 192, 203'
+    when 'brown'
+      assign rgb_value = '165, 42, 42'
+    when 'gray', 'grey'
+      assign rgb_value = '128, 128, 128'
+    when 'navy'
+      assign rgb_value = '0, 0, 128'
+    when 'beige'
+      assign rgb_value = '245, 245, 220'
+    when 'maroon'
+      assign rgb_value = '128, 0, 0'
+    when 'olive'
+      assign rgb_value = '128, 128, 0'
+    when 'lime'
+      assign rgb_value = '0, 255, 0'
+    when 'aqua', 'cyan'
+      assign rgb_value = '0, 255, 255'
+    when 'teal'
+      assign rgb_value = '0, 128, 128'
+    when 'silver'
+      assign rgb_value = '192, 192, 192'
+    when 'gold'
+      assign rgb_value = '255, 215, 0'
+    when 'coral'
+      assign rgb_value = '255, 127, 80'
+    when 'salmon'
+      assign rgb_value = '250, 128, 114'
+    when 'khaki'
+      assign rgb_value = '240, 230, 140'
+    when 'violet'
+      assign rgb_value = '238, 130, 238'
+    when 'indigo'
+      assign rgb_value = '75, 0, 130'
+    when 'magenta'
+      assign rgb_value = '255, 0, 255'
+    when 'turquoise'
+      assign rgb_value = '64, 224, 208'
+    when 'lavender'
+      assign rgb_value = '230, 230, 250'
+    when 'mint'
+      assign rgb_value = '152, 255, 152'
+    when 'peach'
+      assign rgb_value = '255, 218, 185'
+    when 'cream'
+      assign rgb_value = '255, 253, 208'
+    when 'tan'
+      assign rgb_value = '210, 180, 140'
+    when 'burgundy'
+      assign rgb_value = '128, 0, 32'
+    when 'rose'
+      assign rgb_value = '255, 0, 127'
+    when 'ivory'
+      assign rgb_value = '255, 255, 240'
+    when 'charcoal'
+      assign rgb_value = '54, 69, 79'
+    when 'slate'
+      assign rgb_value = '112, 128, 144'
+    
+    # Light variations
+    when 'light blue', 'lightblue', 'sky blue', 'skyblue'
+      assign rgb_value = '135, 206, 235'
+    when 'light green', 'lightgreen'
+      assign rgb_value = '144, 238, 144'
+    when 'light pink', 'lightpink'
+      assign rgb_value = '255, 182, 193'
+    when 'light gray', 'light grey', 'lightgray', 'lightgrey'
+      assign rgb_value = '211, 211, 211'
+    when 'light yellow', 'lightyellow'
+      assign rgb_value = '255, 255, 224'
+    
+    # Dark variations
+    when 'dark blue', 'darkblue'
+      assign rgb_value = '0, 0, 139'
+    when 'dark green', 'darkgreen'
+      assign rgb_value = '0, 100, 0'
+    when 'dark red', 'darkred'
+      assign rgb_value = '139, 0, 0'
+    when 'dark gray', 'dark grey', 'darkgray', 'darkgrey'
+      assign rgb_value = '169, 169, 169'
+    when 'dark orange', 'darkorange'
+      assign rgb_value = '255, 140, 0'
+    
+    # Forest/Natural colors
+    when 'forest green', 'forestgreen'
+      assign rgb_value = '34, 139, 34'
+    when 'sea green', 'seagreen'
+      assign rgb_value = '46, 139, 87'
+    when 'olive green', 'olivegreen'
+      assign rgb_value = '128, 128, 0'
+    
+    # Metallic colors
+    when 'bronze'
+      assign rgb_value = '205, 127, 50'
+    when 'copper'
+      assign rgb_value = '184, 115, 51'
+    when 'brass'
+      assign rgb_value = '181, 166, 66'
+    
+    # Additional common colors
+    when 'crimson'
+      assign rgb_value = '220, 20, 60'
+    when 'scarlet'
+      assign rgb_value = '255, 36, 0'
+    when 'ruby'
+      assign rgb_value = '224, 17, 95'
+    when 'emerald'
+      assign rgb_value = '80, 200, 120'
+    when 'sapphire'
+      assign rgb_value = '15, 82, 186'
+    when 'amber'
+      assign rgb_value = '255, 191, 0'
+    when 'jade'
+      assign rgb_value = '0, 168, 107'
+    when 'pearl'
+      assign rgb_value = '234, 224, 200'
+  endcase
+-%}
+
+{{- rgb_value -}}
+

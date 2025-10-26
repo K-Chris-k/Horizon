@@ -2,6 +2,14 @@
 
 {%- liquid
   assign block_settings = block.settings
+  assign product_has_swatches = false
+  assign product_has_variants = false
+  
+  # Check if product has multiple variants (not just default variant)
+  if closest.product.variants.size > 1 or closest.product.options_with_values.first.name != 'Title'
+    assign product_has_variants = true
+  endif
+  
   for product_option in closest.product.options_with_values
     assign swatch_count = product_option.values | map: 'swatch' | compact | size
 
@@ -9,9 +17,20 @@
       assign product_has_swatches = true
     endif
   endfor
+  
+  # DEBUG: Show block if product has variants for testing
+  # This will help identify if swatches are not being recognized
+  assign should_show = false
+  if product_has_swatches
+    assign should_show = true
+  elsif product_has_variants
+    # Show for all variants when using text or color/image mode
+    # This allows the variant-swatches snippet to handle the display logic
+    assign should_show = true
+  endif
 -%}
 
-{% if product_has_swatches %}
+{% if should_show %}
   <product-swatches
     data-product-id="{{ closest.product.id }}"
     data-product-url="{{ closest.product.url }}"
@@ -98,35 +117,189 @@
     color: var(--color-foreground-rgb);
   }
 
-  /* Text button style */
-  .variant-option__button-label--text {
-    padding: 8px 16px;
-    border: 1px solid rgb(var(--color-foreground-rgb) / 0.2);
+  /* ===== Color Swatches Mode (Round) ===== */
+  .variant-option--swatch-color {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .variant-option--swatch-color .variant-option__swatch {
+    position: relative;
+  }
+
+  .variant-option--swatch-color .swatch {
+    width: 24px;
+    height: 24px;
     border-radius: 4px;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.15);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  }
+
+  .variant-option--swatch-color .variant-option__button-label {
+    display: block;
+    cursor: pointer;
+    position: relative;
+  }
+
+  /* 悬停效果 */
+  .variant-option--swatch-color .variant-option__button-label:hover .swatch {
+    transform: scale(1.1);
+    border-color: rgb(var(--color-foreground-rgb) / 0.4);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  
+
+  /* White 颜色的特殊处理 - 确保边框可见 */
+  .variant-option--swatch-color .swatch[style*="255, 255, 255"] {
+    border-color: rgb(var(--color-foreground-rgb) / 0.25);
+  }
+
+  /* 移动端优化 */
+  @media (max-width: 749px) {
+    .variant-option--swatch-color {
+      gap: 8px;
+    }
+    
+    .variant-option--swatch-color .swatch {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  /* ===== Image Swatches Mode (Square) ===== */
+  .variant-option--swatch-image {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .variant-option--swatch-image .swatch {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    border: 2px solid rgb(var(--color-foreground-rgb) / 0.15);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .variant-option--swatch-image .variant-option__button-label {
+    display: block;
+    cursor: pointer;
+  }
+
+  .variant-option--swatch-image .variant-option__button-label:hover .swatch {
+    border-color: rgb(var(--color-foreground-rgb) / 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  .variant-option--swatch-image .variant-option__button-label:has(input:checked) .swatch {
+    border-color: var(--color-foreground);
+    border-width: 3px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  @media (max-width: 749px) {
+    .variant-option--swatch-image {
+      gap: 10px;
+    }
+    
+    .variant-option--swatch-image .swatch {
+      width: 50px;
+      height: 50px;
+    }
+  }
+
+  /* ===== Text Buttons Mode ===== */
+  .variant-option--swatch-text {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .variant-option--swatch-text .variant-option__button-label--text {
+    padding: 10px 20px;
+    border: 1.5px solid rgb(var(--color-foreground-rgb) / 0.2);
+    border-radius: 6px;
     background-color: transparent;
     transition: all 0.2s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
   }
 
-  .variant-option__button-label--text:hover {
-    border-color: rgb(var(--color-foreground-rgb) / 0.4);
+  .variant-option--swatch-text .variant-option__button-label--text:hover {
+    border-color: rgb(var(--color-foreground-rgb) / 0.5);
     background-color: rgb(var(--color-foreground-rgb) / 0.05);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   }
 
-  .variant-option__button-label--text:has(input:checked) {
+  .variant-option--swatch-text .variant-option__button-label--text:has(input:checked) {
     border-color: var(--color-foreground);
+    border-width: 2px;
     background-color: var(--color-foreground);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
   }
 
-  .variant-option__text {
+  .variant-option--swatch-text .variant-option__text {
     display: block;
     font-size: 14px;
+    font-weight: 500;
     line-height: 1.2;
     white-space: nowrap;
     color: inherit;
+    letter-spacing: 0.02em;
   }
 
-  .variant-option__button-label--text:has(input:checked) .variant-option__text {
+  .variant-option--swatch-text .variant-option__button-label--text:has(input:checked) .variant-option__text {
     color: var(--color-background);
+    font-weight: 600;
+  }
+
+  @media (max-width: 749px) {
+    .variant-option--swatch-text {
+      gap: 6px;
+    }
+    
+    .variant-option--swatch-text .variant-option__button-label--text {
+      padding: 8px 16px;
+      min-width: 70px;
+      font-size: 13px;
+    }
+  }
+
+  /* ===== 通用优化 ===== */
+  /* 隐藏 radio input */
+  .variant-option--swatches input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* 禁用状态 */
+  .variant-option--swatches .variant-option__button-label:has(input:disabled) {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .variant-option--swatches .variant-option__button-label:has(input:disabled):hover {
+    transform: none;
+  }
+
+  /* 无障碍聚焦样式 */
+  .variant-option--swatches input:focus-visible ~ .swatch,
+  .variant-option--swatches input:focus-visible ~ .variant-option__text {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 2px;
   }
 {% endstylesheet %}
 

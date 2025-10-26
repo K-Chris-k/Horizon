@@ -18,9 +18,22 @@
     {%- for product_option in product_resource.options_with_values -%}
       {%- liquid
         assign swatch_count = product_option.values | map: 'swatch' | compact | size
+        
+        # Check if this is likely a color option based on the option name
+        assign option_name_lower = product_option.name | downcase
+        assign is_color_option = false
+        if option_name_lower contains 'color' or option_name_lower contains 'colour' or option_name_lower contains 'colore' or option_name_lower contains 'couleur'
+          assign is_color_option = true
+        endif
       -%}
 
-      {% if swatch_count == 0 %}
+      {% comment %} 
+        Only show color-related options:
+        - Must have swatches OR be a color option (name contains "color")
+        - Skip all other options (Size, Material, etc.)
+      {% endcomment %}
+      {% if swatch_count == 0 and is_color_option == false %}
+        {% comment %} Skip non-color options without swatches {% endcomment %}
         {% continue %}
       {% endif %}
 
@@ -65,9 +78,19 @@
         # Use product_option.position which is the actual position among ALL options
         assign swatch_option_position = product_option.position
         assign swatch_option_key = 'option' | append: swatch_option_position
+        
+        # Build dynamic class based on display_style
+        assign display_style_class = ''
+        if display_style == 'color'
+          assign display_style_class = 'variant-option--swatch-color'
+        elsif display_style == 'image'
+          assign display_style_class = 'variant-option--swatch-image'
+        elsif display_style == 'text'
+          assign display_style_class = 'variant-option--swatch-text'
+        endif
       -%}
 
-      <fieldset class="variant-option variant-option--buttons variant-option--swatches">
+      <fieldset class="variant-option variant-option--buttons variant-option--swatches {{ display_style_class }}">
         {% capture children %}
           {%- for product_option_value in product_option.values -%}
             {% liquid
@@ -112,6 +135,24 @@
             %}
 
             <li class="variant-option__swatch">
+              {% liquid
+                # Check if we have a swatch or need to generate color from name
+                assign has_swatch = false
+                assign fallback_color_rgb = null
+                
+                if product_option_value.swatch
+                  assign has_swatch = true
+                elsif display_style == 'color' or display_style == 'image'
+                  # Try to get RGB value from color name mapping
+                  capture fallback_color_rgb
+                    render 'color-map', color_name: product_option_value.name
+                  endcapture
+                  assign fallback_color_rgb = fallback_color_rgb | strip
+                  if fallback_color_rgb != blank and fallback_color_rgb != ''
+                    assign has_swatch = true
+                  endif
+                endif
+              %}
               <label
                 data-media-id="{{ featured_media.id }}"
                 class="variant-option__button-label {% if display_style == 'text' %}variant-option__button-label--text{% else %}variant-option__button-label--has-swatch{% endif %} {% if display_style == 'color' %}swatch-rounded{% endif %}"
@@ -139,14 +180,30 @@
                   data-first-available-or-first-variant-id="{{ first_available_variant.id | default: product_option_value.variant.id }}"
                 >
                 {% if display_style == 'text' %}
+                  {% comment %} Always show as text in text mode {% endcomment %}
                   <span class="variant-option__text">{{ product_option_value.name }}</span>
+                {% elsif has_swatch %}
+                  {% comment %} Show as swatch (color or image) {% endcomment %}
+                  {% if product_option_value.swatch %}
+                    {% comment %} Use Shopify's swatch object {% endcomment %}
+                    {% render 'swatch',
+                      swatch: product_option_value.swatch,
+                      variant_image: featured_media,
+                      mode: 'unscaled',
+                      display_style: display_style
+                    %}
+                  {% else %}
+                    {% comment %} Use fallback color from color-map {% endcomment %}
+                    {% render 'swatch',
+                      variant_image: featured_media,
+                      mode: 'unscaled',
+                      display_style: display_style,
+                      fallback_color_rgb: fallback_color_rgb
+                    %}
+                  {% endif %}
                 {% else %}
-                  {% render 'swatch',
-                    swatch: product_option_value.swatch,
-                    variant_image: featured_media,
-                    mode: 'unscaled',
-                    display_style: display_style
-                  %}
+                  {% comment %} Fallback to text if no swatch and no color mapping {% endcomment %}
+                  <span class="variant-option__text">{{ product_option_value.name }}</span>
                 {% endif %}
                 {% render 'strikethrough-variant', product_option: product_option_value %}
               </label>
