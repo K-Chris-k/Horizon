@@ -16,7 +16,7 @@
           "type": "text",
           "name": "t:names.text",
           "settings": {
-            "text": "<p>Hardcore Aesthetics & Cutting-edge Technology</p>",
+            "text": "<p>HARDCORE AESTHETICS & CUTTING-EDGE TECHNOLOGY</p>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
@@ -42,7 +42,7 @@
           "type": "text",
           "name": "t:names.heading",
           "settings": {
-            "text": "<p>close enough to touch</p>",
+            "text": "<p>Designed for the discerning</p>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
@@ -68,13 +68,13 @@
           "type": "button",
           "name": "t:names.button",
           "settings": {
-            "label": "SHOP NOW",
+            "label": "Shop now",
             "link": "shopify://collections/all",
             "open_in_new_tab": false,
             "show_underline": false,
             "style_class": "button",
             "width": "custom",
-            "custom_width": 15,
+            "custom_width": 12,
             "width_mobile": "fit-content",
             "custom_width_mobile": 100
           },
@@ -122,10 +122,10 @@
           "type": "text_overlay",
           "settings": {
             "image": "shopify://shop_images/1.png",
-            "heading": "WE KNOW",
+            "heading": "We know",
             "heading_font_size": 32,
-            "text": "What you desire is not merely intelligence, but rather designs that carry stories, embody spirit, and can withstand the test of time.",
-            "text_font_size": 16,
+            "text": "True elegance lives in the details. \n<br>It’s in the texture, the tone, the touch.",
+            "text_font_size": 18,
             "text_position": "center-left",
             "flex_ratio": "5"
           }
@@ -157,11 +157,11 @@
           "type": "_colleciton-extra-content",
           "name": "Collection Extra Content",
           "settings": {
-            "text": "But why is the dream of a home that combines outstanding design and top-notch intelligence",
+            "text": "It’s not about controlling light, but understanding living itself.\nThe light you desire, the mood you seek, the life you aspire to — all captured in every single turn.",
             "text_size": 14,
-            "title": "ALWAYS HINDERED BY HIGH PRICES",
+            "title": "Dimmer switch",
             "title_size": 28,
-            "button_text": "SHOP NOW",
+            "button_text": "Choose your style",
             "button_link": "",
             "button_bg": "#111111",
             "button_color": "#ffffff",
@@ -349,13 +349,29 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "swatches_PQqRcT": {
+              "type": "swatches",
+              "name": "t:names.swatches",
+              "settings": {
+                "swatch_display_style": "color",
+                "product_swatches_alignment": "flex-start",
+                "product_swatches_alignment_mobile": "flex-start",
+                "hide_padding": false,
+                "product_swatches_padding_top": 4,
+                "product_swatches_padding_bottom": 0,
+                "product_swatches_padding_left": 0,
+                "product_swatches_padding_right": 0
+              },
+              "blocks": {}
             }
           },
           "block_order": [
             "product_card_gallery_cPTagL",
             "swatches_Lpa9WL",
             "product_title_VykYCR",
-            "price_h8DaAT"
+            "price_h8DaAT",
+            "swatches_PQqRcT"
           ]
         }
       },
@@ -369,7 +385,7 @@
         "carousel_on_mobile": true,
         "show_button_in_button": true,
         "button_text": "SHOP NOW",
-        "button_link": "shopify://collections/frontpage",
+        "button_link": "shopify://collections/all",
         "max_products": 4,
         "columns": 4,
         "mobile_columns": "2",
@@ -469,7 +485,7 @@
                 "text_H77FFJ": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>Reject excessive exaggeration. Let the ultimate aesthetics and revolutionary intelligence become the daily routine of every quality life.</p>",
+                    "text": "<h5>We make details that matter — for those who feel them.</h5>",
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",
@@ -499,8 +515,8 @@
                     "open_in_new_tab": false,
                     "show_underline": false,
                     "style_class": "button",
-                    "width": "custom",
-                    "custom_width": 30,
+                    "width": "fit-content",
+                    "custom_width": 20,
                     "width_mobile": "fit-content",
                     "custom_width_mobile": 100
                   },
@@ -1237,7 +1253,7 @@
         "image_qhD6Uc": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/Container.png",
+            "image": "shopify://shop_images/Rectangle_45.png",
             "link": "",
             "image_ratio": "adapt",
             "width": "fill",
@@ -1299,7 +1315,7 @@
               "type": "text",
               "name": "t:names.heading",
               "settings": {
-                "text": "<p>A more conscious home starts here.</p>",
+                "text": "<p>Your home aesthetic starts here.</p>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -1324,9 +1340,9 @@
             "text_X3N7hj": {
               "type": "text",
               "settings": {
-                "text": "<p>High quality, high intelligence, high cost-effectiveness - making the creation of your dream smart home a reality, accessible to every individual who yearns for beauty.</p>",
-                "width": "fit-content",
-                "max_width": "narrow",
+                "text": "<p>The space you inhabit is shaped by light and warmth — a quiet reflection of your taste and sense of living.<br/>Light is beauty you see; warmth is beauty you feel.<br/>We help make your aesthetic both seen and felt.</p>",
+                "width": "100%",
+                "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "rte",
                 "font": "var(--font-body--family)",
@@ -1354,33 +1370,18 @@
                 "link": "",
                 "image_ratio": "landscape",
                 "width": "custom",
-                "custom_width": 70,
+                "custom_width": 95,
                 "width_mobile": "fill",
                 "custom_width_mobile": 100,
                 "height": "fit",
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 35,
+                "border_radius": 25,
+                "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "button_RF7PQm": {
-              "type": "button",
-              "settings": {
-                "label": "Discover More",
-                "link": "shopify://collections/all",
-                "open_in_new_tab": false,
-                "show_underline": true,
-                "style_class": "link",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
               },
               "blocks": {}
             }
@@ -1388,8 +1389,7 @@
           "block_order": [
             "text_jCgVrd",
             "text_X3N7hj",
-            "image_BVbChx",
-            "button_RF7PQm"
+            "image_BVbChx"
           ]
         }
       },
@@ -1407,7 +1407,7 @@
         "horizontal_alignment_flex_direction_column": "flex-start",
         "vertical_alignment_flex_direction_column": "center",
         "gap": 52,
-        "section_width": "full-width",
+        "section_width": "page-width",
         "section_height": "",
         "section_height_custom": 50,
         "color_scheme": "",
@@ -1433,9 +1433,9 @@
           "type": "_colleciton-extra-content",
           "name": "Collection Extra Content",
           "settings": {
-            "text": "But why is the dream of a home that combines outstanding design and top-notch intelligence",
+            "text": "If you forget to adjust it, yet find the temperature always pleasant, this is the beauty of intelligence.",
             "text_size": 14,
-            "title": "ALWAYS HINDERED BY HIGH PRICES",
+            "title": "Smart thermostat",
             "title_size": 28,
             "button_text": "SHOP NOW",
             "button_link": "",
@@ -1563,21 +1563,6 @@
               },
               "blocks": {}
             },
-            "swatches_LxdY4q": {
-              "type": "swatches",
-              "name": "t:names.swatches",
-              "settings": {
-                "swatch_display_style": "color",
-                "product_swatches_alignment": "center",
-                "product_swatches_alignment_mobile": "center",
-                "hide_padding": false,
-                "product_swatches_padding_top": 4,
-                "product_swatches_padding_bottom": 0,
-                "product_swatches_padding_left": 0,
-                "product_swatches_padding_right": 0
-              },
-              "blocks": {}
-            },
             "product_title_chH8TK": {
               "type": "product-title",
               "name": "t:names.product_title",
@@ -1600,6 +1585,21 @@
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "swatches_LxdY4q": {
+              "type": "swatches",
+              "name": "t:names.swatches",
+              "settings": {
+                "swatch_display_style": "color",
+                "product_swatches_alignment": "center",
+                "product_swatches_alignment_mobile": "center",
+                "hide_padding": false,
+                "product_swatches_padding_top": 4,
+                "product_swatches_padding_bottom": 0,
+                "product_swatches_padding_left": 0,
+                "product_swatches_padding_right": 0
               },
               "blocks": {}
             },
@@ -1629,8 +1629,8 @@
           },
           "block_order": [
             "product_card_gallery_8kQ6FF",
-            "swatches_LxdY4q",
             "product_title_chH8TK",
+            "swatches_LxdY4q",
             "price_wTttMM"
           ]
         }
@@ -1640,13 +1640,13 @@
       ],
       "name": "Featured Products New",
       "settings": {
-        "collection": "frontpage",
+        "collection": "smart-thermostat",
         "layout_type": "grid",
         "carousel_on_mobile": true,
         "show_button_in_button": true,
         "button_text": "SHOP NOW",
         "button_link": "shopify://collections/frontpage",
-        "max_products": 4,
+        "max_products": 3,
         "columns": 4,
         "mobile_columns": "2",
         "mobile_card_size": "60cqw",
@@ -1734,7 +1734,7 @@
                 "text_xYJKJH": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>We are your reliable partner</p>",
+                    "text": "<p>We simply reflect the way you live.</p>",
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",
@@ -1785,13 +1785,13 @@
                 "button_VpTqri": {
                   "type": "button",
                   "settings": {
-                    "label": "FIND MORE",
+                    "label": "Find your reflection →",
                     "link": "shopify://collections/all",
                     "open_in_new_tab": false,
                     "show_underline": false,
                     "style_class": "button-secondary",
                     "width": "custom",
-                    "custom_width": 30,
+                    "custom_width": 40,
                     "width_mobile": "fit-content",
                     "custom_width_mobile": 100
                   },
