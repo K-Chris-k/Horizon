@@ -248,7 +248,7 @@
 }
 </style>
 
-<div class="feature-accordion">
+<div class="feature-accordion {{ section.settings.custom_class }}" >
   <div class="feature-accordion__container">
     <div class="feature-accordion__content">
       <!-- Left Side: Header + Accordion Items -->
@@ -376,6 +376,12 @@
     {
       "type": "header",
       "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class"
+
     },
     {
       "type": "text",

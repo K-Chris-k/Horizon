@@ -121,8 +121,8 @@
   pointer-events: none;
 }
 
-/* Only show zoom button on active (centered) slide */
-#shopify-section-{{ section.id }} .product-carousel__slide.active .product-carousel__zoom-btn {
+/* Show zoom button on all slides */
+#shopify-section-{{ section.id }} .product-carousel__slide .product-carousel__zoom-btn {
   opacity: 1;
   pointer-events: auto;
 }
@@ -284,7 +284,7 @@
 }
 </style>
 
-<div class="product-carousel" id="carousel-{{ section.id }}">
+<div class="product-carousel {% if section.settings.custom_class != blank %}{{ section.settings.custom_class }}{% endif %}" id="carousel-{{ section.id }}">
   <div class="product-carousel__container">
     <div class="product-carousel__wrapper">
       
@@ -501,14 +501,11 @@
       e.stopPropagation();
       const slideInner = slideInners[index];
       if (slideInner) {
-        // Only zoom if this is the active slide
-        const parentSlide = btn.closest('.product-carousel__slide');
-        if (parentSlide && parentSlide.classList.contains('active')) {
-          slideInner.classList.add('zoomed');
-          zoomOverlay.classList.add('active');
-          closeBtn.classList.add('active');
-          document.body.style.overflow = 'hidden';
-        }
+        // Allow zoom on any slide
+        slideInner.classList.add('zoomed');
+        zoomOverlay.classList.add('active');
+        closeBtn.classList.add('active');
+        document.body.style.overflow = 'hidden';
       }
     });
   });
@@ -633,7 +630,12 @@
       "type": "header",
       "content": "Carousel Settings"
     },
-  
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom CSS Class",
+      "info": "Add a custom CSS class to the carousel container"
+    },
     {
       "type": "select",
       "id": "image_aspect_ratio",

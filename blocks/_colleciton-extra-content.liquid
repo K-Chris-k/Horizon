@@ -1,28 +1,37 @@
 {{ 'collection-extra-content.css' | asset_url | stylesheet_tag }}
 {%- style -%}
-  ._collection-extra-content-text {
+  ._collection-extra-content-container._section-{{ section.id }} ._collection-extra-content-text {
     font-size: {{ block.settings.text_size | default: 14 }}px;
     color: var(--color-foreground);
     margin: 0;
   }
 
-  ._collection-extra-content-title {
+  ._collection-extra-content-container._section-{{ section.id }} ._collection-extra-content-title {
     font-size: {{ block.settings.title_size | default: 28 }}px;
     font-weight: 700;
     color: var(--color-foreground);
     margin: 10px 0 ;
   }
 
-  ._collection-extra-content-button {
+  ._collection-extra-content-container._section-{{ section.id }} ._collection-extra-content-button {
     background-color: {{ block.settings.button_bg | default: '#111111' }};
     color: {{ block.settings.button_color | default: '#ffffff' }};
     text-decoration: none;
     width: {{ block.settings.button_width | default: 140 }}px;
     height: {{ block.settings.button_height | default: 40 }}px;
+    border-radius: {{ block.settings.button_radius | default: 4 }}px;
+    border: {{ block.settings.button_border_width | default: 0 }}px solid {{ block.settings.button_border_color | default: 'transparent' }};
+    transition: all 0.3s ease;
+  }
+
+  ._collection-extra-content-container._section-{{ section.id }} ._collection-extra-content-button:hover {
+    background-color: {{ block.settings.button_hover_bg | default: '#333333' }};
+    color: {{ block.settings.button_hover_color | default: '#ffffff' }};
+    border: 1px solid {{ block.settings.button_hover_border_color | default: 'transparent' }};
   }
 {%- endstyle -%}
 
-<div class="_collection-extra-content-container">
+<div id="block-{{ block.id }}" class="_collection-extra-content-container _section-{{ section.id }}">
   {% if block.settings.text != blank %}
     <p class="_collection-extra-content-text">{{ block.settings.text }}</p>
   {% endif %}
@@ -77,6 +86,30 @@
     { "type": "url", "id": "button_link", "label": "Button Link" },
     { "type": "color", "id": "button_bg", "label": "Button Background", "default": "#111111" },
     { "type": "color", "id": "button_color", "label": "Button Text Color", "default": "#ffffff" },
+    { "type": "color", "id": "button_hover_bg", "label": "Button Hover Background", "default": "#333333" },
+    { "type": "color", "id": "button_hover_color", "label": "Button Hover Text Color", "default": "#ffffff" },
+    { "type": "color", "id": "button_border_color", "label": "Button Border Color", "default": "transparent" },
+    { "type": "color", "id": "button_hover_border_color", "label": "Button Hover Border Color", "default": "transparent" },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "label": "Button Border Width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Button Border Radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
     {
       "type": "range",
       "id": "button_width",

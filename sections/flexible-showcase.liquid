@@ -196,7 +196,7 @@
   }
 </style>
 
-<div class="flexible-showcase">
+<div class="flexible-showcase {{ section.settings.custom_class }}">
   <div class="flexible-showcase__header">
     {% if section.settings.title != blank %}
       <h2 class="flexible-showcase__title">
@@ -283,6 +283,12 @@
     {
       "type": "header",
       "content": "Header Content"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class"
+
     },
     {
       "type": "text",

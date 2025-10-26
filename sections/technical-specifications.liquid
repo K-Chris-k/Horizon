@@ -1,14 +1,20 @@
 <style>
   .technical-specs-section {
     padding: 60px 0;
+    max-width: {{ section.settings.container_width }}px !important;
+    margin: 0 auto;
+  }
+  .section-technical-specifications {
+    background-color: {{ section.settings.background_color }};
+    
 
   }
 
-  /* .technical-specs-container {
-    max-width: 1400px;
+  .technical-specs-container {
+
     margin: 0 auto;
     padding: 0 20px;
-  } */
+  }
 
   .technical-specs-title {
     font-size: {{ section.settings.title_font_size_desktop }}px;
@@ -36,7 +42,7 @@
     line-height: {{ section.settings.subtitle_line_height_desktop }};
     font-weight: 300;
     margin-bottom: 20px;
-    color: #333;
+    color: inherit;
   }
 
   .specs-grid {
@@ -105,18 +111,16 @@
     border-right: none;
   }
 
-  .specs-tab:hover {
-    color: #333;
-  }
+
 
   .specs-tab.active {
-    color: #333;
+
     border-bottom-color: #333;
   }
 
   .specs-tab-content {
     display: none;
-    padding-top: 40px;
+    padding: 40px 30px;
   }
 
   .specs-tab-content.active {
@@ -144,7 +148,7 @@
   .download-label {
     font-size: {{ section.settings.content_font_size_desktop }}px;
     line-height: {{ section.settings.content_line_height_desktop }};
-    color: #333;
+    color: inherit;
   }
 
   .download-button {
@@ -155,10 +159,15 @@
     background: transparent;
     font-size: {{ section.settings.content_font_size_desktop }}px;
     line-height: {{ section.settings.content_line_height_desktop }};
-    color: #666;
+    color: inherit;
+    opacity: 0.7;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
+  }
+
+  .download-button:hover {
+    opacity: 1;
   }
 
 
@@ -173,7 +182,7 @@
     line-height: {{ section.settings.subtitle_line_height_desktop }};
     font-weight: 300;
     margin-bottom: 15px;
-    color: #333;
+    color: inherit;
   }
 
   /* FAQ */
@@ -200,7 +209,6 @@
     font-size: {{ section.settings.content_font_size_desktop }}px;
     line-height: {{ section.settings.content_line_height_desktop }};
     font-weight: 400;
-    color: #000;
     letter-spacing: 0.5px;
     transition: color 0.3s ease;
   }
@@ -221,7 +229,6 @@
     transition: max-height 0.3s ease;
     font-size: {{ section.settings.content_font_size_desktop }}px;
     line-height: {{ section.settings.content_line_height_desktop }};
-    color: #666;
   }
 
   .faq-answer-content {
@@ -247,10 +254,48 @@
     cursor: pointer;
   }
 
-  .video-thumbnail {
+  .video-thumbnail-wrapper {
+    position: relative;
     width: 100%;
     aspect-ratio: 16/9;
+  }
+
+  .video-thumbnail {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    display: block;
+  }
+
+  .video-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    pointer-events: none;
+  }
+
+  .video-play-button::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 12px 0 12px 20px;
+    border-color: transparent transparent transparent #333;
+    margin-left: 4px;
+  }
+
+  .video-item:hover .video-play-button {
+    transform: translate(-50%, -50%) scale(1.1);
+    background: rgba(255, 255, 255, 1);
   }
 
   .video-placeholder {
@@ -266,10 +311,8 @@
 
   .video-title {
     padding: 15px;
-    background: white;
     font-size: {{ section.settings.content_font_size_desktop }}px;
     line-height: {{ section.settings.content_line_height_desktop }};
-    color: #333;
   }
 
   /* Modal for Video */
@@ -315,6 +358,19 @@
     aspect-ratio: 16/9;
   }
 
+  /* Fix horizontal scrolling on mobile */
+  * {
+    box-sizing: border-box;
+  }
+
+  .technical-specs-section,
+  .technical-specs-container,
+  .specs-tab-content,
+  .technical-specs-content {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   @media (max-width: 768px) {
     .technical-specs-section {
       padding: 40px 0;
@@ -333,7 +389,8 @@
     }
 
     .specs-tab-content {
-      padding-top: 30px;
+      padding: 30px 20px;
+      margin: 0 -20px;
     }
 
     .specs-subtitle {
@@ -359,12 +416,21 @@
 
     .specs-tabs-wrapper {
       margin-top: 0;
+      margin-left: -20px;
+      margin-right: -20px;
+      padding: 0 20px;
     }
 
     .specs-tabs {
       gap: 20px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+    }
+
+    .specs-tabs::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
     }
 
     .specs-tab {
@@ -381,11 +447,17 @@
 
     .download-label {
       font-size: 14px;
+      word-break: break-word;
     }
 
     .download-button {
       font-size: 12px;
       padding: 8px 15px;
+      flex-shrink: 0;
+    }
+
+    .download-item {
+      gap: 10px;
     }
 
     .faq-question {
@@ -404,10 +476,24 @@
     .video-grid {
       grid-template-columns: 1fr;
     }
+
+    .video-play-button {
+      width: 60px;
+      height: 60px;
+    }
+
+    .video-play-button::after {
+      border-width: 10px 0 10px 16px;
+    }
+
+    .specs-image {
+      width: 100%;
+      height: auto;
+    }
   }
 </style>
 
-<div class="technical-specs-section">
+<div class="technical-specs-section {{ section.settings.custom_class }}">
   <div class="technical-specs-container">
     {%- if section.settings.title != blank -%}
       <h2 class="technical-specs-title">{{ section.settings.title }}</h2>
@@ -449,7 +535,7 @@
         {%- for tab in tab_array -%}
           {%- for block in section.blocks -%}
             {%- if block.type == 'tab_item' and block.settings.tab_type == tab -%}
-              <button class="specs-tab{% if tab == first_tab %} active{% endif %}" data-tab="{{ tab }}" {{ block.shopify_attributes }}>
+              <button class="specs-tab{% if tab == first_tab %} active{% endif %} " data-tab="{{ tab }}" {{ block.shopify_attributes }}>
                 {{ block.settings.tab_label }}
               </button>
               {%- break -%}
@@ -459,7 +545,16 @@
       </div>
 
       {%- if has_specifications -%}
-        <div class="specs-tab-content{% if tab_array[0] == 'specification' %} active{% endif %}" data-content="specification">
+        {%- assign spec_bg_color = "transparent" -%}
+        {%- assign spec_text_color = "#333333" -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'tab_item' and block.settings.tab_type == 'specification' -%}
+            {%- assign spec_bg_color = block.settings.tab_background_color -%}
+            {%- assign spec_text_color = block.settings.tab_text_color -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+        <div class="specs-tab-content{% if tab_array[0] == 'specification' %} active{% endif %}" data-content="specification" style="background-color: {{ spec_bg_color }}; color: {{ spec_text_color }};">
           <!-- Specification content inside tab -->
           <div class="technical-specs-content">
             <div class="specs-left">
@@ -502,7 +597,16 @@
       {%- endif -%}
 
       {%- if has_downloads -%}
-        <div class="specs-tab-content{% if tab_array[0] == 'pdf' %} active{% endif %}" data-content="pdf">
+        {%- assign pdf_bg_color = "transparent" -%}
+        {%- assign pdf_text_color = "#333333" -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'tab_item' and block.settings.tab_type == 'pdf' -%}
+            {%- assign pdf_bg_color = block.settings.tab_background_color -%}
+            {%- assign pdf_text_color = block.settings.tab_text_color -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+        <div class="specs-tab-content{% if tab_array[0] == 'pdf' %} active{% endif %}" data-content="pdf" style="background-color: {{ pdf_bg_color }}; color: {{ pdf_text_color }};">
           <div class="download-list">
             {%- for block in section.blocks -%}
               {%- if block.type == 'download' -%}
@@ -511,22 +615,9 @@
                   {%- if block.settings.file != blank -%}
                     <a href="{{ block.settings.file }}" class="download-button" download target="_blank" rel="noopener noreferrer">
                       <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" id="Layer_2" width="19" height="19" data-name="Layer 2" viewBox="0 0 114.79 146.52">
-                        <defs>
-                          <style>
-                            .cls-1 {
-                              fill: #393939;
-                            }
-                            .cls-2 {
-                              fill: none;
-                              stroke: #393939;
-                              stroke-miterlimit: 10;
-                              stroke-width: 1.5px;
-                            }
-                          </style>
-                        </defs>
                         <g id="Layer_1-2" data-name="Layer 1">
-                          <polyline class="cls-2" points="76.09 .75 .75 .75 .75 145.77 114.04 145.77 114.04 43.02"></polyline>
-                          <polygon class="cls-1" points="76.18 42.84 114.54 43.03 76.09 .26 76.18 42.84"></polygon>
+                          <polyline fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="1.5px" points="76.09 .75 .75 .75 .75 145.77 114.04 145.77 114.04 43.02"></polyline>
+                          <polygon fill="currentColor" points="76.18 42.84 114.54 43.03 76.09 .26 76.18 42.84"></polygon>
                         </g>
                       </svg>
                       Download
@@ -540,7 +631,16 @@
       {%- endif -%}
 
       {%- if has_faqs -%}
-        <div class="specs-tab-content{% if tab_array[0] == 'faq' %} active{% endif %}" data-content="faq">
+        {%- assign faq_bg_color = "transparent" -%}
+        {%- assign faq_text_color = "#333333" -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'tab_item' and block.settings.tab_type == 'faq' -%}
+            {%- assign faq_bg_color = block.settings.tab_background_color -%}
+            {%- assign faq_text_color = block.settings.tab_text_color -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+        <div class="specs-tab-content{% if tab_array[0] == 'faq' %} active{% endif %}" data-content="faq" style="background-color: {{ faq_bg_color }}; color: {{ faq_text_color }};">
           {%- if section.settings.faq_title != blank -%}
             <h3 class="tab-content-title">{{ section.settings.faq_title }}</h3>
           {%- endif -%}
@@ -548,12 +648,12 @@
             {%- for block in section.blocks -%}
               {%- if block.type == 'faq' -%}
                 <div class="faq-item" {{ block.shopify_attributes }}>
-                  <button class="faq-question">
+                  <button class="faq-question" style="color: {{ block.settings.question_color }};">
                     <span>{{ block.settings.question }}</span>
-                    <span class="faq-icon">›</span>
+                    <span class="faq-icon" style="color: {{ block.settings.question_color }};">›</span>
                   </button>
                   <div class="faq-answer">
-                    <div class="faq-answer-content">
+                    <div class="faq-answer-content" style="color: {{ block.settings.answer_color }};">
                       {{ block.settings.answer }}
                     </div>
                   </div>
@@ -565,25 +665,37 @@
       {%- endif -%}
 
       {%- if has_videos -%}
-        <div class="specs-tab-content{% if tab_array[0] == 'video' %} active{% endif %}" data-content="video">
+        {%- assign video_bg_color = "transparent" -%}
+        {%- assign video_text_color = "#333333" -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'tab_item' and block.settings.tab_type == 'video' -%}
+            {%- assign video_bg_color = block.settings.tab_background_color -%}
+            {%- assign video_text_color = block.settings.tab_text_color -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+        <div class="specs-tab-content{% if tab_array[0] == 'video' %} active{% endif %}" data-content="video" style="background-color: {{ video_bg_color }}; color: {{ video_text_color }};">
           <div class="video-grid">
             {%- for block in section.blocks -%}
               {%- if block.type == 'video' -%}
                 <div class="video-item" data-video-url="{{ block.settings.video_url }}" {{ block.shopify_attributes }}>
-                  {%- if block.settings.thumbnail != blank -%}
-                    <img 
-                      src="{{ block.settings.thumbnail | image_url: width: 600 }}" 
-                      alt="{{ block.settings.title | escape }}"
-                      class="video-thumbnail"
-                      width="{{ block.settings.thumbnail.width }}"
-                      height="{{ block.settings.thumbnail.height }}"
-                      loading="lazy"
-                    >
-                  {%- else -%}
-                    <div class="video-placeholder">▶</div>
-                  {%- endif -%}
+                  <div class="video-thumbnail-wrapper">
+                    {%- if block.settings.thumbnail != blank -%}
+                      <img 
+                        src="{{ block.settings.thumbnail | image_url: width: 600 }}" 
+                        alt="{{ block.settings.title | escape }}"
+                        class="video-thumbnail"
+                        width="{{ block.settings.thumbnail.width }}"
+                        height="{{ block.settings.thumbnail.height }}"
+                        loading="lazy"
+                      >
+                    {%- else -%}
+                      <div class="video-placeholder">▶</div>
+                    {%- endif -%}
+                    <div class="video-play-button"></div>
+                  </div>
                   {%- if block.settings.title != blank -%}
-                    <div class="video-title">{{ block.settings.title }}</div>
+                    <div class="video-title" style="background-color: {{ block.settings.title_background_color }}; color: {{ block.settings.title_color }};">{{ block.settings.title }}</div>
                   {%- endif -%}
                 </div>
               {%- endif -%}
@@ -686,8 +798,39 @@
 {
   "name": "Technical Specifications",
   "tag": "section",
-  "class": "section section-technical-specifications",
+  "class": "section-technical-specifications",
   "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom CSS Class",
+      "info": "Add custom CSS class for additional styling"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 800,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "label": "Container Max Width",
+      "default": 1400,
+      "info": "Maximum width of the content container"
+    },
+    {
+      "type": "header",
+      "content": "Content Settings"
+    },
     {
       "type": "text",
       "id": "title",
@@ -924,6 +1067,20 @@
           "label": "Tab Label",
           "default": "Specification",
           "info": "The text displayed on the tab button"
+        },
+        {
+          "type": "color",
+          "id": "tab_background_color",
+          "label": "Tab Content Background Color",
+          "default": "transparent",
+          "info": "Background color for this tab's content area"
+        },
+        {
+          "type": "color",
+          "id": "tab_text_color",
+          "label": "Tab Content Text Color",
+          "default": "#333333",
+          "info": "Text color for this tab's content area"
         }
       ]
     },
@@ -991,6 +1148,18 @@
           "id": "answer",
           "label": "Answer",
           "default": "<p>You can view and print instructions from our mobile-friendly support page. We recommend using a professional to fit all Corston products. Electrical items must be installed by a qualified electrician.</p>"
+        },
+        {
+          "type": "color",
+          "id": "question_color",
+          "label": "Question Text Color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "answer_color",
+          "label": "Answer Text Color",
+          "default": "#666666"
         }
       ]
     },
@@ -1014,6 +1183,18 @@
           "type": "image_picker",
           "id": "thumbnail",
           "label": "Video Thumbnail"
+        },
+        {
+          "type": "color",
+          "id": "title_color",
+          "label": "Title Text Color",
+          "default": "#333333"
+        },
+        {
+          "type": "color",
+          "id": "title_background_color",
+          "label": "Title Background Color",
+          "default": "#FFFFFF"
         }
       ]
     }
@@ -1026,28 +1207,36 @@
           "type": "tab_item",
           "settings": {
             "tab_type": "specification",
-            "tab_label": "Specification"
+            "tab_label": "Specification",
+            "tab_background_color": "transparent",
+            "tab_text_color": "#333333"
           }
         },
         {
           "type": "tab_item",
           "settings": {
             "tab_type": "pdf",
-            "tab_label": "PD"
+            "tab_label": "PD",
+            "tab_background_color": "#E3F2FD",
+            "tab_text_color": "#333333"
           }
         },
         {
           "type": "tab_item",
           "settings": {
             "tab_type": "faq",
-            "tab_label": "FAQ"
+            "tab_label": "FAQ",
+            "tab_background_color": "transparent",
+            "tab_text_color": "#333333"
           }
         },
         {
           "type": "tab_item",
           "settings": {
             "tab_type": "video",
-            "tab_label": "Installation"
+            "tab_label": "Installation",
+            "tab_background_color": "#000000",
+            "tab_text_color": "#FFFFFF"
           }
         },
         {
@@ -1087,13 +1276,17 @@
           "type": "faq",
           "settings": {
             "question": "HOW DO I INSTALL CORSTON ELECTRICAL PRODUCTS?",
-            "answer": "<p>You can view and print instructions from our mobile-friendly support page. We recommend using a professional to fit all Corston products.</p>"
+            "answer": "<p>You can view and print instructions from our mobile-friendly support page. We recommend using a professional to fit all Corston products.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
           }
         },
         {
           "type": "video",
           "settings": {
-            "title": "Installation Guide"
+            "title": "Installation Guide",
+            "title_color": "#333333",
+            "title_background_color": "#FFFFFF"
           }
         }
       ]

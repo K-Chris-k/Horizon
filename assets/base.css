@@ -2191,6 +2191,14 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
     border-radius: var(--variant-picker-swatch-radius);
   }
 
+  &.swatch--image-mode {
+    /* For image display style - show full background image */
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    border-radius: 0 !important;
+  }
+
   /* swatches in filters and pills always have a border  */
   &.swatch--filter,
   &.swatch--pill {
@@ -2241,6 +2249,38 @@ deferred-media[class] :is(.deferred-media__poster-button img, .deferred-media__p
 
 .variant-option__button-label--text:has(input:checked) .variant-option__text {
   color: var(--color-background);
+}
+
+/* Image button variant style (square) */
+.variant-option__button-label--image {
+  padding: 0;
+  border: 2px solid rgb(var(--color-foreground-rgb) / 0.2);
+  border-radius: 0;
+  background-color: transparent;
+  transition: all 0.2s ease;
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  display: block;
+}
+
+.variant-option__button-label--image:hover {
+  border-color: rgb(var(--color-foreground-rgb) / 0.4);
+}
+
+.variant-option__button-label--image:has(input:checked) {
+  border-color: var(--color-foreground);
+  border-width: 3px;
+}
+
+.variant-option__button-label--image .swatch {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  border: none;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .sticky-content {

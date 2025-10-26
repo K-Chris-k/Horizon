@@ -1,0 +1,45 @@
+{% comment %}
+  自定义字体预加载 / Custom Fonts Preload
+  
+  这个文件用于预加载自定义字体，改善页面加载性能
+  This file preloads custom fonts to improve page loading performance
+  
+  使用方法 / Usage:
+  1. 将你的字体文件名替换下面的 'your-font-name.woff2'
+  2. 在 layout/theme.liquid 中的 {%- render 'fonts' -%} 之后添加：
+     {%- render 'custom-fonts-preload' -%}
+  
+  注意：只预加载最关键的字体文件（通常是 Regular 字重）
+  Note: Only preload the most critical font files (usually Regular weight)
+{% endcomment %}
+
+{% comment %} 
+  取消注释下面的代码来启用字体预加载
+  Uncomment the code below to enable font preloading
+{% endcomment %}
+
+{% comment %}
+<link
+  rel="preload"
+  as="font"
+  href="{{ 'your-font-regular.woff2' | asset_url }}"
+  type="font/woff2"
+  crossorigin
+  fetchpriority="high"
+>
+{% endcomment %}
+
+{% comment %}
+  如果需要预加载多个字体文件：
+  If you need to preload multiple font files:
+  
+<link
+  rel="preload"
+  as="font"
+  href="{{ 'your-font-bold.woff2' | asset_url }}"
+  type="font/woff2"
+  crossorigin
+  fetchpriority="high"
+>
+{% endcomment %}
+

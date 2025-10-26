@@ -256,7 +256,7 @@
   }
 {%- endstyle -%}
 
-<div class="pft-section-{{ section.id }}">
+<div class="pft-section-{{ section.id }} {{ section.settings.custom_class }}">
   <div class="pft-container-{{ section.id }}">
     
     {%- comment -%} Main Content Grid {%- endcomment -%}
@@ -345,6 +345,12 @@
     {
       "type": "header",
       "content": "Main Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class"
+
     },
     {
       "type": "text",

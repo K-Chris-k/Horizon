@@ -216,6 +216,9 @@
       padding: {{ section.settings.content_box_padding_desktop }}px;
       padding-left: calc({{ section.settings.content_image_width_desktop }}px + {{ section.settings.content_image_offset_desktop }}px + {{ section.settings.content_box_padding_desktop }}px);
     }
+    #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content-box p {
+      margin: 0;
+    }
   }
 
   #shopify-section-{{ section_id }} .smart-features-{{ section_id }}__content-text {
@@ -239,7 +242,7 @@
   }
 </style>
 
-<div class="smart-features-{{ section_id }}">
+<div class="smart-features-{{ section_id }} {{ section.settings.custom_class }}">
   <div class="smart-features-{{ section_id }}__container">
     
     {%- comment -%} Header: Title and Learn More Link {%- endcomment -%}
@@ -335,6 +338,12 @@
     {
       "type": "header",
       "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class"
+
     },
     {
       "type": "color",
@@ -823,11 +832,11 @@
       "type": "range",
       "id": "content_box_padding_desktop",
       "label": "Box Padding (Desktop)",
-      "min": 20,
+      "min": 10,
       "max": 80,
       "step": 5,
       "unit": "px",
-      "default": 40
+      "default": 10
     },
     {
       "type": "range",

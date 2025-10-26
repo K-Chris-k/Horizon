@@ -223,7 +223,7 @@
   {% endif %}
 
   {% if section.blocks.size > 0 %}
-    <div class="control-compatibility__grid">
+    <div class="control-compatibility__grid {{ section.settings.custom_class }}">
       {% for block in section.blocks %}
         {% assign block_index = forloop.index %}
         {% assign is_even = block_index | modulo: 2 %}
@@ -279,6 +279,12 @@
     {
       "type": "header",
       "content": "Section Header"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class"
+
     },
     {
       "type": "text",
