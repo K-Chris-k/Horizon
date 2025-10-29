@@ -19,13 +19,13 @@
     --image-height-difference: {{ section.settings.image_height_difference }}px;
   }
 
-  .brand-why-section {
+  .section-brand-why-section {
     padding-top: var(--section-padding-top);
     padding-bottom: var(--section-padding-bottom);
     background-color: {{ section.settings.background_color }};
   }
 
-  .brand-why-section .page-width {
+  .section-brand-why-section .page-width {
     max-width: {{ section.settings.container_width }}px;
     margin: 0 auto;
     padding: 0 1.5rem;
@@ -37,7 +37,7 @@
     font-weight: {{ section.settings.heading_weight }};
     letter-spacing: {{ section.settings.heading_letter_spacing }}em;
     text-transform: {{ section.settings.heading_transform }};
-    margin: 0 0 {{ section.settings.heading_margin_bottom }}px 0;
+    margin: 0px;
     color: {{ section.settings.heading_color }};
   }
 
@@ -61,18 +61,19 @@
     object-fit: cover;
   }
 
-  .brand-why__content {
-    text-align: {{ section.settings.text_align_mobile }};
-  }
 
   .brand-why__description {
     font-size: var(--description-font-size-mobile);
     line-height: var(--description-line-height-mobile);
     color: {{ section.settings.description_color }};
-    margin: 0 0 {{ section.settings.description_margin_bottom }}px 0;
     max-width: {{ section.settings.description_max_width }}px;
-    margin-left: auto;
     margin-right: auto;
+  }
+
+  .brand-why__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .brand-why__button {
@@ -87,6 +88,7 @@
     text-decoration: none;
     transition: all 0.3s ease;
     cursor: pointer;
+    margin-top:35px;
   }
 
   .brand-why__button:hover {
@@ -112,9 +114,6 @@
       margin-top: var(--image-height-difference);
     }
 
-    .brand-why__content {
-      text-align: {{ section.settings.text_align_desktop }};
-    }
 
     .brand-why__description {
       font-size: var(--description-font-size-desktop);
@@ -133,10 +132,21 @@
       {% endif %}
     }
   }
+  @media screen and (max-width: 750px) {
+    .section-brand-why-section .page-width {
+
+    padding: 0 40px;
+}h2.brand-why__heading {
+    margin-bottom: 0px;
+    text-align: center;
+}
+.brand-why__images{
+  margin-bottom: 12px;
+}
+  }
 {%- endstyle -%}
 
-<div class="brand-why-section">
-  <div class="page-width">
+<div class="page-width">
     {% if section.settings.heading != blank %}
       <h2 class="brand-why__heading">{{ section.settings.heading }}</h2>
     {% endif %}
@@ -211,13 +221,12 @@
       {% endif %}
     </div>
   </div>
-</div>
 
 {% schema %}
 {
   "name": "Brand Why Section",
   "tag": "section",
-  "class": "section",
+  "class": "section-brand-why-section",
   "settings": [
     {
       "type": "header",
@@ -608,7 +617,7 @@
       "step": 50,
       "unit": "px",
       "label": "Description Max Width",
-      "default": 700
+      "default": 500
     },
     {
       "type": "range",

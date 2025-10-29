@@ -1,7 +1,7 @@
 
 
 <style>
-  :root {
+  #shopify-section-{{ section.id }} {
     --title-font-size-desktop: {{ section.settings.title_font_size_desktop }}px;
     --title-line-height-desktop: {{ section.settings.title_line_height_desktop }};
     --title-font-size-mobile: {{ section.settings.title_font_size_mobile }}px;
@@ -19,6 +19,8 @@
     
     --annotation-font-size-desktop: {{ section.settings.annotation_font_size_desktop }}px;
     --annotation-font-size-mobile: {{ section.settings.annotation_font_size_mobile }}px;
+    
+    --description-text-color: {{ section.settings.description_text_color | default: '#FFFFFF' }};
   }
 
   #shopify-section-{{ section.id }} .flexible-showcase {
@@ -95,7 +97,7 @@
     transform: translate(-50%, -50%);
     max-width: 370px;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    color: #FFF;
+    color: var(--description-text-color, #FFF);
     text-align: right;
     font-size: var(--description-font-size-desktop, 16px);
     font-weight: 400;
@@ -316,6 +318,13 @@
       "id": "desktop_description",
       "label": "Desktop Description (Overlay Text)",
       "info": "This text will appear on top of the image on desktop"
+    },
+    {
+      "type": "color",
+      "id": "description_text_color",
+      "label": "Description Text Color",
+      "default": "#FFFFFF",
+      "info": "Set the color for the description text overlay on desktop image"
     },
     {
       "type": "header",

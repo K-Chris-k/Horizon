@@ -246,7 +246,8 @@
     {%- endif -%}
     <div
       class="hero__media-wrapper"
-      style="--hero-media-count: {{ media_count }};{%- if section.settings.image_1 != blank -%} --hero-media-aspect-ratio: {{ section.settings.image_1.aspect_ratio }};{% endif %}"
+      style="--hero-media-count: {{ media_count }};
+      {%- if section.settings.image_1 != blank -%} --hero-media-aspect-ratio: {{ section.settings.image_1.aspect_ratio }};{% endif %}"
     >
       {% liquid
         if section.settings.toggle_overlay
@@ -258,6 +259,7 @@
     <div
       class="
         hero__content-wrapper
+        custom-content-wrapper
         layout-panel-flex
         layout-panel-flex--{{ section.settings.content_direction }}
         {% if section.settings.vertical_on_mobile %}mobile-column{% endif %}

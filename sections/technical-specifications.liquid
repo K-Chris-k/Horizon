@@ -134,15 +134,26 @@
   }
 
   .download-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 0;
     border-bottom: 1px solid #e0e0e0;
   }
 
   .download-item:last-child {
     border-bottom: none;
+  }
+
+  .download-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .download-link:hover {
+    opacity: 0.8;
   }
 
   .download-label {
@@ -161,12 +172,12 @@
     line-height: {{ section.settings.content_line_height_desktop }};
     color: inherit;
     opacity: 0.7;
-    cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
+    pointer-events: none;
   }
 
-  .download-button:hover {
+  .download-link:hover .download-button {
     opacity: 1;
   }
 
@@ -611,17 +622,32 @@
             {%- for block in section.blocks -%}
               {%- if block.type == 'download' -%}
                 <div class="download-item" {{ block.shopify_attributes }}>
-                  <span class="download-label">{{ block.settings.label }}</span>
                   {%- if block.settings.file != blank -%}
-                    <a href="{{ block.settings.file }}" class="download-button" download target="_blank" rel="noopener noreferrer">
-                      <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" id="Layer_2" width="19" height="19" data-name="Layer 2" viewBox="0 0 114.79 146.52">
-                        <g id="Layer_1-2" data-name="Layer 1">
-                          <polyline fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="1.5px" points="76.09 .75 .75 .75 .75 145.77 114.04 145.77 114.04 43.02"></polyline>
-                          <polygon fill="currentColor" points="76.18 42.84 114.54 43.03 76.09 .26 76.18 42.84"></polygon>
-                        </g>
-                      </svg>
-                      Download
+                    <a href="{{ block.settings.file }}" class="download-link" download target="_blank" rel="noopener noreferrer">
+                      <span class="download-label">{{ block.settings.label }}</span>
+                      <span class="download-button">
+                        <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" id="Layer_2" width="19" height="19" data-name="Layer 2" viewBox="0 0 114.79 146.52">
+                          <g id="Layer_1-2" data-name="Layer 1">
+                            <polyline fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="1.5px" points="76.09 .75 .75 .75 .75 145.77 114.04 145.77 114.04 43.02"></polyline>
+                            <polygon fill="currentColor" points="76.18 42.84 114.54 43.03 76.09 .26 76.18 42.84"></polygon>
+                          </g>
+                        </svg>
+                        Download
+                      </span>
                     </a>
+                  {%- else -%}
+                    <div class="download-link">
+                      <span class="download-label">{{ block.settings.label }}</span>
+                      <span class="download-button">
+                        <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" id="Layer_2" width="19" height="19" data-name="Layer 2" viewBox="0 0 114.79 146.52">
+                          <g id="Layer_1-2" data-name="Layer 1">
+                            <polyline fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="1.5px" points="76.09 .75 .75 .75 .75 145.77 114.04 145.77 114.04 43.02"></polyline>
+                            <polygon fill="currentColor" points="76.18 42.84 114.54 43.03 76.09 .26 76.18 42.84"></polygon>
+                          </g>
+                        </svg>
+                        Download
+                      </span>
+                    </div>
                   {%- endif -%}
                 </div>
               {%- endif -%}

@@ -1,13 +1,13 @@
-{{ 'base.css' | asset_url | stylesheet_tag }}
+
 
 <style>
   .image-showcase {
-    background-color: #ffffff;
+    background-color: {{ section.settings.background_color }};
     padding: 60px 20px;
   }
 
   .image-showcase__container {
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
   }
 
@@ -17,18 +17,20 @@
   }
 
   .image-showcase__title {
-    font-size: 32px;
-    font-weight: 400;
-    line-height: 1.4;
-    color: #333333;
+    font-size: {{ section.settings.title_font_size_desktop }}px;
+    font-weight: {{ section.settings.title_font_weight }};
+    line-height: {{ section.settings.title_line_height_desktop }};
+    color: {{ section.settings.title_color }};
     margin: 0 0 20px 0;
     padding: 0 20px;
+    max-width: 680px;
+    margin: 0 auto;
   }
 
   .image-showcase__description {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #666666;
+    font-size: {{ section.settings.description_font_size_desktop }}px;
+    line-height: {{ section.settings.description_line_height_desktop }};
+    color: {{ section.settings.description_color }};
     margin: 0 auto 50px;
     max-width: 600px;
     padding: 0 20px;
@@ -37,8 +39,8 @@
   .image-showcase__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    padding: 0 20px;
+    gap: 16px;
+    padding: 0 30px;
   }
 
   .image-showcase__item {
@@ -65,19 +67,20 @@
   }
 
   .image-showcase__item-title {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333333;
+    font-size: {{ section.settings.item_title_font_size }}px;
+    font-weight: {{ section.settings.item_title_font_weight }};
+    color: {{ section.settings.item_title_color }};
+    line-height: {{ section.settings.item_title_line_height }};
     margin-top: 15px;
     text-align: center;
   }
 
   .image-showcase__item-description {
-    font-size: 14px;
-    color: #666666;
+    font-size: {{ section.settings.item_description_font_size }}px;
+    color: {{ section.settings.item_description_color }};
+    line-height: {{ section.settings.item_description_line_height }};
     margin-top: 8px;
     text-align: center;
-    line-height: 1.5;
   }
 
   /* Mobile Styles */
@@ -87,12 +90,14 @@
     }
 
     .image-showcase__title {
-      font-size: 24px;
+      font-size: {{ section.settings.title_font_size_mobile }}px;
+      line-height: {{ section.settings.title_line_height_mobile }};
       margin-bottom: 15px;
     }
 
     .image-showcase__description {
-      font-size: 13px;
+      font-size: {{ section.settings.description_font_size_mobile }}px;
+      line-height: {{ section.settings.description_line_height_mobile }};
       margin-bottom: 35px;
     }
 
@@ -182,16 +187,212 @@
   "class": "section-image-showcase",
   "settings": [
     {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
       "type": "text",
       "id": "title",
       "label": "Title",
       "default": "What you long for is not merely intelligence but designs that carry stories are rich in spirit and stand the test of time"
     },
     {
+      "type": "header",
+      "content": "Title Styling"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#333333"
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Title Font Weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "600",
+          "label": "Bold (600)"
+        }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_desktop",
+      "label": "Title Font Size (Desktop)",
+      "min": 16,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "title_line_height_desktop",
+      "label": "Title Line Height (Desktop)",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.4
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_mobile",
+      "label": "Title Font Size (Mobile)",
+      "min": 14,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "title_line_height_mobile",
+      "label": "Title Line Height (Mobile)",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.4
+    },
+    {
       "type": "textarea",
       "id": "description",
       "label": "Description",
       "default": "The raw and unrestrained spirit from the garage, the weightlessness and precision of industry, and the hardcore aesthetics integrated into modern life."
+    },
+    {
+      "type": "header",
+      "content": "Description Styling"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description Color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "description_font_size_desktop",
+      "label": "Description Font Size (Desktop)",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "description_line_height_desktop",
+      "label": "Description Line Height (Desktop)",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "range",
+      "id": "description_font_size_mobile",
+      "label": "Description Font Size (Mobile)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "description_line_height_mobile",
+      "label": "Description Line Height (Mobile)",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "header",
+      "content": "Item Title Styling"
+    },
+    {
+      "type": "color",
+      "id": "item_title_color",
+      "label": "Item Title Color",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "item_title_font_size",
+      "label": "Item Title Font Size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "item_title_line_height",
+      "label": "Item Title Line Height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.4
+    },
+    {
+      "type": "select",
+      "id": "item_title_font_weight",
+      "label": "Item Title Font Weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Medium (500)"
+        },
+        {
+          "value": "600",
+          "label": "Bold (600)"
+        }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Item Description Styling"
+    },
+    {
+      "type": "color",
+      "id": "item_description_color",
+      "label": "Item Description Color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "item_description_font_size",
+      "label": "Item Description Font Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "item_description_line_height",
+      "label": "Item Description Line Height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.5
     }
   ],
   "blocks": [
