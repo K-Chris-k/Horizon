@@ -16,7 +16,7 @@
           "type": "text",
           "name": "t:names.text",
           "settings": {
-            "text": "<p>HARDCORE AESTHETICS & CUTTING-EDGE TECHNOLOGY</p>",
+            "text": "<p><strong>HARDCORE AESTHETICS & CUTTING-EDGE TECHNOLOGY</strong></p>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
@@ -42,7 +42,7 @@
           "type": "text",
           "name": "t:names.heading",
           "settings": {
-            "text": "<p>Designed for the discerning</p>",
+            "text": "<p><strong>Designed for the discerning</strong></p>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
@@ -165,6 +165,12 @@
             "button_link": "",
             "button_bg": "#111111",
             "button_color": "#ffffff",
+            "button_hover_bg": "#333333",
+            "button_hover_color": "#ffffff",
+            "button_border_color": "rgba(0,0,0,0)",
+            "button_hover_border_color": "rgba(0,0,0,0)",
+            "button_border_width": 0,
+            "button_radius": 4,
             "button_width": 140,
             "button_height": 40
           },
@@ -1441,6 +1447,12 @@
             "button_link": "",
             "button_bg": "#111111",
             "button_color": "#ffffff",
+            "button_hover_bg": "#333333",
+            "button_hover_color": "#ffffff",
+            "button_border_color": "rgba(0,0,0,0)",
+            "button_hover_border_color": "rgba(0,0,0,0)",
+            "button_border_width": 0,
+            "button_radius": 4,
             "button_width": 140,
             "button_height": 40
           },
@@ -1734,7 +1746,7 @@
                 "text_xYJKJH": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>We simply reflect the way you live.</p>",
+                    "text": "<p><strong>We simply reflect the way you live</strong></p>",
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",
