@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "section": {
       "type": "section",
@@ -26,7 +27,7 @@
             "letter_spacing": "normal",
             "case": "none",
             "wrap": "pretty",
-            "color": "",
+            "color": "var(--color-foreground-heading)",
             "background": false,
             "background_color": "#00000026",
             "corner_radius": 0,
@@ -41,8 +42,8 @@
           "type": "text",
           "name": "Description",
           "settings": {
-            "text": "{{ closest.collection.description }}",
-            "width": "fit-content",
+            "text": "<p>{{ closest.collection.description }}</p>",
+            "width": "100%",
             "max_width": "normal",
             "alignment": "left",
             "type_preset": "rte",
@@ -79,18 +80,19 @@
         "vertical_alignment_flex_direction_column": "center",
         "gap": 12,
         "section_width": "page-width",
-        "section_height": "",
+        "section_height": "small",
         "section_height_custom": 50,
         "color_scheme": "scheme-1",
-        "background_media": "none",
+        "background_media": "image",
         "video_position": "cover",
+        "background_image": "shopify://shop_images/8888_f4e52460-dc9b-4785-b3aa-6e106067fc9f.jpg",
         "background_image_position": "cover",
         "border": "none",
         "border_width": 1,
         "border_opacity": 100,
         "border_radius": 0,
         "toggle_overlay": false,
-        "overlay_color": "#00000026",
+        "overlay_color": "#dfdfdf",
         "overlay_style": "solid",
         "gradient_direction": "to top",
         "padding-block-start": 48,

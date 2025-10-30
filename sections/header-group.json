@@ -11,6 +11,50 @@
   "type": "header",
   "name": "Header",
   "sections": {
+    "header_announcements_9jGBFp": {
+      "type": "header-announcements",
+      "blocks": {
+        "announcement_BxgCk9": {
+          "type": "_announcement",
+          "settings": {
+            "text": "<strong>Free delivery</strong> on orders over ￡150",
+            "link": "",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.75rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        },
+        "announcement_46gKwW": {
+          "type": "_announcement",
+          "settings": {
+            "text": "30th - 1st: <strong>15% off</strong> for all products",
+            "link": "",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.75rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "announcement_BxgCk9",
+        "announcement_46gKwW"
+      ],
+      "name": "t:names.announcement_bar",
+      "settings": {
+        "speed": 5,
+        "section_width": "page-width",
+        "color_scheme": "scheme-5",
+        "divider_width": 0,
+        "padding-block-start": 15,
+        "padding-block-end": 15
+      }
+    },
     "header_section": {
       "type": "header",
       "blocks": {
@@ -32,7 +76,7 @@
           "settings": {
             "menu": "main-menu",
             "color_scheme": "",
-            "type_font_primary_size": "0.875rem",
+            "type_font_primary_size": "1rem",
             "menu_font_style": "inverse",
             "type_font_primary_link": "body",
             "type_case_primary_link": "none",
@@ -51,7 +95,7 @@
       },
       "settings": {
         "logo_position": "left",
-        "menu_position": "left",
+        "menu_position": "center",
         "menu_row": "top",
         "show_search": true,
         "search_position": "right",
@@ -78,50 +122,6 @@
         "product_color_scheme": "default",
         "enable_transparent_header_collection": false,
         "collection_color_scheme": "default"
-      }
-    },
-    "header_announcements_9jGBFp": {
-      "type": "header-announcements",
-      "blocks": {
-        "announcement_BxgCk9": {
-          "type": "_announcement",
-          "settings": {
-            "text": "sign up to our newsletter",
-            "link": "",
-            "font": "var(--font-subheading--family)",
-            "font_size": "0.75rem",
-            "weight": "",
-            "letter_spacing": "normal",
-            "case": "none"
-          },
-          "blocks": {}
-        },
-        "announcement_46gKwW": {
-          "type": "_announcement",
-          "settings": {
-            "text": "sign up to our newsletter",
-            "link": "",
-            "font": "var(--font-subheading--family)",
-            "font_size": "0.75rem",
-            "weight": "",
-            "letter_spacing": "normal",
-            "case": "none"
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "announcement_BxgCk9",
-        "announcement_46gKwW"
-      ],
-      "name": "t:names.announcement_bar",
-      "settings": {
-        "speed": 5,
-        "section_width": "page-width",
-        "color_scheme": "scheme-5",
-        "divider_width": 0,
-        "padding-block-start": 15,
-        "padding-block-end": 15
       }
     }
   },
