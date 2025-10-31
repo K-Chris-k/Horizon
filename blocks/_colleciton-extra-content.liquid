@@ -22,12 +22,15 @@
     border-radius: {{ block.settings.button_radius | default: 4 }}px;
     border: {{ block.settings.button_border_width | default: 0 }}px solid {{ block.settings.button_border_color | default: 'transparent' }};
     transition: all 0.3s ease;
+    font-family: --font-paragraph--family: var(--font-body--family);
+    font-size:14px;
   }
 
   ._collection-extra-content-container._section-{{ section.id }} ._collection-extra-content-button:hover {
     background-color: {{ block.settings.button_hover_bg | default: '#333333' }};
     color: {{ block.settings.button_hover_color | default: '#ffffff' }};
     border: 1px solid {{ block.settings.button_hover_border_color | default: 'transparent' }};
+
   }
 {%- endstyle -%}
 
