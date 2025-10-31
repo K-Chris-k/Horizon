@@ -23,7 +23,7 @@
     color: {{ section.settings.title_color }};
     margin: 0 0 20px 0;
     padding: 0 20px;
-    max-width: 680px;
+    max-width: {{ section.settings.title_max_width }}px;
     margin: 0 auto;
   }
 
@@ -32,7 +32,7 @@
     line-height: {{ section.settings.description_line_height_desktop }};
     color: {{ section.settings.description_color }};
     margin: 0 auto 50px;
-    max-width: 600px;
+    max-width: {{ section.settings.description_max_width }}px;
     padding: 0 20px;
   }
 
@@ -245,6 +245,16 @@
     },
     {
       "type": "range",
+      "id": "title_max_width",
+      "label": "Title Max Width",
+      "min": 300,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "default": 680
+    },
+    {
+      "type": "range",
       "id": "title_font_size_mobile",
       "label": "Title Font Size (Mobile)",
       "min": 14,
@@ -296,6 +306,16 @@
       "max": 2.5,
       "step": 0.1,
       "default": 1.6
+    },
+    {
+      "type": "range",
+      "id": "description_max_width",
+      "label": "Description Max Width",
+      "min": 300,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "default": 600
     },
     {
       "type": "range",

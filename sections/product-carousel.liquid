@@ -65,23 +65,31 @@
   transition: transform 0.4s ease;
 }
 
-/* Zoom Effect - scale on click */
-#shopify-section-{{ section.id }} .product-carousel__slide-inner.zoomed {
+/* Zoom Container */
+#shopify-section-{{ section.id }} .product-carousel__zoom-container {
+  display: none;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 9999;
+  z-index: 10001;
   width: 90vw;
   height: 90vh;
-  max-width: none;
-  border-radius: 0;
+  align-items: center;
+  justify-content: center;
 }
 
-#shopify-section-{{ section.id }} .product-carousel__slide-inner.zoomed .product-carousel__image {
-  width: 100%;
-  height: 100%;
+#shopify-section-{{ section.id }} .product-carousel__zoom-container.active {
+  display: flex;
+}
+
+#shopify-section-{{ section.id }} .product-carousel__zoom-container img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
+  display: block;
 }
 
 /* Zoom Overlay */
@@ -93,7 +101,7 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
-  z-index: 9998;
+  z-index: 10000;
 }
 
 #shopify-section-{{ section.id }} .product-carousel__zoom-overlay.active {
@@ -158,7 +166,7 @@
   cursor: pointer;
   align-items: center;
   justify-content: center;
-  z-index: 10000;
+  z-index: 10002;
   transition: all 0.3s ease;
 }
 
@@ -245,6 +253,37 @@
 }
 
 @media screen and (max-width: 749px) {
+
+
+#shopify-section-{{ section.id }} .product-carousel__zoom-container {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 101;
+  width: 100vw;
+  height: 90vh;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1;
+
+
+}
+#shopify-section-{{ section.id }} .product-carousel__zoom-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: unset;
+  z-index: 10000;
+}
+
+
+
   #shopify-section-{{ section.id }} .product-carousel {
     padding: 2rem 0;
   }
@@ -280,6 +319,11 @@
   #shopify-section-{{ section.id }} .product-carousel__zoom-icon {
     width: 18px;
     height: 18px;
+  }
+  
+  #shopify-section-{{ section.id }} .product-carousel__close-btn {
+    top: 1rem;
+    right: 1rem;
   }
 }
 </style>
@@ -369,6 +413,9 @@
   <!-- Zoom Overlay -->
   <div class="product-carousel__zoom-overlay" data-zoom-overlay></div>
   
+  <!-- Zoom Image Container -->
+  <div class="product-carousel__zoom-container" data-zoom-container></div>
+  
   <!-- Close Button for Zoom -->
   <button class="product-carousel__close-btn" data-zoom-close aria-label="Close zoom">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -388,6 +435,7 @@
   const counterEl = carousel.querySelector('[data-current-slide]');
   const allSlides = carousel.querySelectorAll('.product-carousel__slide');
   const zoomOverlay = carousel.querySelector('[data-zoom-overlay]');
+  const zoomContainer = carousel.querySelector('[data-zoom-container]');
   const closeBtn = carousel.querySelector('[data-zoom-close]');
   
   // Calculate the original number of slides (before multiplication)
@@ -498,27 +546,50 @@
   
   // Function to zoom in
   function zoomIn(slideInner) {
-    if (slideInner && !slideInner.classList.contains('zoomed')) {
-      slideInner.classList.add('zoomed');
-      zoomOverlay.classList.add('active');
-      closeBtn.classList.add('active');
+    if (slideInner && zoomContainer) {
+      console.log('Zooming in...', slideInner);
+      
+      // Find the image in the slide
+      const img = slideInner.querySelector('.product-carousel__image');
+      if (!img) return;
+      
+      // Clone the image and add it to zoom container
+      const imgClone = img.cloneNode(true);
+      zoomContainer.innerHTML = '';
+      zoomContainer.appendChild(imgClone);
+      
+      // Show zoom elements
+      zoomContainer.classList.add('active');
+      if (zoomOverlay) zoomOverlay.classList.add('active');
+      if (closeBtn) closeBtn.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
   }
   
-  // Click on zoom button
-  zoomBtns.forEach((btn, index) => {
+  // Click on zoom button - match button to its parent slide-inner
+  zoomBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      zoomIn(slideInners[index]);
+      e.preventDefault();
+      console.log('Zoom button clicked');
+      // Find the parent slide-inner of this button
+      const parentSlideInner = btn.closest('[data-slide-inner]');
+      console.log('Found parent:', parentSlideInner);
+      if (parentSlideInner) {
+        zoomIn(parentSlideInner);
+      }
     });
   });
   
-  // Click on slide image to zoom
+  // Click on slide image to zoom (desktop only)
   slideInners.forEach((slideInner) => {
     slideInner.addEventListener('click', (e) => {
-      // Only zoom if not already zoomed
-      if (!slideInner.classList.contains('zoomed')) {
+      // Don't zoom if clicking on the zoom button
+      if (e.target.closest('[data-zoom-btn]')) return;
+      
+      // Only zoom if not already zoomed and on desktop (screen width > 749px)
+      const isDesktop = window.innerWidth > 749;
+      if (isDesktop) {
         zoomIn(slideInner);
       }
     });
@@ -526,9 +597,12 @@
   
   // Close zoom
   function closeZoom() {
-    slideInners.forEach(inner => inner.classList.remove('zoomed'));
-    zoomOverlay.classList.remove('active');
-    closeBtn.classList.remove('active');
+    if (zoomContainer) {
+      zoomContainer.classList.remove('active');
+      zoomContainer.innerHTML = '';
+    }
+    if (zoomOverlay) zoomOverlay.classList.remove('active');
+    if (closeBtn) closeBtn.classList.remove('active');
     document.body.style.overflow = '';
   }
   

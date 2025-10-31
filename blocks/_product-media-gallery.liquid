@@ -1,11 +1,13 @@
 
 
-{% assign block_settings = block.settings %}
+<style> 
+@media (max-width: 749px) {
+  slideshow-container{}
+}
 
-<script
-  src="{{ 'media-gallery.js' | asset_url }}"
-  type="module"
-></script>
+</style>
+
+{% assign block_settings = block.settings %}
 
 {%- if block_settings.zoom -%}
   <script
@@ -382,48 +384,6 @@
     controls: controls
   %}
 
-  {% if block_settings.media_presentation == 'grid' %}
-    <ul
-      class="media-gallery__grid list-unstyled"
-      data-testid="media-gallery-grid"
-    >
-      {% for media in sorted_media %}
-        <li
-          ref="media[]"
-          class="{{ product_media_container_class }} product-media-container--{{ media.media_type }}"
-          style="{% if block_settings.aspect_ratio == 'adapt' %} --media-preview-ratio: {{ media.preview_image.aspect_ratio | default: 1.0 }};{% endif %}"
-          {% if settings.transition_to_main_product and forloop.first %}
-            data-view-transition-type="product-image-transition"
-          {% endif %}
-        >
-          {%- if block_settings.zoom and media.media_type == 'image' -%}
-            <button
-              type="button"
-              class="button button-unstyled product-media-container__zoom-button"
-              aria-label="{{ 'actions.zoom' | t }}"
-              on:click="/zoom/{{ forloop.index0 }}"
-            >
-              <span class="visually-hidden">{{ 'actions.open_image_in_full_screen' | t }}</span>
-            </button>
-          {%- endif -%}
-          {%- liquid
-            if needs_both_sizes and forloop.first
-              assign media_sizes = sizes_single
-            else
-              assign media_sizes = sizes
-            endif
-          -%}
-          {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
-            <div class="product-media-constraint-wrapper">
-              {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
-            </div>
-          {% else %}
-            {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
-          {% endif %}
-        </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
 
   {%- if block_settings.zoom -%}
     <zoom-dialog

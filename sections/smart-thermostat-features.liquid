@@ -91,6 +91,7 @@
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: {{ section.settings.features_gap_mobile }}px;
     margin-bottom: {{ section.settings.features_margin_mobile }}px;
+    margin-top: 30px;
     order: 2;
   }
 
@@ -259,6 +260,7 @@
             href="{{ section.settings.link_url }}" 
             class="smart-features-{{ section_id }}__link"
             {% if section.settings.link_open_new_window %}target="_blank" rel="noopener noreferrer"{% endif %}
+            onclick="window.scrollTo(0, 0);"
           >
             <span>{{ section.settings.link_text }}</span>
             <span class="smart-features-{{ section_id }}__link-arrow">›</span>

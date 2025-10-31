@@ -22,11 +22,6 @@ export class MediaGallery extends Component {
     this.refs.zoomDialogComponent?.addEventListener(ThemeEvents.zoomMediaSelected, this.#handleZoomMediaSelected, {
       signal,
     });
-
-    // Add mobile thumbnail click handlers for grid presentation
-    if (this.presentation === 'grid') {
-      this.#setupMobileThumbnailClicks();
-    }
   }
 
   #controller = new AbortController();
@@ -35,51 +30,6 @@ export class MediaGallery extends Component {
     super.disconnectedCallback();
 
     this.#controller.abort();
-  }
-
-  /**
-   * Sets up click handlers for mobile thumbnails to switch main image.
-   * Only active on mobile (viewport < 750px) for grid presentation.
-   */
-  #setupMobileThumbnailClicks() {
-    const grid = this.querySelector('.media-gallery__grid');
-    if (!grid) return;
-
-    const { signal } = this.#controller;
-
-    // Set initial selected state for first thumbnail
-    const firstThumbnail = grid.querySelector('.product-media-container:not(:first-child)');
-    if (firstThumbnail) {
-      firstThumbnail.classList.add('thumbnail-selected');
-    }
-
-    // Use event delegation for better performance
-    grid.addEventListener('click', (event) => {
-      // Only handle on mobile
-      if (window.innerWidth >= 750) return;
-
-      // Find the clicked media container (thumbnail)
-      if (!(event.target instanceof Element)) return;
-      const clickedContainer = event.target.closest('.product-media-container:not(:first-child)');
-      if (!clickedContainer) return;
-
-      const firstContainer = grid.querySelector('.product-media-container:first-child');
-      if (!firstContainer) return;
-
-      // Remove selected class from all thumbnails
-      grid.querySelectorAll('.product-media-container:not(:first-child)').forEach(container => {
-        container.classList.remove('thumbnail-selected');
-      });
-
-      // Add selected class to clicked thumbnail
-      clickedContainer.classList.add('thumbnail-selected');
-
-      // Copy the content of clicked thumbnail to main image
-      firstContainer.innerHTML = clickedContainer.innerHTML;
-
-      // Smooth scroll to top of media gallery
-      firstContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, { signal });
   }
 
   /**

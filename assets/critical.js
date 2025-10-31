@@ -492,3 +492,21 @@ export function updateAllHeaderCustomProperties() {
 
 // Run both functions on page load
 updateAllHeaderCustomProperties();
+
+/**
+ * Ensure page always loads at the top
+ * This prevents the browser from restoring scroll position
+ */
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
+// Force scroll to top on page load
+window.addEventListener('pageshow', function(event) {
+  window.scrollTo(0, 0);
+});
+
+// Also set initial scroll position immediately
+if (window.scrollY !== 0) {
+  window.scrollTo(0, 0);
+}

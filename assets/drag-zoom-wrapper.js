@@ -3,7 +3,8 @@ import { ZoomDialog } from './zoom-dialog.js';
 
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 5;
-const DEFAULT_ZOOM = 1.5;
+const DEFAULT_ZOOM = 1; // Changed from 1.5 to 1 - start at normal size
+const DOUBLE_TAP_ZOOM = 1.5; // Zoom level when double-tapping
 const DOUBLE_TAP_DELAY = 300;
 const DOUBLE_TAP_DISTANCE = 50;
 const DRAG_THRESHOLD = 10;
@@ -45,6 +46,11 @@ export class DragZoomWrapper extends HTMLElement {
 
   connectedCallback() {
     if (!this.#image) return;
+
+    // Initialize CSS variables immediately to prevent flashing
+    this.style.setProperty('--drag-zoom-scale', DEFAULT_ZOOM.toString());
+    this.style.setProperty('--drag-zoom-translate-x', '0px');
+    this.style.setProperty('--drag-zoom-translate-y', '0px');
 
     this.#initResizeListener();
     this.#setupDialogCloseListener();
@@ -219,7 +225,7 @@ export class DragZoomWrapper extends HTMLElement {
 
       if (Math.abs(this.#scale - MIN_ZOOM) < tolerance) {
         // Currently at 1x, go to 1.5x
-        targetZoom = DEFAULT_ZOOM;
+        targetZoom = DOUBLE_TAP_ZOOM;
       } else {
         // Currently at 1.5x or any other level, go to 1x
         targetZoom = MIN_ZOOM;
@@ -456,7 +462,7 @@ export class DragZoomWrapper extends HTMLElement {
   };
 
   /**
-   * Reset zoom to default state (1.5x scale, centered position)
+   * Reset zoom to default state (1x scale, centered position)
    * Called when zoom is exited/closed
    */
   #resetZoom() {
@@ -465,6 +471,7 @@ export class DragZoomWrapper extends HTMLElement {
     this.#startScale = DEFAULT_ZOOM;
     this.#translate.x = 0;
     this.#translate.y = 0;
+    this.#hasManualZoom = false;
 
     // Reset gesture state to prevent interference on next zoom open
     this.#startPosition = { x: 0, y: 0 };

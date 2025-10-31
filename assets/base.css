@@ -1573,11 +1573,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container 
   height: 100%;
 }
 
-/* Hide slideshow on mobile for grid presentation */
-media-gallery:is(.media-gallery--grid) slideshow-component {
-  display: none;
-}
-
 .product-media :is(deferred-media, product-model) {
   position: absolute;
 }
@@ -1628,9 +1623,9 @@ media-gallery:is(.media-gallery--grid) slideshow-component {
     display: none;
   }
 
-  /* Remaining items: thumbnails in horizontal scroll */
-  .media-gallery--two-column .product-media-container:not(:first-child),
-  .media-gallery--one-column .product-media-container:not(:first-child) {
+  /* Remaining items: thumbnails in horizontal scroll - ONLY apply to grid, not zoom dialog */
+  .media-gallery--two-column .media-gallery__grid .product-media-container:not(:first-child),
+  .media-gallery--one-column .media-gallery__grid .product-media-container:not(:first-child) {
     display: inline-block;
     width: 80px;
     height: 80px;
@@ -1646,26 +1641,26 @@ media-gallery:is(.media-gallery--grid) slideshow-component {
   }
 
   /* Add left margin to the first thumbnail (which is :nth-child(2) since main image is :first-child) */
-  .media-gallery--two-column .product-media-container:nth-child(2),
-  .media-gallery--one-column .product-media-container:nth-child(2) {
+  .media-gallery--two-column .media-gallery__grid .product-media-container:nth-child(2),
+  .media-gallery--one-column .media-gallery__grid .product-media-container:nth-child(2) {
     margin-left: var(--padding-inline-start, 12px);
   }
 
   /* Active/hover state for thumbnails */
-  .media-gallery--two-column .product-media-container:not(:first-child):hover,
-  .media-gallery--one-column .product-media-container:not(:first-child):hover {
+  .media-gallery--two-column .media-gallery__grid .product-media-container:not(:first-child):hover,
+  .media-gallery--one-column .media-gallery__grid .product-media-container:not(:first-child):hover {
     opacity: 0.7;
   }
 
-  .media-gallery--two-column .product-media-container:not(:first-child):active,
-  .media-gallery--one-column .product-media-container:not(:first-child):active {
+  .media-gallery--two-column .media-gallery__grid .product-media-container:not(:first-child):active,
+  .media-gallery--one-column .media-gallery__grid .product-media-container:not(:first-child):active {
     opacity: 0.5;
     transform: scale(0.95);
   }
 
   /* Selected state for the thumbnail that matches the main image */
-  .media-gallery--two-column .product-media-container:not(:first-child).thumbnail-selected,
-  .media-gallery--one-column .product-media-container:not(:first-child).thumbnail-selected {
+  .media-gallery--two-column .media-gallery__grid .product-media-container:not(:first-child).thumbnail-selected,
+  .media-gallery--one-column .media-gallery__grid .product-media-container:not(:first-child).thumbnail-selected {
     border-color: #000;
     opacity: 1;
     margin-left: 12px;
