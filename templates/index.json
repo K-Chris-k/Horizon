@@ -69,7 +69,7 @@
           "name": "t:names.button",
           "settings": {
             "label": "Shop now",
-            "link": "shopify://collections/all",
+            "link": "shopify://collections/all-products",
             "open_in_new_tab": false,
             "show_underline": false,
             "style_class": "button",
@@ -121,7 +121,7 @@
         "text_overlay_Kn3Byd": {
           "type": "text_overlay",
           "settings": {
-            "image": "shopify://shop_images/1.png",
+            "image": "shopify://shop_images/brass_dimmer_switch_157cb4a7-bcb0-4417-927a-a3217b738085.jpg",
             "heading": "We know",
             "heading_font_size": 32,
             "text": "True elegance lives in the details. \n<br>It’s in the texture, the tone, the touch.",
@@ -133,7 +133,7 @@
         "image_only_y6fTLx": {
           "type": "image_only",
           "settings": {
-            "image": "shopify://shop_images/22.jpg",
+            "image": "shopify://shop_images/23-1.jpg",
             "flex_ratio": "2"
           }
         }
@@ -158,7 +158,7 @@
           "name": "Collection Extra Content",
           "settings": {
             "text": "It’s not about controlling light, but understanding living itself.\nThe light you desire, the mood you seek, the life you aspire to — all captured in every single turn.",
-            "text_size": 14,
+            "text_size": 16,
             "title": "Dimmer switch",
             "title_size": 28,
             "button_text": "Choose your style",
@@ -317,7 +317,7 @@
                 "alignment": "left",
                 "type_preset": "custom",
                 "font": "var(--font-heading--family)",
-                "font_size": "0.875rem",
+                "font_size": "1.125rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
@@ -340,9 +340,9 @@
                 "show_sale_price_first": true,
                 "show_installments": false,
                 "show_tax_info": false,
-                "type_preset": "h6",
+                "type_preset": "h5",
                 "width": "100%",
-                "alignment": "left",
+                "alignment": "center",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
                 "line_height": "normal",
@@ -391,7 +391,7 @@
         "carousel_on_mobile": true,
         "show_button_in_button": true,
         "button_text": "SHOP NOW",
-        "button_link": "shopify://collections/all",
+        "button_link": "shopify://collections/dimmer-switch",
         "max_products": 4,
         "columns": 4,
         "mobile_columns": "2",
@@ -495,9 +495,9 @@
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",
-                    "type_preset": "rte",
+                    "type_preset": "custom",
                     "font": "var(--font-body--family)",
-                    "font_size": "1rem",
+                    "font_size": "1.125rem",
                     "line_height": "normal",
                     "letter_spacing": "normal",
                     "case": "none",
@@ -518,7 +518,7 @@
                   "settings": {
                     "label": "ABOUT US",
                     "link": "shopify://pages/about-us",
-                    "open_in_new_tab": false,
+                    "open_in_new_tab": true,
                     "show_underline": false,
                     "style_class": "button",
                     "width": "fit-content",
@@ -585,22 +585,7 @@
               "name": "Media Flow Item",
               "settings": {
                 "item_type": "image",
-                "image": "shopify://shop_images/Item.png",
-                "link": "",
-                "video_url": "",
-                "autoplay": false,
-                "loop": true,
-                "muted": true,
-                "controls": true
-              },
-              "blocks": {}
-            },
-            "media_flow_item_GUyRYM": {
-              "type": "_media-flow-item",
-              "name": "Media Flow Item",
-              "settings": {
-                "item_type": "image",
-                "image": "shopify://shop_images/Item_1.png",
+                "image": "shopify://shop_images/image-_47.jpg",
                 "link": "",
                 "video_url": "",
                 "autoplay": false,
@@ -615,7 +600,7 @@
               "name": "Media Flow Item",
               "settings": {
                 "item_type": "image",
-                "image": "shopify://shop_images/Item_2.png",
+                "image": "shopify://shop_images/07_3e72c939-59cf-4201-b669-b9fb0b961699.jpg",
                 "link": "",
                 "video_url": "",
                 "autoplay": false,
@@ -629,7 +614,6 @@
           "block_order": [
             "media_flow_item_3exY4n",
             "media_flow_item_Efi9T7",
-            "media_flow_item_GUyRYM",
             "media_flow_item_4dEUA8"
           ]
         },
@@ -643,7 +627,7 @@
               "name": "Media Flow Item",
               "settings": {
                 "item_type": "image",
-                "image": "shopify://shop_images/Item_1.png",
+                "image": "shopify://shop_images/image-_31_a4334c3d-da15-469b-9049-839d749e0007.jpg",
                 "link": "",
                 "video_url": "",
                 "autoplay": false,
@@ -651,40 +635,14 @@
                 "muted": true,
                 "controls": true
               },
-              "blocks": {
-                "media_item_image_UjNwyb": {
-                  "type": "_media-item-image",
-                  "name": "flow box media image",
-                  "settings": {
-                    "image": "shopify://shop_images/3c502243d4a071f8db00891e039923483ac54247.png",
-                    "link": "",
-                    "alt_text": ""
-                  },
-                  "blocks": {}
-                },
-                "media_item_image_wQccEf": {
-                  "type": "_media-item-image",
-                  "name": "flow box media image",
-                  "settings": {
-                    "image": "shopify://shop_images/Item_2.png",
-                    "link": "",
-                    "alt_text": ""
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": [
-                "media_item_image_UjNwyb",
-                "media_item_image_wQccEf"
-              ]
+              "blocks": {}
             },
             "media_flow_item_xmgmPW": {
               "type": "_media-flow-item",
               "name": "Media Flow Item",
-              "disabled": true,
               "settings": {
                 "item_type": "image",
-                "image": "shopify://shop_images/07.jpg",
+                "image": "shopify://shop_images/8888_30f23ea3-633d-4328-853a-4b0d8e14e298.jpg",
                 "link": "",
                 "video_url": "",
                 "autoplay": false,
@@ -697,7 +655,6 @@
             "media_flow_item_UtB4MC": {
               "type": "_media-flow-item",
               "name": "Media Flow Item",
-              "disabled": true,
               "settings": {
                 "item_type": "image",
                 "image": "shopify://shop_images/08.jpg",
@@ -727,22 +684,7 @@
               "name": "Media Flow Item",
               "settings": {
                 "item_type": "image",
-                "image": "shopify://shop_images/Item.png",
-                "link": "",
-                "video_url": "",
-                "autoplay": false,
-                "loop": true,
-                "muted": true,
-                "controls": true
-              },
-              "blocks": {}
-            },
-            "media_flow_item_CDMxU6": {
-              "type": "_media-flow-item",
-              "name": "Media Flow Item",
-              "settings": {
-                "item_type": "image",
-                "image": "shopify://shop_images/b84516798c9285da62983ddb1353d129b7a3536f.png",
+                "image": "shopify://shop_images/9_c6b5b6c0-6e0b-4a9b-92d7-2ed9549582eb.jpg",
                 "link": "",
                 "video_url": "",
                 "autoplay": false,
@@ -757,7 +699,7 @@
               "name": "Media Flow Item",
               "settings": {
                 "item_type": "image",
-                "image": "shopify://shop_images/5.2.png",
+                "image": "shopify://shop_images/10_c57ac9dc-eb35-48bd-9c97-aec6e7de53e2.jpg",
                 "link": "",
                 "video_url": "",
                 "autoplay": false,
@@ -772,7 +714,7 @@
               "name": "Media Flow Item",
               "settings": {
                 "item_type": "image",
-                "image": "shopify://shop_images/Item_1.png",
+                "image": "shopify://shop_images/04.jpg",
                 "link": "",
                 "video_url": "",
                 "autoplay": false,
@@ -785,7 +727,6 @@
           },
           "block_order": [
             "media_flow_item_bqU9wH",
-            "media_flow_item_CDMxU6",
             "media_flow_item_tjNPjz",
             "media_flow_item_7NiEig"
           ]
@@ -830,7 +771,7 @@
               "name": "Media Flow Item",
               "settings": {
                 "item_type": "image",
-                "image": "shopify://shop_images/image_5.png",
+                "image": "shopify://shop_images/Tuding3-1.jpg",
                 "link": "",
                 "video_url": "",
                 "autoplay": false,
@@ -845,7 +786,7 @@
               "name": "Media Flow Item",
               "settings": {
                 "item_type": "image",
-                "image": "shopify://shop_images/6.25.jpg",
+                "image": "shopify://shop_images/image-_30.jpg",
                 "link": "",
                 "video_url": "",
                 "autoplay": false,
@@ -873,7 +814,7 @@
       "name": "Flow Box Media",
       "settings": {
         "items_per_row_desktop": 4,
-        "items_per_row_mobile": 1,
+        "items_per_row_mobile": 2,
         "gap": 8,
         "show_more_text": "Show More",
         "show_less_text": "Show Less",
@@ -951,7 +892,7 @@
               "type": "text",
               "name": "t:names.heading",
               "settings": {
-                "text": "<p>Your home aesthetic starts here.</p>",
+                "text": "<p><strong>Your home aesthetic starts here.</strong></p>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -980,7 +921,7 @@
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
-                "type_preset": "rte",
+                "type_preset": "custom",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
                 "line_height": "normal",
@@ -1070,7 +1011,7 @@
           "name": "Collection Extra Content",
           "settings": {
             "text": "If you forget to adjust it, yet find the temperature always pleasant, this is the beauty of intelligence.",
-            "text_size": 14,
+            "text_size": 16,
             "title": "Smart thermostat",
             "title_size": 28,
             "button_text": "SHOP NOW",
@@ -1214,7 +1155,7 @@
                 "alignment": "left",
                 "type_preset": "custom",
                 "font": "var(--font-heading--family)",
-                "font_size": "0.875rem",
+                "font_size": "1.125rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
@@ -1252,9 +1193,9 @@
                 "show_sale_price_first": true,
                 "show_installments": false,
                 "show_tax_info": false,
-                "type_preset": "h6",
+                "type_preset": "h5",
                 "width": "100%",
-                "alignment": "left",
+                "alignment": "center",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
                 "line_height": "normal",
@@ -1287,7 +1228,7 @@
         "carousel_on_mobile": true,
         "show_button_in_button": true,
         "button_text": "SHOP NOW",
-        "button_link": "shopify://collections/frontpage",
+        "button_link": "shopify://collections/smart-thermostat",
         "max_products": 3,
         "columns": 4,
         "mobile_columns": "2",
