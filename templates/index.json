@@ -76,7 +76,16 @@
             "width": "custom",
             "custom_width": 12,
             "width_mobile": "fit-content",
-            "custom_width_mobile": 100
+            "custom_width_mobile": 100,
+            "enable_custom_styles": false,
+            "custom_bg_color": "",
+            "custom_text_color": "",
+            "custom_border_color": "",
+            "custom_border_width": 0,
+            "custom_border_radius": 4,
+            "custom_hover_bg_color": "",
+            "custom_hover_text_color": "",
+            "custom_hover_border_color": ""
           },
           "blocks": {}
         }
@@ -88,8 +97,9 @@
       ],
       "name": "t:names.hero",
       "settings": {
-        "media_type_1": "image",
+        "media_type_1": "video",
         "image_1": "shopify://shop_images/4_18c91bcc-0fe3-4302-8e14-4358ac846893.jpg",
+        "video_1": "shopify://files/videos/repenic.mp4",
         "media_type_2": "image",
         "link": "",
         "open_in_new_tab": false,
@@ -102,7 +112,7 @@
         "vertical_alignment_flex_direction_column": "flex-end",
         "gap": 10,
         "section_width": "full-width",
-        "section_height": "large",
+        "section_height": "full-screen",
         "section_height_custom": 50,
         "color_scheme": "scheme-6",
         "toggle_overlay": false,
@@ -162,7 +172,7 @@
             "title": "Dimmer switch",
             "title_size": 28,
             "button_text": "Choose your style",
-            "button_link": "",
+            "button_link": "https://www.repenic.com/collections/dimmer-switch",
             "button_bg": "#111111",
             "button_color": "#ffffff",
             "button_hover_bg": "#ffffff",
@@ -249,7 +259,16 @@
                 "width": "fit-content",
                 "custom_width": 100,
                 "width_mobile": "fit-content",
-                "custom_width_mobile": 100
+                "custom_width_mobile": 100,
+                "enable_custom_styles": false,
+                "custom_bg_color": "",
+                "custom_text_color": "",
+                "custom_border_color": "",
+                "custom_border_width": 0,
+                "custom_border_radius": 4,
+                "custom_hover_bg_color": "",
+                "custom_hover_text_color": "",
+                "custom_hover_border_color": ""
               },
               "blocks": {}
             }
@@ -524,7 +543,16 @@
                     "width": "fit-content",
                     "custom_width": 20,
                     "width_mobile": "fit-content",
-                    "custom_width_mobile": 100
+                    "custom_width_mobile": 100,
+                    "enable_custom_styles": true,
+                    "custom_bg_color": "",
+                    "custom_text_color": "",
+                    "custom_border_color": "#000000",
+                    "custom_border_width": 1,
+                    "custom_border_radius": 4,
+                    "custom_hover_bg_color": "",
+                    "custom_hover_text_color": "",
+                    "custom_hover_border_color": "#ffffff"
                   },
                   "blocks": {}
                 }
@@ -1015,7 +1043,7 @@
             "title": "Smart thermostat",
             "title_size": 28,
             "button_text": "SHOP NOW",
-            "button_link": "",
+            "button_link": "https://www.repenic.com/collections/smart-thermostat",
             "button_bg": "#111111",
             "button_color": "#ffffff",
             "button_hover_bg": "#ffffff",
@@ -1102,7 +1130,16 @@
                 "width": "fit-content",
                 "custom_width": 100,
                 "width_mobile": "fit-content",
-                "custom_width_mobile": 100
+                "custom_width_mobile": 100,
+                "enable_custom_styles": false,
+                "custom_bg_color": "",
+                "custom_text_color": "",
+                "custom_border_color": "",
+                "custom_border_width": 0,
+                "custom_border_radius": 4,
+                "custom_hover_bg_color": "",
+                "custom_hover_text_color": "",
+                "custom_hover_border_color": ""
               },
               "blocks": {}
             }
@@ -1369,14 +1406,23 @@
                   "type": "button",
                   "settings": {
                     "label": "Find your reflection →",
-                    "link": "shopify://collections/all",
+                    "link": "shopify://collections/all-products",
                     "open_in_new_tab": false,
                     "show_underline": false,
                     "style_class": "button-secondary",
                     "width": "custom",
                     "custom_width": 40,
                     "width_mobile": "fit-content",
-                    "custom_width_mobile": 100
+                    "custom_width_mobile": 100,
+                    "enable_custom_styles": true,
+                    "custom_bg_color": "",
+                    "custom_text_color": "",
+                    "custom_border_color": "",
+                    "custom_border_width": 1,
+                    "custom_border_radius": 4,
+                    "custom_hover_bg_color": "#000000",
+                    "custom_hover_text_color": "",
+                    "custom_hover_border_color": ""
                   },
                   "blocks": {}
                 }

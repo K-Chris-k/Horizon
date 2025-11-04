@@ -52,9 +52,6 @@
     const { viewTransition } = event;
     const customTransitionType = sessionStorage.getItem('custom-transition-type');
 
-    // Ensure page starts at the top
-    window.scrollTo(0, 0);
-
     if (customTransitionType) {
       viewTransition.types.clear();
       viewTransition.types.add(customTransitionType);

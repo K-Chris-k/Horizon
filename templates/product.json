@@ -540,6 +540,7 @@
       ],
       "name": "Product Carousel",
       "settings": {
+        "custom_class": "",
         "image_aspect_ratio": "4/3",
         "image_border_radius": 12,
         "background_color": "#f5f5f5",
@@ -650,56 +651,72 @@
           "type": "faq",
           "settings": {
             "question": "How do I install Corston electrical products?",
-            "answer": "<p>You can view and print instructions from our mobile-friendly<a href=\"https://www.corston.com/pages/instructions\">support page.</a>We recommend using a professional to fit all Corston products. Electrical items must be installed by a qualified electrician.</p>"
+            "answer": "<p>You can view and print instructions from our mobile-friendly<a href=\"https://www.corston.com/pages/instructions\">support page.</a>We recommend using a professional to fit all Corston products. Electrical items must be installed by a qualified electrician.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
           }
         },
         "faq_R7Lcdx": {
           "type": "faq",
           "settings": {
             "question": "How do I install Corston Clear Switches and Sockets?",
-            "answer": "<p>Our clear switches and sockets come with backing paper that you can either paint, or use as a wallpaper template.<br/>When you're happy with your chosen look, secure the clear front plate over the backing paper to conceal the wires.<br/>All Corston electrical products should be installed by a qualified electrician.</p>"
+            "answer": "<p>Our clear switches and sockets come with backing paper that you can either paint, or use as a wallpaper template.<br/>When you're happy with your chosen look, secure the clear front plate over the backing paper to conceal the wires.<br/>All Corston electrical products should be installed by a qualified electrician.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
           }
         },
         "faq_4NkKPj": {
           "type": "faq",
           "settings": {
             "question": "Do I need to use Corston back boxes for your electrical products?",
-            "answer": "<p>All Corston switches and sockets require a back box with a minimum depth of 35-47mm. It's the only way you'll achieve a flush finish. Our 6G and 8G switches must be used with a<a href=\"https://corston.com/collections/corston-back-boxes\">Corston double metal back box.</a>because of the bespoke size.</p>"
+            "answer": "<p>All Corston switches and sockets require a back box with a minimum depth of 35-47mm. It's the only way you'll achieve a flush finish. Our 6G and 8G switches must be used with a<a href=\"https://corston.com/collections/corston-back-boxes\">Corston double metal back box.</a>because of the bespoke size.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
           }
         },
         "video_3AQDTi": {
           "type": "video",
           "settings": {
             "title": "Installation Guide",
-            "video_url": ""
+            "video_url": "",
+            "title_color": "#333333",
+            "title_background_color": "#ffffff"
           }
         },
         "tab_item_pmPGa8": {
           "type": "tab_item",
           "settings": {
             "tab_type": "specification",
-            "tab_label": "Specification"
+            "tab_label": "Specification",
+            "tab_background_color": "rgba(0,0,0,0)",
+            "tab_text_color": "#333333"
           }
         },
         "tab_item_GKbMg4": {
           "type": "tab_item",
           "settings": {
             "tab_type": "pdf",
-            "tab_label": "PDF"
+            "tab_label": "PDF",
+            "tab_background_color": "rgba(0,0,0,0)",
+            "tab_text_color": "#333333"
           }
         },
         "tab_item_NR3Xpy": {
           "type": "tab_item",
           "settings": {
             "tab_type": "faq",
-            "tab_label": "FAQ"
+            "tab_label": "FAQ",
+            "tab_background_color": "rgba(0,0,0,0)",
+            "tab_text_color": "#333333"
           }
         },
         "tab_item_HNyLCJ": {
           "type": "tab_item",
           "settings": {
             "tab_type": "video",
-            "tab_label": "Installation video"
+            "tab_label": "Installation video",
+            "tab_background_color": "rgba(0,0,0,0)",
+            "tab_text_color": "#333333"
           }
         }
       },
@@ -726,6 +743,9 @@
       ],
       "name": "Technical Specifications",
       "settings": {
+        "custom_class": "",
+        "background_color": "#ffffff",
+        "container_width": 1400,
         "title": "Technical Specifications",
         "subtitle": "Generic Data",
         "image": "shopify://shop_images/Cooker_Hoods_Integrated_cooker_hoods_Boxin_black_120_tech_sheet.jpg",
@@ -962,6 +982,50 @@
         "padding-block-end": 48
       }
     },
+    "1762159112ec1601b8": {
+      "type": "_blocks",
+      "blocks": {
+        "air_product_reviews_app_block_review_list_r4J8k9": {
+          "type": "shopify://apps/air-product-reviews/blocks/app-block-review-list/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+          "settings": {
+            "air_blockreviews_summaryHeading": "Reviews",
+            "air_blockreviews_layout": "list",
+            "air_blockreviews_singleStarColor": "#16A086",
+            "air_blockreviews_primaryColor": "#121212"
+          }
+        }
+      },
+      "block_order": [
+        "air_product_reviews_app_block_review_list_r4J8k9"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
     "product_recommendations_qggXJq": {
       "type": "product-recommendations",
       "blocks": {
@@ -1110,6 +1174,7 @@
     "technical_specifications_G9GYYY",
     "product_features_CKq9ce",
     "featured_blog_posts_WLJgz7",
+    "1762159112ec1601b8",
     "product_recommendations_qggXJq"
   ]
 }

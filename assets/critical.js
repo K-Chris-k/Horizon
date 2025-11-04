@@ -501,12 +501,8 @@ if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
 }
 
-// Force scroll to top on page load
-window.addEventListener('pageshow', function(event) {
-  window.scrollTo(0, 0);
-});
-
-// Also set initial scroll position immediately
+// Set initial scroll position to top immediately (synchronous)
+// This happens before any user interaction, so it won't override user scrolling
 if (window.scrollY !== 0) {
   window.scrollTo(0, 0);
 }

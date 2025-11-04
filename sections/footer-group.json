@@ -444,13 +444,33 @@
             "text_QtHTYa",
             "email_signup_frF9wq"
           ]
+        },
+        "social_links_7AcK8a": {
+          "type": "social-links",
+          "settings": {
+            "facebook_url": "https://www.facebook.com/profile.php?id=61578028200450",
+            "instagram_url": "https://www.instagram.com/repenic/",
+            "youtube_url": "https://www.youtube.com/@Repenic-yt",
+            "tiktok_url": "https://www.tiktok.com/@repenic_tk",
+            "twitter_url": "https://x.com/Repenic",
+            "threads_url": "",
+            "linkedin_url": "",
+            "bluesky_url": "",
+            "snapchat_url": "",
+            "pinterest_url": "",
+            "tumblr_url": "",
+            "vimeo_url": "",
+            "custom_url": ""
+          },
+          "blocks": {}
         }
       },
       "block_order": [
         "group_drRTKb",
         "group_a8AAbT",
         "group_XWQW9a",
-        "group_fnHrmR"
+        "group_fnHrmR",
+        "social_links_7AcK8a"
       ],
       "name": "t:names.footer",
       "settings": {
@@ -472,30 +492,10 @@
             "case": "none"
           },
           "blocks": {}
-        },
-        "social_links_Ew63Kq": {
-          "type": "social-links",
-          "settings": {
-            "facebook_url": "https://www.facebook.com/profile.php?id=61578028200450",
-            "instagram_url": "https://www.instagram.com/repenic/",
-            "youtube_url": "https://www.youtube.com/@Repenic-yt",
-            "tiktok_url": "https://www.tiktok.com/@repenic_tk",
-            "twitter_url": "https://x.com/Repenic",
-            "threads_url": "",
-            "linkedin_url": "",
-            "bluesky_url": "",
-            "snapchat_url": "",
-            "pinterest_url": "",
-            "tumblr_url": "",
-            "vimeo_url": "",
-            "custom_url": ""
-          },
-          "blocks": {}
         }
       },
       "block_order": [
-        "footer_copyright_Cwjye6",
-        "social_links_Ew63Kq"
+        "footer_copyright_Cwjye6"
       ],
       "name": "t:names.utilities",
       "settings": {

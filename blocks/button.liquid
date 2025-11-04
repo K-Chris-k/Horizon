@@ -1,4 +1,14 @@
-{% render 'button', link: block.settings.link %}
+{% render 'button', 
+  link: block.settings.link,
+  custom_bg_color: block.settings.custom_bg_color,
+  custom_text_color: block.settings.custom_text_color,
+  custom_border_color: block.settings.custom_border_color,
+  custom_border_width: block.settings.custom_border_width,
+  custom_border_radius: block.settings.custom_border_radius,
+  custom_hover_bg_color: block.settings.custom_hover_bg_color,
+  custom_hover_text_color: block.settings.custom_hover_text_color,
+  custom_hover_border_color: block.settings.custom_hover_border_color
+%}
 
 {% schema %}
 {
@@ -106,6 +116,79 @@
       "unit": "%",
       "default": 100,
       "visible_if": "{{ block.settings.width_mobile == \"custom\" }}"
+    },
+    {
+      "type": "header",
+      "content": "Custom Styles"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_custom_styles",
+      "label": "Enable Custom Styles",
+      "default": false,
+      "info": "Enable custom colors and borders for this button"
+    },
+    {
+      "type": "color",
+      "id": "custom_bg_color",
+      "label": "Background Color",
+      "visible_if": "{{ block.settings.enable_custom_styles }}"
+    },
+    {
+      "type": "color",
+      "id": "custom_text_color",
+      "label": "Text Color",
+      "visible_if": "{{ block.settings.enable_custom_styles }}"
+    },
+    {
+      "type": "color",
+      "id": "custom_border_color",
+      "label": "Border Color",
+      "visible_if": "{{ block.settings.enable_custom_styles }}"
+    },
+    {
+      "type": "range",
+      "id": "custom_border_width",
+      "label": "Border Width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.enable_custom_styles }}"
+    },
+    {
+      "type": "range",
+      "id": "custom_border_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 4,
+      "visible_if": "{{ block.settings.enable_custom_styles }}"
+    },
+    {
+      "type": "header",
+      "content": "Hover Styles"
+    },
+    {
+      "type": "color",
+      "id": "custom_hover_bg_color",
+      "label": "Hover Background Color",
+      "visible_if": "{{ block.settings.enable_custom_styles }}"
+    },
+    {
+      "type": "color",
+      "id": "custom_hover_text_color",
+      "label": "Hover Text Color",
+      "visible_if": "{{ block.settings.enable_custom_styles }}"
+    },
+    {
+      "type": "color",
+      "id": "custom_hover_border_color",
+      "label": "Hover Border Color",
+      "visible_if": "{{ block.settings.enable_custom_styles }}"
     }
   ],
   "presets": [

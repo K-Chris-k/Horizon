@@ -3,12 +3,55 @@
 
   @param {string} link - link to render
   @param {object} [block] - The block
+  @param {string} [custom_bg_color] - Custom background color
+  @param {string} [custom_text_color] - Custom text color
+  @param {string} [custom_border_color] - Custom border color
+  @param {number} [custom_border_width] - Custom border width
+  @param {number} [custom_border_radius] - Custom border radius
+  @param {string} [custom_hover_bg_color] - Custom hover background color
+  @param {string} [custom_hover_text_color] - Custom hover text color
+  @param {string} [custom_hover_border_color] - Custom hover border color
 
   @example
-  {% render 'button', link: '/collections/all' %}
+  {% render 'button', link: '/collections/all', custom_bg_color: '#000', custom_text_color: '#fff' %}
 {%- enddoc -%}
 
 {% assign block_settings = block.settings %}
+{% assign unique_id = block.id | default: 'default' %}
+
+{%- if custom_bg_color != blank or custom_text_color != blank or custom_border_color != blank or custom_hover_bg_color != blank -%}
+  {%- style -%}
+    .{{ block_settings.style_class }}--{{ unique_id }} {
+      {% if custom_bg_color != blank %}
+        background-color: {{ custom_bg_color }} !important;
+      {% endif %}
+      {% if custom_text_color != blank %}
+        color: {{ custom_text_color }} !important;
+      {% endif %}
+      {% if custom_border_color != blank and custom_border_width > 0 %}
+        border: {{ custom_border_width }}px solid {{ custom_border_color }} !important;
+      {% elsif custom_border_width > 0 %}
+        border-width: {{ custom_border_width }}px !important;
+      {% endif %}
+      {% if custom_border_radius != blank %}
+        border-radius: {{ custom_border_radius }}px !important;
+      {% endif %}
+      transition: all 0.3s ease !important;
+    }
+
+    .{{ block_settings.style_class }}--{{ unique_id }}:hover {
+      {% if custom_hover_bg_color != blank %}
+        background-color: {{ custom_hover_bg_color }} !important;
+      {% endif %}
+      {% if custom_hover_text_color != blank %}
+        color: {{ custom_hover_text_color }} !important;
+      {% endif %}
+      {% if custom_hover_border_color != blank and custom_border_width > 0 %}
+        border-color: {{ custom_hover_border_color }} !important;
+      {% endif %}
+    }
+  {%- endstyle -%}
+{%- endif -%}
 
 <a
   {% if link == blank %}
@@ -20,7 +63,7 @@
   class="
     size-style
     {{ block_settings.style_class }}
-    {{ block_settings.style_class }}--{{ block.id }}
+    {{ block_settings.style_class }}--{{ unique_id }}
     {% if block_settings.show_underline  %}show-underline{% endif %}
   "
   style="{% render 'size-style', settings: block_settings %}"

@@ -57,6 +57,9 @@ export class ProductCard extends Component {
     const shouldOpenInNewTab =
       event instanceof MouseEvent && (event.metaKey || event.ctrlKey || event.shiftKey || event.button === 1);
 
+    // Remove any hash from the URL to ensure we scroll to the top of the product page
+    url.hash = '';
+
     if (shouldOpenInNewTab) {
       event.preventDefault();
       window.open(url.href, '_blank');
@@ -408,22 +411,32 @@ export class ProductCard extends Component {
     const productCardAnchor = link.getAttribute('id');
     if (!productCardAnchor) return;
 
-    const url = new URL(window.location.href);
-    const parent = this.closest('li');
-    url.hash = productCardAnchor;
-    if (parent && parent.dataset.page) {
-      url.searchParams.set('page', parent.dataset.page);
-    }
-
+    // Save current scroll position and anchor info in history state
+    // but don't modify the URL to avoid pollution
     if (!window.Shopify.designMode) {
+      const parent = this.closest('li');
+      const stateData = {
+        scrollY: window.scrollY,
+        anchor: productCardAnchor,
+        page: parent?.dataset.page || null,
+      };
+      
       requestYieldCallback(() => {
-        history.replaceState({}, '', url.toString());
+        // Save state without modifying the visible URL
+        history.replaceState(stateData, '', window.location.href);
       });
     }
+
+    // Set scroll restoration and sessionStorage flag for all navigations
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    sessionStorage.setItem('scrollToTopOnLoad', 'true');
 
     const targetLink = event.target.closest('a');
     // Let the native navigation handle the click if it was on a link.
     if (!targetLink) {
+      event.preventDefault();
       this.#navigateToURL(event, linkURL);
     }
   };
