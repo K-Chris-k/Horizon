@@ -1,6 +1,6 @@
 <style>
   .technical-specs-section {
-    padding: 60px 0;
+    padding: {{ section.settings.padding_top_desktop }}px 0 {{ section.settings.padding_bottom_desktop }}px;
     max-width: {{ section.settings.container_width }}px !important;
     margin: 0 auto;
   }
@@ -384,7 +384,7 @@
 
   @media (max-width: 768px) {
     .technical-specs-section {
-      padding: 40px 0;
+      padding: {{ section.settings.padding_top_mobile }}px 0 {{ section.settings.padding_bottom_mobile }}px;
     }
 
     .technical-specs-title {
@@ -869,6 +869,58 @@
       "label": "Container Max Width",
       "default": 1400,
       "info": "Maximum width of the content container"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing - Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Top Padding",
+      "default": 60,
+      "info": "Space above the section on desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom Padding",
+      "default": 60,
+      "info": "Space below the section on desktop"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing - Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Top Padding",
+      "default": 40,
+      "info": "Space above the section on mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom Padding",
+      "default": 40,
+      "info": "Space below the section on mobile"
     },
     {
       "type": "header",
