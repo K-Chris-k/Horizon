@@ -604,17 +604,17 @@
         "accordion_item_yFWcVU": {
           "type": "accordion_item",
           "settings": {
-            "title": "KEY INFO FOR YOU",
-            "description": "<p>By being able to monitor metrics such as temperature, humidity, and electricity usage, it helps you both craft a comfortable environment and keep an eye on your energy bills.</p>",
-            "image": "shopify://shop_images/65-1.png"
+            "title": "3 IN-BUILT SENSOR",
+            "description": "<p>Repenic's thermostat features three independent temperature sensors, eliminating the interference of internal electronic components on temperature accuracy, offering you more precise room temperature control and smoother temperature changes.</p>",
+            "image": "shopify://shop_images/17.1_53137b2a-8725-4676-abef-1d23990e51a5.jpg"
           }
         },
         "accordion_item_RteQcE": {
           "type": "accordion_item",
           "settings": {
-            "title": "3 IN-BUILT SENSOR",
-            "description": "<p>Repenic's thermostat features three independent temperature sensors, eliminating the interference of internal electronic components on temperature accuracy, offering you more precise room temperature control and smoother temperature changes.</p>",
-            "image": "shopify://shop_images/17.1_53137b2a-8725-4676-abef-1d23990e51a5.jpg"
+            "title": "KEY INFO FOR YOU",
+            "description": "<p>By being able to monitor metrics such as temperature, humidity, and electricity usage, it helps you both craft a comfortable environment and keep an eye on your energy bills.</p>",
+            "image": "shopify://shop_images/65-1.png"
           }
         },
         "accordion_item_xGT3ax": {
@@ -1272,6 +1272,10 @@
         "custom_class": "tech",
         "background_color": "#e6e6e6",
         "container_width": 1400,
+        "padding_top_desktop": 60,
+        "padding_bottom_desktop": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
         "title": "",
         "subtitle": "",
         "image": "shopify://shop_images/T11-UK-2D-01.png",

@@ -640,7 +640,7 @@
         "content_image_width_desktop": 250,
         "content_image_width_mobile": 300,
         "content_image_offset_desktop": 20,
-        "content_text": "<p>This is a wireless Wi-Fi smart thermostat compatible with mainstream UK plumbing systems (S plan, Y plan, boiler, etc), featuring hot water and heating control. <a href=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\" target=\"_blank\" title=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\">Click here to see if it fits your house.</a></p>",
+        "content_text": "<p>This wireless Wi-Fi smart thermostat is compatible with mainstream UK plumbing systems (S/Y plan, combi boiler, system boiler), featuring hot water and heating control. <a href=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\" target=\"_blank\" title=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\">Click here to see if it fits your house.</a></p>",
         "content_text_color": "#333333",
         "content_text_font_size_desktop": 18,
         "content_text_font_size_mobile": 14,
@@ -661,9 +661,9 @@
         "accordion_item_yFWcVU": {
           "type": "accordion_item",
           "settings": {
-            "title": "WIRELESS DESIGN",
-            "description": "<p>This is a wireless Wi-Fi smart thermostat compatible with mainstream UK plumbing systems, featuring hot water, heating, and cooling control. Its wireless design is highly user-friendly for both new builds and renovations.<br/></p>",
-            "image": "shopify://shop_images/4_0626f9f9-c3b0-4a02-88c9-ff9e22804fe6.png"
+            "title": "SKIN FEEL PAINT",
+            "description": "<p>Designed with a triple-layer paint coating, delivering a premium skin-like feel, with surface text that remains vibrant and fade-resistant over time.<br/></p>",
+            "image": "shopify://shop_images/image-_6.jpg"
           }
         },
         "accordion_item_RteQcE": {
@@ -685,9 +685,9 @@
         "accordion_item_8Dh9yW": {
           "type": "accordion_item",
           "settings": {
-            "title": "SKIN FEEL PAINT",
-            "description": "<p>Designed with a triple-layer paint coating, delivering a premium skin-like feel, with surface text that remains vibrant and fade-resistant over time.</p>",
-            "image": "shopify://shop_images/image-_6.jpg"
+            "title": "WIRELESS DESIGN",
+            "description": "<p>This is a wireless Wi-Fi smart thermostat compatible with mainstream UK plumbing systems, featuring hot water, heating, and cooling control. Its wireless design is highly user-friendly for both new builds and renovations.</p>",
+            "image": "shopify://shop_images/4_0626f9f9-c3b0-4a02-88c9-ff9e22804fe6.png"
           }
         }
       },
@@ -1238,14 +1238,14 @@
           "type": "download",
           "settings": {
             "label": "Installation - receiver",
-            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/Installation_-_receiver.pdf?v=1761701264"
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/Installation_-_receiver.pdf?v=1762506880"
           }
         },
         "download_rh6kb7": {
           "type": "download",
           "settings": {
             "label": "User guide - thermostat",
-            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/User_guide_-_thermostat.pdf?v=1761701257"
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/user_guide_-_thermostsat.pdf?v=1762506879"
           }
         },
         "faq_aimhEp": {
@@ -1359,6 +1359,10 @@
         "custom_class": "tech",
         "background_color": "#e6e6e6",
         "container_width": 1400,
+        "padding_top_desktop": 60,
+        "padding_bottom_desktop": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
         "title": "",
         "subtitle": "",
         "image": "shopify://shop_images/diagram.png",

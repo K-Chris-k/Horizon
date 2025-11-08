@@ -800,6 +800,10 @@
         "custom_class": "",
         "background_color": "#e6e6e6",
         "container_width": 1400,
+        "padding_top_desktop": 60,
+        "padding_bottom_desktop": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
         "title": "",
         "subtitle": "",
         "image": "shopify://shop_images/uk-1-01.png",
@@ -1056,6 +1060,96 @@
         "padding-block-end": 0
       }
     },
+    "technical_specifications_FxnBjr": {
+      "type": "technical-specifications",
+      "blocks": {
+        "tab_item_bk66Cq": {
+          "type": "tab_item",
+          "settings": {
+            "tab_type": "video",
+            "tab_label": "",
+            "tab_background_color": "#ffffff",
+            "tab_text_color": "#ffffff"
+          }
+        },
+        "video_tmTc3N": {
+          "type": "video",
+          "settings": {
+            "title": "Dimmer switch - Steel",
+            "video_url": "https://youtube.com/shorts/TPOsplI5my8?si=rh5lSQzuVEq59LGm",
+            "thumbnail": "shopify://shop_images/dimmer_switch_-_steel.png",
+            "title_color": "#333333",
+            "title_background_color": "#ffffff"
+          }
+        },
+        "video_KNT4d6": {
+          "type": "video",
+          "settings": {
+            "title": "Dimmer switch - Brass",
+            "video_url": "https://youtube.com/shorts/p9pL9i7rVHQ?si=tSnJ0pO6maBuAffY",
+            "thumbnail": "shopify://shop_images/dimmer_switch_-_brass.png",
+            "title_color": "#333333",
+            "title_background_color": "#ffffff"
+          }
+        },
+        "video_MftwiV": {
+          "type": "video",
+          "settings": {
+            "title": "Dimmer switch - White",
+            "video_url": "https://youtube.com/shorts/AKRE1YpvGTs?si=TE4SVWgMZ4xKiByo",
+            "thumbnail": "shopify://shop_images/dimmer_switch_-_white.png",
+            "title_color": "#333333",
+            "title_background_color": "#ffffff"
+          }
+        },
+        "video_YrQPL9": {
+          "type": "video",
+          "settings": {
+            "title": "Dimmer switch - Brass",
+            "video_url": "https://youtube.com/shorts/O9pHq_ec2W4?feature=share",
+            "thumbnail": "shopify://shop_images/Smart_dimmer_swith_-_brass.png",
+            "title_color": "#333333",
+            "title_background_color": "#ffffff"
+          }
+        }
+      },
+      "block_order": [
+        "tab_item_bk66Cq",
+        "video_tmTc3N",
+        "video_KNT4d6",
+        "video_MftwiV",
+        "video_YrQPL9"
+      ],
+      "name": "influencer video",
+      "settings": {
+        "custom_class": "",
+        "background_color": "#ffffff",
+        "container_width": 1400,
+        "padding_top_desktop": 60,
+        "padding_bottom_desktop": 20,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 10,
+        "title": "",
+        "subtitle": "",
+        "faq_title": "",
+        "title_font_size_desktop": 32,
+        "title_line_height_desktop": 1,
+        "subtitle_font_size_desktop": 24,
+        "subtitle_line_height_desktop": 1.4,
+        "content_font_size_desktop": 14,
+        "content_line_height_desktop": 1.6,
+        "tab_font_size_desktop": 16,
+        "tab_line_height_desktop": 1.5,
+        "title_font_size_mobile": 24,
+        "title_line_height_mobile": 1.2,
+        "subtitle_font_size_mobile": 18,
+        "subtitle_line_height_mobile": 1.4,
+        "content_font_size_mobile": 12,
+        "content_line_height_mobile": 1.6,
+        "tab_font_size_mobile": 14,
+        "tab_line_height_mobile": 1.5
+      }
+    },
     "product_recommendations_qggXJq": {
       "type": "product-recommendations",
       "blocks": {
@@ -1205,6 +1299,7 @@
     "product_features_CKq9ce",
     "featured_blog_posts_WLJgz7",
     "176216235791960fd6",
+    "technical_specifications_FxnBjr",
     "product_recommendations_qggXJq"
   ]
 }
