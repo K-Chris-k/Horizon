@@ -1,0 +1,341 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "Title",
+          "settings": {
+            "text": "<h1>{{ closest.page.title }}</h1>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h2",
+            "font": "var(--font-primary--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "page-content": {
+          "type": "page-content",
+          "settings": {},
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "heading",
+        "page-content"
+      ],
+      "disabled": true,
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    },
+    "image_text_overlay_a648ip": {
+      "type": "image-text-overlay",
+      "name": "Image Text Overlay",
+      "settings": {
+        "desktop_background_image": "shopify://shop_images/Rectangle_23.png",
+        "mobile_background_image": "shopify://shop_images/Rectangle_23_1.png",
+        "enable_overlay": false,
+        "overlay_opacity": 0,
+        "heading": "Not us,",
+        "subheading": "It's about you.",
+        "description": "There’s nothing wrong with the traditional — they’ve always worked just fine.\nIt’s just that we’ve noticed something: homes everywhere seem to be filled with those white plastic fittings.",
+        "desktop_content_alignment": "left",
+        "desktop_text_align": "left",
+        "desktop_content_max_width": 600,
+        "desktop_padding_horizontal": 80,
+        "desktop_padding_vertical": 60,
+        "desktop_heading_color": "#ffffff",
+        "desktop_heading_font_size": 44,
+        "desktop_heading_line_height": 1.2,
+        "desktop_heading_font_weight": 600,
+        "desktop_heading_letter_spacing": 0,
+        "desktop_subheading_color": "#ffffff",
+        "desktop_subheading_font_size": 38,
+        "desktop_subheading_line_height": 1.3,
+        "desktop_subheading_font_weight": 600,
+        "desktop_subheading_letter_spacing": 0,
+        "desktop_subheading_margin_top": 15,
+        "desktop_description_color": "#ffffff",
+        "desktop_description_font_size": 20,
+        "desktop_description_line_height": 1.5,
+        "desktop_description_font_weight": 300,
+        "desktop_description_margin_top": 15,
+        "mobile_content_alignment": "center",
+        "mobile_text_align": "left",
+        "mobile_content_max_width": 90,
+        "mobile_padding_horizontal": 20,
+        "mobile_padding_vertical": 40,
+        "mobile_heading_color": "#ffffff",
+        "mobile_heading_font_size": 32,
+        "mobile_heading_line_height": 1.2,
+        "mobile_heading_font_weight": 700,
+        "mobile_heading_letter_spacing": 0,
+        "mobile_subheading_color": "#ffffff",
+        "mobile_subheading_font_size": 24,
+        "mobile_subheading_line_height": 1.3,
+        "mobile_subheading_font_weight": 400,
+        "mobile_subheading_letter_spacing": 0,
+        "mobile_subheading_margin_top": 10,
+        "mobile_description_color": "#ffffff",
+        "mobile_description_font_size": 18,
+        "mobile_description_line_height": 1.5,
+        "mobile_description_font_weight": 300,
+        "mobile_description_margin_top": 10
+      }
+    },
+    "image_showcase_fBB7pP": {
+      "type": "image-showcase",
+      "blocks": {
+        "showcase_image_BjL9Rd": {
+          "type": "showcase_image",
+          "settings": {
+            "image": "shopify://shop_images/Rectangle_24.png",
+            "item_title": "",
+            "item_description": ""
+          }
+        },
+        "showcase_image_66Nhb6": {
+          "type": "showcase_image",
+          "settings": {
+            "image": "shopify://shop_images/Rectangle_25.png",
+            "item_title": "",
+            "item_description": ""
+          }
+        },
+        "showcase_image_UYqPtb": {
+          "type": "showcase_image",
+          "settings": {
+            "image": "shopify://shop_images/Rectangle_26.png",
+            "item_title": "",
+            "item_description": ""
+          }
+        }
+      },
+      "block_order": [
+        "showcase_image_BjL9Rd",
+        "showcase_image_66Nhb6",
+        "showcase_image_UYqPtb"
+      ],
+      "name": "Image Showcase",
+      "settings": {
+        "background_color": "#ffffff",
+        "title": "People renovate their kitchens, buy the latest appliances, yet overlook the small details — the switches, sockets, thermostats — relics from the last century.",
+        "title_color": "#666666",
+        "title_font_weight": "400",
+        "title_font_size_desktop": 20,
+        "title_line_height_desktop": 1.4,
+        "title_max_width": 860,
+        "title_font_size_mobile": 16,
+        "title_line_height_mobile": 1.4,
+        "description": "They’ve simply got used to them.<br>But we know you haven’t (and neither has your wall).",
+        "description_color": "#000000",
+        "description_font_size_desktop": 24,
+        "description_line_height_desktop": 1.4,
+        "description_max_width": 800,
+        "description_font_size_mobile": 16,
+        "description_line_height_mobile": 1.4,
+        "item_title_color": "#333333",
+        "item_title_font_size": 16,
+        "item_title_line_height": 1.4,
+        "item_title_font_weight": "500",
+        "item_description_color": "#666666",
+        "item_description_font_size": 14,
+        "item_description_line_height": 1.5
+      }
+    },
+    "brand_why_wMeGkE": {
+      "type": "brand-why",
+      "name": "Brand Why Section",
+      "settings": {
+        "heading": "BUT WHY",
+        "description": "True elegance is born from detail — not the kind of “unnecessary” others talk about, but about the quiet evolution of taste.<br>Repenic was created for those who appreciate the finer details. Through the beauty you can see — design — and the beauty you can’t — intelligence — we express your understanding of life.",
+        "button_text": "",
+        "button_link": "",
+        "image_desktop_1": "shopify://shop_images/Rectangle_28_1.png",
+        "image_desktop_2": "shopify://shop_images/Rectangle_29.png",
+        "container_width": 1200,
+        "desktop_layout": "equal",
+        "image_ratio_left": 1,
+        "image_ratio_right": 1,
+        "image_gap": 32,
+        "image_gap_mobile": 20,
+        "image_height_difference": 40,
+        "images_vertical_align": "center",
+        "image_border_radius": 12,
+        "content_spacing_desktop": 48,
+        "content_spacing_mobile": 32,
+        "text_align_desktop": "left",
+        "text_align_mobile": "left",
+        "heading_size_desktop": 48,
+        "heading_line_height_desktop": 1.2,
+        "heading_size_mobile": 32,
+        "heading_line_height_mobile": 1.2,
+        "heading_weight": "700",
+        "heading_letter_spacing": 0,
+        "heading_transform": "uppercase",
+        "heading_margin_bottom": 48,
+        "description_size_desktop": 18,
+        "description_line_height_desktop": 1.6,
+        "description_size_mobile": 16,
+        "description_line_height_mobile": 1.5,
+        "description_max_width": 1000,
+        "description_margin_bottom": 32,
+        "button_size_desktop": 16,
+        "button_size_mobile": 14,
+        "button_weight": "500",
+        "button_padding_vertical": 12,
+        "button_padding_horizontal": 32,
+        "button_border_width": 1,
+        "button_border_radius": 4,
+        "background_color": "#ffffff",
+        "heading_color": "#000000",
+        "description_color": "#666666",
+        "button_text_color": "#000000",
+        "button_bg_color": "#ffffff",
+        "button_border_color": "#000000",
+        "button_text_color_hover": "#ffffff",
+        "button_bg_color_hover": "#000000",
+        "button_border_color_hover": "#000000",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "partner_showcase_YBjjAG": {
+      "type": "partner-showcase",
+      "blocks": {
+        "partner_item_Lfhdwb": {
+          "type": "partner_item",
+          "settings": {
+            "image": "shopify://shop_images/The_Square._home_preview.png",
+            "title": "Designer",
+            "description": "A rich palette of finishes helps you satisfy even the most discerning clients.\nOur 24/7 electrical support ensures you’ll always find the product that truly fits your design concept.",
+            "author": "",
+            "link_text": "Discover",
+            "link_url": ""
+          }
+        },
+        "partner_item_hhRPk7": {
+          "type": "partner_item",
+          "settings": {
+            "image": "shopify://shop_images/b84516798c9285da62983ddb1353d129b7a3536f.png",
+            "title": "Installer",
+            "description": "Rest assured — this isn’t “expensive metal on cheap electrics”. With outstanding electrical performance and a 5-year warranty, you’ll never have to worry about client complaints again.\nStandard fittings and detailed installation guides — both in print and video — mean no awkward moments on site.",
+            "author": "",
+            "link_text": "Read more",
+            "link_url": ""
+          }
+        },
+        "partner_item_gbXCwm": {
+          "type": "partner_item",
+          "settings": {
+            "image": "shopify://shop_images/4fe40f089696834c4906303a743d01c5.jpg",
+            "title": "Homeowners",
+            "description": "Spatial aesthetics are, in fact, your philosophy of living — and we’re here to help you express it.\nFlashy but impractical? We’ll leave that to others. We make things that are beautiful and built to last — because we want you to come back.",
+            "author": "",
+            "link_text": "Discover FEC",
+            "link_url": ""
+          }
+        },
+        "partner_item_JidjbK": {
+          "type": "partner_item",
+          "settings": {
+            "image": "shopify://shop_images/Rectangle_24.png",
+            "title": "Contractor",
+            "description": "A wide range of finishes, diverse electrical ecosystems, smart-control options, and 24/7 expert support — everything you need to deliver the right solution for every project.Reliable stock levels to keep your project moving without interruption.",
+            "author": "",
+            "link_text": "Discover",
+            "link_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "partner_item_Lfhdwb",
+        "partner_item_hhRPk7",
+        "partner_item_gbXCwm",
+        "partner_item_JidjbK"
+      ],
+      "name": "Partner Showcase",
+      "settings": {
+        "title": "We are your reliable partner.",
+        "background_color": "#ffffff",
+        "padding_top_desktop": 60,
+        "padding_bottom_desktop": 60,
+        "padding_horizontal_desktop": 20,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_horizontal_mobile": 16,
+        "title_font_size_desktop": 36,
+        "title_line_height_desktop": 1.4,
+        "title_color": "#333333",
+        "title_font_size_mobile": 28,
+        "title_line_height_mobile": 1.4,
+        "item_title_font_size_desktop": 24,
+        "item_title_line_height_desktop": 1.3,
+        "item_title_color": "#1a1a1a",
+        "item_title_font_size_mobile": 22,
+        "item_title_line_height_mobile": 1.3
+      }
+    },
+    "partner_showcase_GHqhFH": {
+      "type": "partner-showcase",
+      "name": "Partner Showcase",
+      "settings": {
+        "title": "We don’t create beauty.<br>We simply bring your inner sense of taste to life.",
+        "background_color": "#ffffff",
+        "padding_top_desktop": 60,
+        "padding_bottom_desktop": 60,
+        "padding_horizontal_desktop": 20,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_horizontal_mobile": 16,
+        "title_font_size_desktop": 28,
+        "title_line_height_desktop": 1.4,
+        "title_color": "#333333",
+        "title_font_size_mobile": 28,
+        "title_line_height_mobile": 1.4,
+        "item_title_font_size_desktop": 24,
+        "item_title_line_height_desktop": 1.3,
+        "item_title_color": "#1a1a1a",
+        "item_title_font_size_mobile": 14,
+        "item_title_line_height_mobile": 1.3
+      }
+    }
+  },
+  "order": [
+    "main",
+    "image_text_overlay_a648ip",
+    "image_showcase_fBB7pP",
+    "brand_why_wMeGkE",
+    "partner_showcase_YBjjAG",
+    "partner_showcase_GHqhFH"
+  ]
+}

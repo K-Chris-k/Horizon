@@ -1,0 +1,16 @@
+{
+  "name": "twzerk-ee-theme",
+  "version": "1.0.0",
+  "description": "The production theme project of twzerk-ee",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "shopify theme dev --host=0.0.0.0 -s twzerk-ee.myshopify.com -x package.json",
+    "update": "shopify theme pull -s twzerk-ee.myshopify.com -l -x package.json",
+    "push": "shopify theme push -s twzerk-ee.myshopify.com -l -x templates/**.json -x templates/**.liquid -x config/*_data.json -x package.json -x locales/**.json -n"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+
