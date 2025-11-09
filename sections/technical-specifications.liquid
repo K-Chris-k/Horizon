@@ -228,27 +228,21 @@
   .faq-icon {
     transition: transform 0.3s ease;
     font-size: 18px;
-  }
-
-  .faq-item.active .faq-icon {
-    transform: rotate(90deg);
+    flex-shrink: 0;
   }
 
   .faq-answer {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
     font-size: {{ section.settings.content_font_size_desktop }}px;
     line-height: {{ section.settings.content_line_height_desktop }};
+    opacity: 0;
   }
 
   .faq-answer-content {
     padding-bottom: 24px;
     margin-left: 2rem;
-  }
-
-  .faq-item.active .faq-answer {
-    max-height: 500px;
   }
 
   /* Video */
@@ -476,16 +470,27 @@
     }
 
     .faq-question {
-      font-size: 13px;
+      font-size: {{ section.settings.content_font_size_mobile }}px;
+      line-height: {{ section.settings.content_line_height_mobile }};
       padding: 20px 0;
     }
 
     .faq-answer {
-      font-size: 13px;
+      font-size: {{ section.settings.content_font_size_mobile }}px;
+      line-height: {{ section.settings.content_line_height_mobile }};
     }
 
     .faq-answer-content {
       margin-left: 0;
+      padding-bottom: 20px;
+    }
+    
+    .faq-item.active .faq-answer {
+      max-height: 3000px !important;
+    }
+    
+    .faq-icon {
+      font-size: 16px;
     }
 
     .video-grid {
@@ -678,7 +683,7 @@
             {%- for block in section.blocks -%}
               {%- if block.type == 'faq' -%}
                 <div class="faq-item" {{ block.shopify_attributes }}>
-                  <button class="faq-question" style="color: {{ block.settings.question_color }};">
+                  <button class="faq-question" type="button" style="color: {{ block.settings.question_color }};">
                     <span>{{ block.settings.question }}</span>
                     <span class="faq-icon" style="color: {{ block.settings.question_color }};">›</span>
                   </button>
@@ -747,93 +752,151 @@
 
 <script>
 (() => {
-  // 独立作用域，避免变量冲突
-  document.addEventListener('DOMContentLoaded', function() {
+  // ==================== 工具函数：防抖（可选） ====================
+  const ready = (fn) => {
+    if (document.readyState !== 'loading') {
+      fn();
+    } else {
+      document.addEventListener('DOMContentLoaded', fn);
+    }
+  };
 
-    /* -------------------- Tab switching -------------------- */
+  // ==================== 主初始化函数 ====================
+  const init = () => {
+    /* -------------------- 1. Tab 切换 -------------------- */
     document.querySelectorAll('.specs-tab').forEach(tab => {
-      tab.addEventListener('click', function() {
+      tab.addEventListener('click', function () {
         const tabName = this.getAttribute('data-tab');
-        
+
+        // 移除所有激活状态
         document.querySelectorAll('.specs-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.specs-tab-content').forEach(c => c.classList.remove('active'));
-        
+
+        // 激活当前
         this.classList.add('active');
-        const targetContent = document.querySelector(`[data-content="${tabName}"]`);
-        if (targetContent) targetContent.classList.add('active');
+        const target = document.querySelector(`[data-content="${tabName}"]`);
+        if (target) {
+          target.classList.add('active');
+        }
       });
     });
 
-    /* -------------------- FAQ accordion -------------------- */
-    document.querySelectorAll('.faq-question').forEach(question => {
-      question.addEventListener('click', function() {
-        const faqItem = this.closest('.faq-item');
-        const isActive = faqItem.classList.contains('active');
-        document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
-        if (!isActive) faqItem.classList.add('active');
-      });
+    /* -------------------- 2. FAQ 折叠（手风琴） -------------------- */
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    faqItems.forEach((item, index) => {
+      const question = item.querySelector('.faq-question');
+      const answer = item.querySelector('.faq-answer');
+      const icon = item.querySelector('.faq-icon');
+      
+      if (!question || !answer) return;
+      
+      question.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        const isOpen = item.classList.contains('active');
+        
+        // 关闭所有其他FAQ
+        faqItems.forEach(otherItem => {
+          if (otherItem !== item) {
+            otherItem.classList.remove('active');
+            const otherAnswer = otherItem.querySelector('.faq-answer');
+            const otherIcon = otherItem.querySelector('.faq-icon');
+            if (otherAnswer) {
+              otherAnswer.style.maxHeight = '0';
+              otherAnswer.style.opacity = '0';
+            }
+            if (otherIcon) {
+              otherIcon.style.transform = 'rotate(0deg)';
+            }
+          }
+        });
+        
+        // 切换当前FAQ
+        if (isOpen) {
+          item.classList.remove('active');
+          answer.style.maxHeight = '0';
+          answer.style.opacity = '0';
+          if (icon) icon.style.transform = 'rotate(0deg)';
+        } else {
+          item.classList.add('active');
+          answer.style.maxHeight = '3000px';
+          answer.style.opacity = '1';
+          if (icon) icon.style.transform = 'rotate(90deg)';
+        }
+      }, { capture: true, once: false });
     });
 
-    /* -------------------- Video modal -------------------- */
+    /* -------------------- 3. 视频模态框 -------------------- */
     const videoModal = document.getElementById('videoModal');
-    const closeVideoModal = document.getElementById('closeVideoModal');
-    const videoPlayerContainer = document.getElementById('videoPlayerContainer');
+    const closeBtn = document.getElementById('closeVideoModal');
+    const playerContainer = document.getElementById('videoPlayerContainer');
 
-    if (videoModal && videoPlayerContainer) {
+    if (videoModal && playerContainer) {
       // 打开视频
       document.querySelectorAll('.video-item').forEach(item => {
-        item.addEventListener('click', function() {
-          const videoUrl = this.getAttribute('data-video-url');
-          if (!videoUrl) return;
+        item.addEventListener('click', function () {
+          const url = this.getAttribute('data-video-url');
+          if (!url) return;
 
-          let embedUrl = videoUrl;
-          // ✅ 支持 YouTube / Shorts
-          if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-            const match = videoUrl.match(/(?:v=|\/(?:shorts|embed|v)\/)([a-zA-Z0-9_-]{11})/);
-            if (match && match[1]) {
-              embedUrl = `https://www.youtube.com/embed/${match[1]}?autoplay=1`;
-            }
-          }
-          // ✅ 支持 Vimeo
-          if (videoUrl.includes('vimeo.com')) {
-            const match = videoUrl.match(/vimeo\.com\/(\d+)/);
-            if (match && match[1]) {
-              embedUrl = `https://player.vimeo.com/video/${match[1]}?autoplay=1`;
-            }
+          let embedUrl = '';
+
+          // YouTube（普通视频 + Shorts）
+          if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            const match = url.match(/(?:v=|\/(?:shorts|embed|watch\?v=))([a-zA-Z0-9_-]{11})/);
+            if (match) embedUrl = `https://www.youtube.com/embed/${match[1]}?autoplay=1`;
           }
 
-          // 插入 iframe 播放
-          videoPlayerContainer.innerHTML =
-            `<iframe class="video-player" src="${embedUrl}" frameborder="0"
-             allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+          // Vimeo
+          if (url.includes('vimeo.com')) {
+            const match = url.match(/vimeo\.com\/(\d+)/);
+            if (match) embedUrl = `https://player.vimeo.com/video/${match[1]}?autoplay=1`;
+          }
 
-          // 打开模态框
+          if (!embedUrl) return;
+
+          playerContainer.innerHTML = `
+            <iframe class="video-player" src="${embedUrl}" 
+                    frameborder="0" allow="autoplay; fullscreen; picture-in-picture" 
+                    allowfullscreen></iframe>
+          `;
+
           videoModal.classList.add('active');
         });
       });
 
-      // 关闭视频函数（供多个事件调用）
+      // 关闭函数
       const closeVideo = () => {
         videoModal.classList.remove('active');
-        videoPlayerContainer.innerHTML = '';
+        playerContainer.innerHTML = '';
       };
 
-      // 点击关闭按钮
-      closeVideoModal?.addEventListener('click', closeVideo);
+      closeBtn?.addEventListener('click', closeVideo);
 
-      // 点击背景关闭
-      videoModal.addEventListener('click', function(e) {
+      // 点击遮罩关闭
+      videoModal.addEventListener('click', e => {
         if (e.target === videoModal) closeVideo();
       });
 
-      // ✅ 按 ESC 键关闭视频
-      document.addEventListener('keydown', function(e) {
+      // ESC 键关闭
+      document.addEventListener('keydown', e => {
         if (e.key === 'Escape' && videoModal.classList.contains('active')) {
           closeVideo();
         }
       });
     }
-  });
+  };
+
+  // ==================== 执行初始化 ====================
+  // 放在页面底部时直接执行最保险
+  ready(init);
+
+  // 如果因为 Liquid 动态渲染导致元素很晚出现，可再加一次轮询（可选）
+  // setTimeout(init, 500);
+  // setTimeout(init, 1500);
+
 })();
 </script>
 
