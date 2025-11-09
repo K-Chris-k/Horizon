@@ -226,18 +226,18 @@
 
 
   .faq-icon {
-    transition: transform 0.3s ease;
     font-size: 18px;
     flex-shrink: 0;
   }
 
   .faq-answer {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease, opacity 0.3s ease;
+    display: none;
     font-size: {{ section.settings.content_font_size_desktop }}px;
     line-height: {{ section.settings.content_line_height_desktop }};
-    opacity: 0;
+  }
+  
+  .faq-item.active .faq-answer {
+    display: block;
   }
 
   .faq-answer-content {
@@ -483,10 +483,6 @@
     .faq-answer-content {
       margin-left: 0;
       padding-bottom: 20px;
-    }
-    
-    .faq-item.active .faq-answer {
-      max-height: 3000px !important;
     }
     
     .faq-icon {
@@ -786,10 +782,9 @@
     
     faqItems.forEach((item, index) => {
       const question = item.querySelector('.faq-question');
-      const answer = item.querySelector('.faq-answer');
       const icon = item.querySelector('.faq-icon');
       
-      if (!question || !answer) return;
+      if (!question) return;
       
       question.addEventListener('click', function(e) {
         e.preventDefault();
@@ -802,12 +797,7 @@
         faqItems.forEach(otherItem => {
           if (otherItem !== item) {
             otherItem.classList.remove('active');
-            const otherAnswer = otherItem.querySelector('.faq-answer');
             const otherIcon = otherItem.querySelector('.faq-icon');
-            if (otherAnswer) {
-              otherAnswer.style.maxHeight = '0';
-              otherAnswer.style.opacity = '0';
-            }
             if (otherIcon) {
               otherIcon.style.transform = 'rotate(0deg)';
             }
@@ -817,13 +807,9 @@
         // 切换当前FAQ
         if (isOpen) {
           item.classList.remove('active');
-          answer.style.maxHeight = '0';
-          answer.style.opacity = '0';
           if (icon) icon.style.transform = 'rotate(0deg)';
         } else {
           item.classList.add('active');
-          answer.style.maxHeight = '3000px';
-          answer.style.opacity = '1';
           if (icon) icon.style.transform = 'rotate(90deg)';
         }
       }, { capture: true, once: false });
