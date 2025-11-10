@@ -235,7 +235,7 @@
   }
 
   .faq-answer {
-    max-height: 0;
+    max-height: 0 !important;
     overflow: hidden;
     transition: max-height 0.4s ease;
     font-size: {{ section.settings.content_font_size_desktop }}px;
@@ -248,7 +248,7 @@
   }
 
   .faq-item.active .faq-answer {
-    max-height: 2000px;
+    max-height: 2000px !important;
     transition: max-height 0.5s ease;
   }
 
