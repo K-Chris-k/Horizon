@@ -262,6 +262,9 @@
     position: relative;
     border-radius: 8px;
     overflow: hidden;
+  }
+
+  .video-item .video-thumbnail-wrapper {
     cursor: pointer;
   }
 
@@ -367,6 +370,14 @@
   .video-player {
     width: 100%;
     aspect-ratio: 16/9;
+    position: relative;
+  }
+
+  .video-player video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
   /* Fix horizontal scrolling on mobile */
@@ -460,10 +471,16 @@
       font-size: 14px;
       word-break: break-word;
     }
+
     .video-player {
-    width: 100%;
-    aspect-ratio: 16 / 16;
-}
+      width: 100%;
+      aspect-ratio: 16 / 9;
+    }
+
+    .video-player video {
+      width: 100%;
+      height: 100%;
+    }
 
     .download-button {
       font-size: 12px;
@@ -709,20 +726,43 @@
             {%- for block in section.blocks -%}
               {%- if block.type == 'video' -%}
                 <div class="video-item" data-video-url="{{ block.settings.video_url }}" {{ block.shopify_attributes }}>
-                  <div class="video-thumbnail-wrapper">
-                    {%- if block.settings.thumbnail != blank -%}
-                      <img 
-                        src="{{ block.settings.thumbnail | image_url: width: 600 }}" 
-                        alt="{{ block.settings.title | escape }}"
-                        class="video-thumbnail"
-                        width="{{ block.settings.thumbnail.width }}"
-                        height="{{ block.settings.thumbnail.height }}"
-                        loading="lazy"
+                  <div class="video-player" data-type="desktop">
+                    {%- if block.settings.video_url contains '.mp4'
+                      or block.settings.video_url contains '.webm'
+                      or block.settings.video_url contains '.ogg'
+                      or block.settings.video_url contains '.mov'
+                    -%}
+                      <video
+                        x5-video-player-type="h5"
+                        playsinline
+                        controls
+                        class="video"
+                        poster="{% if block.settings.thumbnail != blank %}{{ block.settings.thumbnail | image_url: width: 1500 }}{% endif %}"
+                        preload="metadata"
                       >
+                        <source
+                          src="{{ block.settings.video_url }}"
+                          type="video/mp4"
+                        >
+                        Your browser does not support the video tag.
+                      </video>
                     {%- else -%}
-                      <div class="video-placeholder">▶</div>
+                      <div class="video-thumbnail-wrapper">
+                        {%- if block.settings.thumbnail != blank -%}
+                          <img 
+                            src="{{ block.settings.thumbnail | image_url: width: 600 }}" 
+                            alt="{{ block.settings.title | escape }}"
+                            class="video-thumbnail"
+                            width="{{ block.settings.thumbnail.width }}"
+                            height="{{ block.settings.thumbnail.height }}"
+                            loading="lazy"
+                          >
+                        {%- else -%}
+                          <div class="video-placeholder">▶</div>
+                        {%- endif -%}
+                        <div class="video-play-button"></div>
+                      </div>
                     {%- endif -%}
-                    <div class="video-play-button"></div>
                   </div>
                   {%- if block.settings.title != blank -%}
                     <div class="video-title" style="background-color: {{ block.settings.title_background_color }}; color: {{ block.settings.title_color }};">{{ block.settings.title }}</div>
@@ -744,6 +784,7 @@
     <div id="videoPlayerContainer"></div>
   </div>
 </div>
+
 <script>
 (() => {
   // 独立作用域，避免变量冲突
@@ -765,94 +806,76 @@
 
     /* -------------------- FAQ accordion -------------------- */
     document.querySelectorAll('.faq-question').forEach(question => {
-      question.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
+      question.addEventListener('click', function() {
         const faqItem = this.closest('.faq-item');
-        if (!faqItem) return;
-        
         const isActive = faqItem.classList.contains('active');
-        
-        // 关闭所有其他FAQ项
-        document.querySelectorAll('.faq-item').forEach(item => {
-          if (item !== faqItem) {
-            item.classList.remove('active');
-          }
-        });
-        
-        // 切换当前FAQ项的状态
-        if (!isActive) {
-          faqItem.classList.add('active');
-        } else {
-          faqItem.classList.remove('active');
-        }
+        document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+        if (!isActive) faqItem.classList.add('active');
       });
     });
 
-    /* -------------------- Video modal - 超简化版 -------------------- */
+    /* -------------------- Video modal -------------------- */
     const videoModal = document.getElementById('videoModal');
     const closeVideoModal = document.getElementById('closeVideoModal');
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
 
     if (videoModal && videoPlayerContainer) {
-
-      // 打开视频
+      // 打开视频（仅适用于 YouTube/Vimeo）
       document.querySelectorAll('.video-item').forEach(item => {
-        item.addEventListener('click', function() {
-          const videoUrl = this.getAttribute('data-video-url');
-          
-          if (!videoUrl || videoUrl.trim() === '') {
-            console.error('[Video] 没有找到视频链接');
-            return;
-          }
+        const thumbnailWrapper = item.querySelector('.video-thumbnail-wrapper');
+        if (thumbnailWrapper) {
+          thumbnailWrapper.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const videoUrl = item.getAttribute('data-video-url');
+            if (!videoUrl) return;
 
-          console.log('[Video] 处理链接:', videoUrl);
-          
-          // 判断是不是直接的视频文件
-          const isDirectVideo = /\.(mp4|webm|ogg|mov)(\?|$)/i.test(videoUrl);
-          
-          if (isDirectVideo) {
-            // ✅ 方案1: 直接视频文件 - 使用 <video> 标签
-            videoPlayerContainer.innerHTML = 
-              '<video class="video-player" controls autoplay muted playsinline>' +
-              '<source src="' + videoUrl + '" type="video/mp4">' +
-              '您的浏览器不支持视频播放。' +
-              '</video>';
-            console.log('[Video] ✅ 使用 HTML5 video 播放');
-          } else {
-            // ✅ 方案2: YouTube/Vimeo等 - 直接在新窗口打开
-            console.log('[Video] ✅ 在新窗口打开:', videoUrl);
-            window.open(videoUrl, '_blank', 'noopener,noreferrer');
-            return; // 不显示模态框
-          }
+            // 只处理 YouTube 和 Vimeo 链接
+            if (!videoUrl.includes('youtube.com') && !videoUrl.includes('youtu.be') && !videoUrl.includes('vimeo.com')) {
+              return;
+            }
 
-          // 显示模态框（仅用于直接视频文件）
-          videoModal.classList.add('active');
-          document.body.style.overflow = 'hidden';
-        });
-      });
+            let embedUrl = videoUrl;
+            // ✅ 支持 YouTube / Shorts
+            if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+              const match = videoUrl.match(/(?:v=|\/(?:shorts|embed|v)\/)([a-zA-Z0-9_-]{11})/);
+              if (match && match[1]) {
+                embedUrl = `https://www.youtube.com/embed/${match[1]}?autoplay=1`;
+              }
+            }
+            // ✅ 支持 Vimeo
+            if (videoUrl.includes('vimeo.com')) {
+              const match = videoUrl.match(/vimeo\.com\/(\d+)/);
+              if (match && match[1]) {
+                embedUrl = `https://player.vimeo.com/video/${match[1]}?autoplay=1`;
+              }
+            }
 
-      // 关闭视频
-      const closeVideo = () => {
-        videoModal.classList.remove('active');
-        videoPlayerContainer.innerHTML = '';
-        document.body.style.overflow = '';
-      };
+            // 插入 iframe 播放
+            videoPlayerContainer.innerHTML =
+              `<iframe class="video-player" src="${embedUrl}" frameborder="0"
+               allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
 
-      // 点击关闭按钮
-      if (closeVideoModal) {
-        closeVideoModal.addEventListener('click', closeVideo);
-      }
-
-      // 点击背景关闭
-      videoModal.addEventListener('click', function(e) {
-        if (e.target === videoModal) {
-          closeVideo();
+            // 打开模态框
+            videoModal.classList.add('active');
+          });
         }
       });
 
-      // 按ESC键关闭
+      // 关闭视频函数（供多个事件调用）
+      const closeVideo = () => {
+        videoModal.classList.remove('active');
+        videoPlayerContainer.innerHTML = '';
+      };
+
+      // 点击关闭按钮
+      closeVideoModal?.addEventListener('click', closeVideo);
+
+      // 点击背景关闭
+      videoModal.addEventListener('click', function(e) {
+        if (e.target === videoModal) closeVideo();
+      });
+
+      // ✅ 按 ESC 键关闭视频
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && videoModal.classList.contains('active')) {
           closeVideo();
@@ -862,6 +885,7 @@
   });
 })();
 </script>
+
 {% schema %}
 {
   "name": "Technical Specifications",
