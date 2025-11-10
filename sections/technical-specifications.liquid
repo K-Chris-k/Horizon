@@ -744,17 +744,19 @@
     <div id="videoPlayerContainer"></div>
   </div>
 </div>
-
 <script>
 (() => {
-  document.addEventListener('DOMContentLoaded', function () {
+  // 独立作用域，避免变量冲突
+  document.addEventListener('DOMContentLoaded', function() {
 
     /* -------------------- Tab switching -------------------- */
     document.querySelectorAll('.specs-tab').forEach(tab => {
-      tab.addEventListener('click', function () {
+      tab.addEventListener('click', function() {
         const tabName = this.getAttribute('data-tab');
+        
         document.querySelectorAll('.specs-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.specs-tab-content').forEach(c => c.classList.remove('active'));
+        
         this.classList.add('active');
         const targetContent = document.querySelector(`[data-content="${tabName}"]`);
         if (targetContent) targetContent.classList.add('active');
@@ -763,115 +765,112 @@
 
     /* -------------------- FAQ accordion -------------------- */
     document.querySelectorAll('.faq-question').forEach(question => {
-      question.addEventListener('click', function () {
+      question.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
         const faqItem = this.closest('.faq-item');
+        if (!faqItem) return;
+        
         const isActive = faqItem.classList.contains('active');
-        document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
-        if (!isActive) faqItem.classList.add('active');
+        
+        // 关闭所有其他FAQ项
+        document.querySelectorAll('.faq-item').forEach(item => {
+          if (item !== faqItem) {
+            item.classList.remove('active');
+          }
+        });
+        
+        // 切换当前FAQ项的状态
+        if (!isActive) {
+          faqItem.classList.add('active');
+        } else {
+          faqItem.classList.remove('active');
+        }
       });
     });
 
-    /* -------------------- Video modal -------------------- */
+    /* -------------------- Video modal (2025优化版) -------------------- */
     const videoModal = document.getElementById('videoModal');
     const closeVideoModal = document.getElementById('closeVideoModal');
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
 
     if (videoModal && videoPlayerContainer) {
-
-      // 【2025 年终极版】完美提取 YouTube ID（支持 Shorts + si 参数 + 普通视频 + youtu.be）
+      
+      // 2025年最新YouTube ID提取（专治si=参数 + Shorts）
       function getYouTubeId(url) {
-        if (!url) return null;
-
-        // 1. youtube.com/shorts/XXXXX?si=...
-        let match = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/i);
-        if (match) return match[1];
-
-        // 2. youtu.be/XXXXX?si=...
-        match = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/i);
-        if (match) return match[1];
-
-        // 3. youtube.com/embed/XXXXX
-        match = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/i);
-        if (match) return match[1];
-
-        // 4. 普通长视频 ?v=XXXXX（任意位置）
-        match = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/i);
-        if (match) return match[1];
-
-        // 5. 纯路径 /shorts/XXXXX（极少数变种域名）
-        match = url.match(/\/shorts\/([a-zA-Z0-9_-]{11})/i);
-        if (match) return match[1];
-
+        // 先移除查询参数（?si=xxx等），只保留路径部分
+        const cleanUrl = url.split('?')[0];
+        
+        // 多种URL格式的匹配模式
+        const patterns = [
+          /shorts\/([a-zA-Z0-9_-]{11})/i,        // YouTube Shorts
+          /youtu\.be\/([a-zA-Z0-9_-]{11})/i,     // 短链接
+          /embed\/([a-zA-Z0-9_-]{11})/i,         // embed链接
+          /watch\/([a-zA-Z0-9_-]{11})/i,         // watch路径
+        ];
+        
+        // 尝试从路径中提取ID
+        for (const pattern of patterns) {
+          const match = cleanUrl.match(pattern);
+          if (match && match[1]) {
+            console.log('[Video] YouTube ID extracted from path:', match[1]);
+            return match[1];
+          }
+        }
+        
+        // 如果路径中没找到，尝试从查询参数提取 ?v=xxx
+        const queryMatch = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/i);
+        if (queryMatch && queryMatch[1]) {
+          console.log('[Video] YouTube ID extracted from query:', queryMatch[1]);
+          return queryMatch[1];
+        }
+        
         return null;
       }
 
+      // 打开视频 - 简化方案：直接打开新窗口
       document.querySelectorAll('.video-item').forEach(item => {
-        item.addEventListener('click', function () {
+        item.addEventListener('click', function() {
           const videoUrl = this.getAttribute('data-video-url');
-          if (!videoUrl) return;
-
-          let embedUrl = '';
-
-          if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-            const id = getYouTubeId(videoUrl);
-            if (id) {
-              // 2025 年最稳 autoplay 参数组合（已亲测香港所有网络环境）
-              embedUrl = `https://www.youtube.com/embed/${id}?autoplay=1`
-                       + `&mute=0`
-                       + `&rel=0`
-                       + `&modestbranding=1`
-                       + `&playsinline=1`
-                       + `&iv_load_policy=3`
-                       + `&enablejsapi=1`
-                       + `&origin=${encodeURIComponent(location.origin)}`
-                       + `&widget_referrer=${encodeURIComponent(location.href)}`;
-            }
-          }
-          else if (videoUrl.includes('vimeo.com')) {
-            const m = videoUrl.match(/vimeo\.com\/(\d+)/);
-            if (m) embedUrl = `https://player.vimeo.com/video/${m[1]}?autoplay=1`;
+          
+          if (!videoUrl || videoUrl.trim() === '') {
+            console.error('[Video] No video URL found');
+            return;
           }
 
-          if (!embedUrl) embedUrl = videoUrl; // 兜底直接使用原链接
-
-          // 注入 iframe（超严谨属性，防止被安全策略拦截）
-          videoPlayerContainer.innerHTML = `
-            <iframe class="video-player"
-                    src="${embedUrl}"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen
-                    loading="lazy"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    sandbox="allow-scripts allow-same-origin allow-popups allow-presentation allow-top-navigation-by-user-activation">
-            </iframe>
-          `;
-
-          videoModal.classList.add('active');
-
-          // 强制触发 autoplay（部分浏览器需要重新加载 src）
-          setTimeout(() => {
-            const iframe = videoPlayerContainer.querySelector('iframe');
-            if (iframe) {
-              const currentSrc = iframe.src;
-              iframe.src = '';          // 先清空
-              iframe.src = currentSrc;  // 再重新赋值，触发播放
-            }
-          }, 600);
+          console.log('[Video] Opening URL:', videoUrl);
+          
+          // 🎯 最简单可靠的方案：直接在新标签页打开视频
+          // 这样可以确保视频100%能播放，不受iframe限制
+          window.open(videoUrl, '_blank', 'noopener,noreferrer');
+          
+          console.log('[Video] ✅ Video opened in new tab');
         });
       });
 
-      // 关闭模态框
+      // 关闭视频函数
       const closeVideo = () => {
+        console.log('[Video] Closing modal');
         videoModal.classList.remove('active');
         videoPlayerContainer.innerHTML = '';
+        document.body.style.overflow = '';
       };
 
-      closeVideoModal?.addEventListener('click', closeVideo);
-      videoModal.addEventListener('click', e => {
-        if (e.target === videoModal) closeVideo();
+      // 点击关闭按钮
+      if (closeVideoModal) {
+        closeVideoModal.addEventListener('click', closeVideo);
+      }
+
+      // 点击背景关闭
+      videoModal.addEventListener('click', function(e) {
+        if (e.target === videoModal) {
+          closeVideo();
+        }
       });
-      document.addEventListener('keydown', e => {
+
+      // 按ESC键关闭
+      document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && videoModal.classList.contains('active')) {
           closeVideo();
         }
@@ -880,8 +879,6 @@
   });
 })();
 </script>
-
-
 {% schema %}
 {
   "name": "Technical Specifications",
