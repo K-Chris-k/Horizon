@@ -790,68 +790,51 @@
       });
     });
 
-    /* -------------------- Video modal (2025优化版) -------------------- */
+    /* -------------------- Video modal - 超简化版 -------------------- */
     const videoModal = document.getElementById('videoModal');
     const closeVideoModal = document.getElementById('closeVideoModal');
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
 
     if (videoModal && videoPlayerContainer) {
-      
-      // 2025年最新YouTube ID提取（专治si=参数 + Shorts）
-      function getYouTubeId(url) {
-        // 先移除查询参数（?si=xxx等），只保留路径部分
-        const cleanUrl = url.split('?')[0];
-        
-        // 多种URL格式的匹配模式
-        const patterns = [
-          /shorts\/([a-zA-Z0-9_-]{11})/i,        // YouTube Shorts
-          /youtu\.be\/([a-zA-Z0-9_-]{11})/i,     // 短链接
-          /embed\/([a-zA-Z0-9_-]{11})/i,         // embed链接
-          /watch\/([a-zA-Z0-9_-]{11})/i,         // watch路径
-        ];
-        
-        // 尝试从路径中提取ID
-        for (const pattern of patterns) {
-          const match = cleanUrl.match(pattern);
-          if (match && match[1]) {
-            console.log('[Video] YouTube ID extracted from path:', match[1]);
-            return match[1];
-          }
-        }
-        
-        // 如果路径中没找到，尝试从查询参数提取 ?v=xxx
-        const queryMatch = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/i);
-        if (queryMatch && queryMatch[1]) {
-          console.log('[Video] YouTube ID extracted from query:', queryMatch[1]);
-          return queryMatch[1];
-        }
-        
-        return null;
-      }
 
-      // 打开视频 - 简化方案：直接打开新窗口
+      // 打开视频
       document.querySelectorAll('.video-item').forEach(item => {
         item.addEventListener('click', function() {
           const videoUrl = this.getAttribute('data-video-url');
           
           if (!videoUrl || videoUrl.trim() === '') {
-            console.error('[Video] No video URL found');
+            console.error('[Video] 没有找到视频链接');
             return;
           }
 
-          console.log('[Video] Opening URL:', videoUrl);
+          console.log('[Video] 处理链接:', videoUrl);
           
-          // 🎯 最简单可靠的方案：直接在新标签页打开视频
-          // 这样可以确保视频100%能播放，不受iframe限制
-          window.open(videoUrl, '_blank', 'noopener,noreferrer');
+          // 判断是不是直接的视频文件
+          const isDirectVideo = /\.(mp4|webm|ogg|mov)(\?|$)/i.test(videoUrl);
           
-          console.log('[Video] ✅ Video opened in new tab');
+          if (isDirectVideo) {
+            // ✅ 方案1: 直接视频文件 - 使用 <video> 标签
+            videoPlayerContainer.innerHTML = 
+              '<video class="video-player" controls autoplay muted playsinline>' +
+              '<source src="' + videoUrl + '" type="video/mp4">' +
+              '您的浏览器不支持视频播放。' +
+              '</video>';
+            console.log('[Video] ✅ 使用 HTML5 video 播放');
+          } else {
+            // ✅ 方案2: YouTube/Vimeo等 - 直接在新窗口打开
+            console.log('[Video] ✅ 在新窗口打开:', videoUrl);
+            window.open(videoUrl, '_blank', 'noopener,noreferrer');
+            return; // 不显示模态框
+          }
+
+          // 显示模态框（仅用于直接视频文件）
+          videoModal.classList.add('active');
+          document.body.style.overflow = 'hidden';
         });
       });
 
-      // 关闭视频函数
+      // 关闭视频
       const closeVideo = () => {
-        console.log('[Video] Closing modal');
         videoModal.classList.remove('active');
         videoPlayerContainer.innerHTML = '';
         document.body.style.overflow = '';
