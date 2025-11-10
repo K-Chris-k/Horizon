@@ -849,18 +849,19 @@
             if (youtubeId) {
               // 2025年必备参数组合（确保播放）
               embedUrl = 'https://www.youtube.com/embed/' + youtubeId 
-                       + '?autoplay=1'                    // 自动播放
-                       + '&mute=1'                         // 静音（现代浏览器要求）
-                       + '&rel=0'                          // 不显示相关视频
-                       + '&modestbranding=1'               // 简化界面
-                       + '&playsinline=1'                  // iOS内联播放
-                       + '&iv_load_policy=3'               // 不显示注释
-                       + '&enablejsapi=1'                  // 启用JS API
-                       + '&origin=' + encodeURIComponent(window.location.origin); // 声明来源
+                       + '?autoplay=1'                     // 自动播放
+                       + '&mute=1'                          // 静音（现代浏览器要求）
+                       + '&controls=1'                      // 显示控制条
+                       + '&rel=0'                           // 不显示相关视频
+                       + '&modestbranding=1'                // 简化界面
+                       + '&playsinline=1'                   // iOS内联播放
+                       + '&enablejsapi=1';                  // 启用JS API
               
-              console.log('[Video] ✅ YouTube embed URL generated:', embedUrl);
+              console.log('[Video] ✅ YouTube embed URL generated');
+              console.log('[Video] YouTube ID:', youtubeId);
+              console.log('[Video] Full URL:', embedUrl);
             } else {
-              console.error('[Video] ❌ Unable to extract YouTube ID');
+              console.error('[Video] ❌ Unable to extract YouTube ID from:', videoUrl);
             }
           }
           
@@ -880,34 +881,35 @@
             console.log('[Video] Using original URL as fallback');
           }
 
-          // 创建iframe播放器（2025年亲测有效的配置）
+          // 创建iframe播放器（移除sandbox以确保兼容性）
           videoPlayerContainer.innerHTML = 
             '<iframe class="video-player" ' +
             'src="' + embedUrl + '" ' +
             'title="Video Player" ' +
             'frameborder="0" ' +
             'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
-            'allowfullscreen ' +
-            'loading="eager" ' +
-            'referrerpolicy="strict-origin-when-cross-origin" ' +
-            'sandbox="allow-scripts allow-same-origin allow-popups allow-presentation">' +
+            'allowfullscreen>' +
             '</iframe>';
 
           // 显示模态框
           videoModal.classList.add('active');
           document.body.style.overflow = 'hidden';
           
-          console.log('[Video] Modal opened, player loaded');
+          console.log('[Video] ✅ Modal opened, iframe loaded');
+          console.log('[Video] Embed URL:', embedUrl);
 
           // 强制触发autoplay（部分浏览器需要二次刷新）
           setTimeout(() => {
             const iframe = videoPlayerContainer.querySelector('iframe');
             if (iframe && iframe.src) {
-              const currentSrc = iframe.src;
-              iframe.src = currentSrc;
-              console.log('[Video] Iframe refreshed to trigger autoplay');
+              const originalSrc = iframe.src;
+              iframe.src = '';
+              setTimeout(() => {
+                iframe.src = originalSrc;
+                console.log('[Video] ✅ Iframe refreshed to trigger autoplay');
+              }, 50);
             }
-          }, 300);
+          }, 500);
         });
       });
 
