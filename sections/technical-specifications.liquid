@@ -748,121 +748,94 @@
 
 <script>
 (() => {
-  // 独立作用域
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', () => {
 
-    /* -------------------- 1. Tab 切换（完全保留原功能） -------------------- */
+    /* ---------- 1. 选项卡切换（原样保留） ---------- */
     document.querySelectorAll('.specs-tab').forEach(tab => {
-      tab.addEventListener('click', function() {
-        const tabName = this.getAttribute('data-tab');
-        
+      tab.addEventListener('click', () => {
+        const name = tab.dataset.tab;
         document.querySelectorAll('.specs-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.specs-tab-content').forEach(c => c.classList.remove('active'));
-        
-        this.classList.add('active');
-        const target = document.querySelector(`[data-content="${tabName}"]`);
-        if (target) target.classList.add('active');
+        tab.classList.add('active');
+        document.querySelector(`[data-content="${name}"]`)?.classList.add('active');
       });
     });
 
-    /* -------------------- 2. FAQ 手风琴（修复为标准手风琴：点哪个开哪个，可同时关闭） -------------------- */
-    document.querySelectorAll('.faq-question').forEach(question => {
-      question.addEventListener('click', function() {
-        const faqItem = this.closest('.faq-item');
-        // 直接 toggle 当前项，不影响其他
-        faqItem.classList.toggle('active');
+    /* ---------- 2. FAQ 手风琴（最经典最稳的写法） ---------- */
+    document.querySelectorAll('.faq-question').forEach(q => {
+      q.addEventListener('click', () => {
+        const item = q.closest('.faq-item');
+        item.classList.toggle('active');
       });
     });
 
-    /* -------------------- 3. 视频模态框（2025 年最新终极版，已适配 repenic.com） -------------------- */
-    const videoModal = document.getElementById('videoModal');
-    const closeVideoModal = document.getElementById('closeVideoModal');
-    const videoPlayerContainer = document.getElementById('videoPlayerContainer');
+    /* ---------- 3. 视频模态框（2025 年香港域名终极版） ---------- */
+    const modal = document.getElementById('videoModal');
+    const closeBtn = document.getElementById('closeVideoModal');
+    const player = document.getElementById('videoPlayerContainer');
 
-    if (videoModal && videoPlayerContainer) {
+    if (!modal || !player) return;
 
-      // 超级稳健 YouTube ID 提取（专治 si= 参数）
-      function getYouTubeId(url) {
-        const clean = url.split('?')[0];
-        const patterns = [
-          /shorts\/([a-zA-Z0-9_-]{11})/i,
-          /youtu\.be\/([a-zA-Z0-9_-]{11})/i,
-          /embed\/([a-zA-Z0-9_-]{11})/i,
-        ];
-        for (const p of patterns) {
-          const m = clean.match(p);
-          if (m) return m[1];
-        }
-        const v = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/i);
-        return v ? v[1] : null;
-      }
+    // 专治 si= 参数的 Shorts 链接
+    const getYouTubeId = url => {
+      const clean = url.split('?')[0];
+      const reg = /shorts\/([a-zA-Z0-9_-]{11})|youtu\.be\/([a-zA-Z0-9_-]{11})|embed\/([a-zA-Z0-9_-]{11})/i;
+      const match = clean.match(reg);
+      if (match) return match[1] || match[2] || match[3];
+      const v = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/i);
+      return v ? v[1] : null;
+    };
 
-      document.querySelectorAll('.video-item').forEach(item => {
-        item.addEventListener('click', function() {
-          const videoUrl = this.getAttribute('data-video-url')?.trim();
-          if (!videoUrl) return;
+    document.querySelectorAll('.video-item').forEach(item => {
+      item.addEventListener('click', () => {
+        let url = item.dataset.videoUrl || '';
+        if (!url) return;
 
-          let embedUrl = '';
+        let src = '';
 
-          // YouTube
-          if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-            const id = getYouTubeId(videoUrl);
-            if (id) {
-              embedUrl = `https://www.youtube.com/embed/${id}?autoplay=1`
-                       + `&rel=0`
-                       + `&modestbranding=1`
-                       + `&playsinline=1`
-                       + `&iv_load_policy=3`
-                       + `&enablejsapi=1`
-                       + `&origin=https://www.repenic.com`;
-            }
+        if (url.includes('youtube') || url.includes('youtu.be')) {
+          const id = getYouTubeId(url);
+          if (id) {
+            src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&enablejsapi=1&origin=https://www.repenic.com`;
           }
-          // Vimeo
-          else if (videoUrl.includes('vimeo.com')) {
-            const m = videoUrl.match(/vimeo\.com\/(\d+)/);
-            if (m) embedUrl = `https://player.vimeo.com/video/${m[1]}?autoplay=1`;
-          }
-
-          if (!embedUrl) embedUrl = videoUrl;
-
-          videoPlayerContainer.innerHTML = `
-            <iframe class="video-player" 
-                    src="${embedUrl}"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen
-                    loading="lazy"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    sandbox="allow-scripts allow-same-origin allow-popups allow-presentation">
-            </iframe>
-          `;
-
-          videoModal.classList.add('active');
-
-          // 强制触发 autoplay（部分浏览器需要）
-          setTimeout(() => {
-            const iframe = videoPlayerContainer.querySelector('iframe');
-            if (iframe) iframe.src = iframe.src;
-          }, 600);
-        });
-      });
-
-      // 关闭模态框
-      const closeVideo = () => {
-        videoModal.classList.remove('active');
-        videoPlayerContainer.innerHTML = '';
-      };
-
-      closeVideoModal?.addEventListener('click', closeVideo);
-      videoModal.addEventListener('click', e => {
-        if (e.target === videoModal) closeVideo();
-      });
-      document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && videoModal.classList.contains('active')) {
-          closeVideo();
+        } else if (url.includes('vimeo.com')) {
+          const id = url.match(/vimeo\.com\/(\d+)/)?.[1];
+          if (id) src = `https://player.vimeo.com/video/${id}?autoplay=1`;
         }
+
+        if (!src) src = url;
+
+        player.innerHTML = `
+          <iframe class="video-player" src="${src}"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  loading="lazy"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  sandbox="allow-scripts allow-same-origin allow-popups allow-presentation">
+          </iframe>`;
+
+        modal.classList.add('active');
+
+        // 强制触发 autoplay（对香港域名特别有效）
+        setTimeout(() => {
+          const iframe = player.querySelector('iframe');
+          if (iframe) iframe.src = iframe.src;
+        }, 800);
       });
-    }
+    });
+
+    // 关闭模态框（三种方式都支持）
+    const close = () => {
+      modal.classList.remove('active');
+      player.innerHTML = '';
+    };
+    closeBtn?.addEventListener('click', close);
+    modal.addEventListener('click', e => e.target === modal && close());
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) close();
+    });
+
   });
 })();
 </script>
