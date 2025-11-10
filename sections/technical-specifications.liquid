@@ -787,19 +787,30 @@
 </div>
 
 <script>
-console.log('脚本已加载 - Technical Specifications');
-
 (function() {
   'use strict';
   
+  // 防止重复初始化
+  if (window.technicalSpecsInitialized) {
+    console.log('Technical Specifications 已经初始化过，跳过');
+    return;
+  }
+  
+  console.log('=== 开始初始化 Technical Specifications ===');
+  window.technicalSpecsInitialized = true;
+  
   function initTechnicalSpecs() {
-    console.log('初始化 Technical Specifications');
+    console.log('初始化函数被调用');
     
     /* -------------------- Tab switching -------------------- */
     const specsTabs = document.querySelectorAll('.specs-tab');
     console.log('找到标签:', specsTabs.length);
     
     specsTabs.forEach(function(tab) {
+      // 防止重复绑定
+      if (tab.dataset.tabInitialized) return;
+      tab.dataset.tabInitialized = 'true';
+      
       tab.addEventListener('click', function() {
         const tabName = this.getAttribute('data-tab');
         console.log('切换到标签:', tabName);
@@ -823,39 +834,40 @@ console.log('脚本已加载 - Technical Specifications');
     const faqItems = document.querySelectorAll('.faq-item');
     console.log('找到 FAQ 项目:', faqItems.length);
     
-    faqItems.forEach(function(faqItem) {
+    faqItems.forEach(function(faqItem, index) {
       const question = faqItem.querySelector('.faq-question');
       
       if (question) {
-        console.log('为 FAQ 绑定点击事件');
+        // 防止重复绑定
+        if (question.dataset.faqInitialized) {
+          console.log('FAQ #' + index + ' 已经绑定过，跳过');
+          return;
+        }
+        question.dataset.faqInitialized = 'true';
+        console.log('为 FAQ #' + index + ' 绑定点击事件');
         
         question.addEventListener('click', function(e) {
-          console.log('=== FAQ 被点击 ===');
+          console.log('=== FAQ #' + index + ' 被点击 ===');
           e.preventDefault();
           e.stopPropagation();
           
           const isActive = faqItem.classList.contains('active');
-          
           console.log('点击前状态:', isActive ? '已展开' : '已收起');
-          console.log('FAQ 元素:', faqItem);
           
           // 关闭所有其他 FAQ
           document.querySelectorAll('.faq-item').forEach(function(item) {
             if (item !== faqItem) {
               item.classList.remove('active');
-              console.log('关闭其他 FAQ');
             }
           });
           
           // 切换当前 FAQ
           if (!isActive) {
             faqItem.classList.add('active');
-            console.log('操作: 展开 FAQ');
-            console.log('展开后 class:', faqItem.className);
+            console.log('✅ FAQ #' + index + ' 已展开');
           } else {
             faqItem.classList.remove('active');
-            console.log('操作: 收起 FAQ');
-            console.log('收起后 class:', faqItem.className);
+            console.log('❌ FAQ #' + index + ' 已收起');
           }
           
           // 验证最终状态
@@ -863,11 +875,10 @@ console.log('脚本已加载 - Technical Specifications');
             const answer = faqItem.querySelector('.faq-answer');
             if (answer) {
               const computedStyle = window.getComputedStyle(answer);
-              console.log('答案区域 max-height:', computedStyle.maxHeight);
-              console.log('答案区域高度:', answer.scrollHeight + 'px');
+              console.log('最终状态 - max-height:', computedStyle.maxHeight, '实际高度:', answer.scrollHeight + 'px');
             }
-          }, 100);
-        });
+          }, 50);
+        }, false); // 使用 false 确保在冒泡阶段处理
       }
     });
 
