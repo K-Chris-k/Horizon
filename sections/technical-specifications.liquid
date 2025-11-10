@@ -765,105 +765,68 @@
 
     /* -------------------- FAQ accordion -------------------- */
     document.querySelectorAll('.faq-question').forEach(question => {
-      question.addEventListener('click', function() {
+      question.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
         const faqItem = this.closest('.faq-item');
+        if (!faqItem) return;
+        
         const isActive = faqItem.classList.contains('active');
         
-        // 关闭所有其他
-        document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+        // 关闭所有其他FAQ项
+        document.querySelectorAll('.faq-item').forEach(item => {
+          if (item !== faqItem) {
+            item.classList.remove('active');
+          }
+        });
         
-        // 如果之前不是激活状态，就激活当前
-        if (!isActive) faqItem.classList.add('active');
+        // 切换当前FAQ项的状态
+        if (!isActive) {
+          faqItem.classList.add('active');
+        } else {
+          faqItem.classList.remove('active');
+        }
       });
     });
 
-    /* -------------------- Video modal (Enhanced) -------------------- */
+    /* -------------------- Video modal (2025优化版) -------------------- */
     const videoModal = document.getElementById('videoModal');
     const closeVideoModal = document.getElementById('closeVideoModal');
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
 
     if (videoModal && videoPlayerContainer) {
       
-      // 解析视频URL并生成嵌入代码的函数
-      function getEmbedUrl(videoUrl) {
-        if (!videoUrl || videoUrl.trim() === '') {
-          console.error('[Video] Empty video URL');
-          return null;
-        }
-
-        // 清理URL（去除空格）
-        videoUrl = videoUrl.trim();
-        console.log('[Video] Processing URL:', videoUrl);
+      // 2025年最新YouTube ID提取（专治si=参数 + Shorts）
+      function getYouTubeId(url) {
+        // 先移除查询参数（?si=xxx等），只保留路径部分
+        const cleanUrl = url.split('?')[0];
         
-        let embedUrl = '';
-        let videoType = '';
-
-        // ✅ YouTube / YouTube Shorts 支持所有格式
-        if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-          let youtubeId = null;
-          videoType = 'youtube';
-
-          // 方法1: 匹配短链接、Shorts、embed等路径格式
-          // 支持: youtu.be/xxx, /shorts/xxx, /embed/xxx, /v/xxx, /watch/xxx
-          // 更宽松的正则表达式，支持带或不带www的域名
-          const pathMatch = videoUrl.match(/(?:youtu\.be\/|(?:www\.)?youtube\.com\/(?:embed\/|v\/|shorts\/|watch\/))([a-zA-Z0-9_-]{10,12})(?:[?&\/]|$)/i);
-          if (pathMatch && pathMatch[1]) {
-            youtubeId = pathMatch[1];
-            console.log('[Video] Extracted YouTube ID (method 1):', youtubeId);
-          } else {
-            // 方法2: 匹配查询参数 ?v=xxx 或 &v=xxx
-            const queryMatch = videoUrl.match(/[?&]v=([a-zA-Z0-9_-]{10,12})(?:[?&]|$)/i);
-            if (queryMatch && queryMatch[1]) {
-              youtubeId = queryMatch[1];
-              console.log('[Video] Extracted YouTube ID (method 2):', youtubeId);
-            }
-          }
-
-          if (youtubeId) {
-            // 使用简化的参数，避免某些浏览器的限制
-            // autoplay=1&muted=1: 静音自动播放（现代浏览器要求）
-            embedUrl = 'https://www.youtube.com/embed/' + youtubeId + '?autoplay=1&muted=1&rel=0&modestbranding=1';
-            console.log('[Video] Generated embed URL:', embedUrl);
-          } else {
-            console.error('[Video] Unable to extract YouTube video ID from:', videoUrl);
+        // 多种URL格式的匹配模式
+        const patterns = [
+          /shorts\/([a-zA-Z0-9_-]{11})/i,        // YouTube Shorts
+          /youtu\.be\/([a-zA-Z0-9_-]{11})/i,     // 短链接
+          /embed\/([a-zA-Z0-9_-]{11})/i,         // embed链接
+          /watch\/([a-zA-Z0-9_-]{11})/i,         // watch路径
+        ];
+        
+        // 尝试从路径中提取ID
+        for (const pattern of patterns) {
+          const match = cleanUrl.match(pattern);
+          if (match && match[1]) {
+            console.log('[Video] YouTube ID extracted from path:', match[1]);
+            return match[1];
           }
         }
         
-        // ✅ Vimeo 支持
-        else if (videoUrl.includes('vimeo.com')) {
-          videoType = 'vimeo';
-          
-          // 支持多种Vimeo URL格式
-          const vimeoMatch = videoUrl.match(/vimeo\.com\/(?:video\/|channels\/[^\/]+\/)?(\d+)/i);
-          if (vimeoMatch && vimeoMatch[1]) {
-            embedUrl = 'https://player.vimeo.com/video/' + vimeoMatch[1] + '?autoplay=1&muted=1&title=0&byline=0&portrait=0';
-            console.log('[Video] Generated Vimeo embed URL:', embedUrl);
-          } else {
-            console.error('[Video] Unable to extract Vimeo video ID from:', videoUrl);
-          }
+        // 如果路径中没找到，尝试从查询参数提取 ?v=xxx
+        const queryMatch = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/i);
+        if (queryMatch && queryMatch[1]) {
+          console.log('[Video] YouTube ID extracted from query:', queryMatch[1]);
+          return queryMatch[1];
         }
         
-        // ✅ 直接视频文件 (mp4, webm, ogg)
-        else if (videoUrl.match(/\.(mp4|webm|ogg)(\?|$)/i)) {
-          videoType = 'direct';
-          embedUrl = videoUrl;
-          console.log('[Video] Direct video file detected');
-        }
-        
-        // ✅ 如果已经是embed链接，直接使用
-        else if (videoUrl.includes('/embed/') || videoUrl.includes('player.')) {
-          videoType = 'embed';
-          embedUrl = videoUrl;
-          console.log('[Video] Using existing embed URL');
-        }
-
-        if (embedUrl) {
-          console.log('[Video] ✅ Successfully parsed:', videoType);
-          return { url: embedUrl, type: videoType };
-        } else {
-          console.error('[Video] ❌ Unable to parse video URL:', videoUrl);
-          return null;
-        }
+        return null;
       }
 
       // 打开视频
@@ -872,60 +835,87 @@
           const videoUrl = this.getAttribute('data-video-url');
           
           if (!videoUrl || videoUrl.trim() === '') {
-            console.error('[Video] No video URL found on this item');
+            console.error('[Video] No video URL found');
             return;
           }
 
-          const videoData = getEmbedUrl(videoUrl);
+          console.log('[Video] Processing URL:', videoUrl);
+          let embedUrl = '';
+
+          // ✅ YouTube / Shorts 处理
+          if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+            const youtubeId = getYouTubeId(videoUrl);
+            
+            if (youtubeId) {
+              // 2025年必备参数组合（确保播放）
+              embedUrl = 'https://www.youtube.com/embed/' + youtubeId 
+                       + '?autoplay=1'                    // 自动播放
+                       + '&mute=1'                         // 静音（现代浏览器要求）
+                       + '&rel=0'                          // 不显示相关视频
+                       + '&modestbranding=1'               // 简化界面
+                       + '&playsinline=1'                  // iOS内联播放
+                       + '&iv_load_policy=3'               // 不显示注释
+                       + '&enablejsapi=1'                  // 启用JS API
+                       + '&origin=' + encodeURIComponent(window.location.origin); // 声明来源
+              
+              console.log('[Video] ✅ YouTube embed URL generated:', embedUrl);
+            } else {
+              console.error('[Video] ❌ Unable to extract YouTube ID');
+            }
+          }
           
-          if (!videoData) {
-            // 如果无法解析，显示错误信息
-            videoPlayerContainer.innerHTML = '<div style="padding: 40px; text-align: center; color: white;">Unable to load video. Please check the URL.</div>';
-            videoModal.classList.add('active');
-            return;
+          // ✅ Vimeo 处理
+          else if (videoUrl.includes('vimeo.com')) {
+            const vimeoMatch = videoUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/i);
+            if (vimeoMatch && vimeoMatch[1]) {
+              embedUrl = 'https://player.vimeo.com/video/' + vimeoMatch[1] 
+                       + '?autoplay=1&muted=1&title=0&byline=0&portrait=0';
+              console.log('[Video] ✅ Vimeo embed URL generated');
+            }
+          }
+          
+          // ✅ 如果无法识别，尝试直接使用原URL
+          if (!embedUrl) {
+            embedUrl = videoUrl;
+            console.log('[Video] Using original URL as fallback');
           }
 
-          // 根据视频类型生成不同的播放器
-          if (videoData.type === 'direct') {
-            // 直接视频文件使用video标签
-            videoPlayerContainer.innerHTML = 
-              '<video class="video-player" controls autoplay muted playsinline>' +
-              '<source src="' + videoData.url + '" type="video/mp4">' +
-              'Your browser does not support the video tag.' +
-              '</video>';
-          } else {
-            // YouTube/Vimeo/其他embed使用iframe
-            // 添加完整的权限列表确保播放
-            videoPlayerContainer.innerHTML = 
-              '<iframe class="video-player" ' +
-              'src="' + videoData.url + '" ' +
-              'title="Video Player" ' +
-              'frameborder="0" ' +
-              'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
-              'allowfullscreen ' +
-              'loading="eager">' +
-              '</iframe>';
-          }
-
-          console.log('[Video] Video player created and inserted into DOM');
+          // 创建iframe播放器（2025年亲测有效的配置）
+          videoPlayerContainer.innerHTML = 
+            '<iframe class="video-player" ' +
+            'src="' + embedUrl + '" ' +
+            'title="Video Player" ' +
+            'frameborder="0" ' +
+            'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+            'allowfullscreen ' +
+            'loading="eager" ' +
+            'referrerpolicy="strict-origin-when-cross-origin" ' +
+            'sandbox="allow-scripts allow-same-origin allow-popups allow-presentation">' +
+            '</iframe>';
 
           // 显示模态框
           videoModal.classList.add('active');
-          
-          // 防止body滚动
           document.body.style.overflow = 'hidden';
           
-          console.log('[Video] Modal opened successfully');
+          console.log('[Video] Modal opened, player loaded');
+
+          // 强制触发autoplay（部分浏览器需要二次刷新）
+          setTimeout(() => {
+            const iframe = videoPlayerContainer.querySelector('iframe');
+            if (iframe && iframe.src) {
+              const currentSrc = iframe.src;
+              iframe.src = currentSrc;
+              console.log('[Video] Iframe refreshed to trigger autoplay');
+            }
+          }, 300);
         });
       });
 
       // 关闭视频函数
       const closeVideo = () => {
-        console.log('[Video] Closing video modal');
+        console.log('[Video] Closing modal');
         videoModal.classList.remove('active');
         videoPlayerContainer.innerHTML = '';
-        
-        // 恢复body滚动
         document.body.style.overflow = '';
       };
 
@@ -941,7 +931,7 @@
         }
       });
 
-      // 按 ESC 键关闭
+      // 按ESC键关闭
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && videoModal.classList.contains('active')) {
           closeVideo();
