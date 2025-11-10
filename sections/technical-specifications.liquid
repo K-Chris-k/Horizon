@@ -237,7 +237,7 @@
   .faq-answer {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease;
+    transition: max-height 0.4s ease;
     font-size: {{ section.settings.content_font_size_desktop }}px;
     line-height: {{ section.settings.content_line_height_desktop }};
   }
@@ -248,7 +248,8 @@
   }
 
   .faq-item.active .faq-answer {
-    max-height: 500px;
+    max-height: 2000px;
+    transition: max-height 0.5s ease;
   }
 
   /* Video */
@@ -820,19 +821,32 @@ console.log('脚本已加载 - Technical Specifications');
 
     /* -------------------- FAQ accordion -------------------- */
     const faqQuestions = document.querySelectorAll('.faq-question');
-    console.log('找到 FAQ:', faqQuestions.length);
+    console.log('找到 FAQ 问题:', faqQuestions.length);
     
     faqQuestions.forEach(function(question) {
-      question.addEventListener('click', function() {
+      question.addEventListener('click', function(e) {
+        console.log('FAQ 被点击');
+        e.preventDefault();
+        
         const faqItem = this.closest('.faq-item');
         const isActive = faqItem.classList.contains('active');
         
+        console.log('当前状态:', isActive ? '展开' : '收起');
+        
+        // 关闭所有其他 FAQ
         document.querySelectorAll('.faq-item').forEach(function(item) {
-          item.classList.remove('active');
+          if (item !== faqItem) {
+            item.classList.remove('active');
+          }
         });
         
+        // 切换当前 FAQ
         if (!isActive) {
           faqItem.classList.add('active');
+          console.log('FAQ 已展开');
+        } else {
+          faqItem.classList.remove('active');
+          console.log('FAQ 已收起');
         }
       });
     });
@@ -882,7 +896,9 @@ console.log('脚本已加载 - Technical Specifications');
                 console.log('YouTube 匹配:', match);
                 
                 if (match && match[1]) {
-                  embedUrl = 'https://www.youtube.com/embed/' + match[1] + '?autoplay=1';
+                  // 添加必要的参数以确保自动播放
+                  embedUrl = 'https://www.youtube.com/embed/' + match[1] + 
+                    '?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1';
                   console.log('YouTube 嵌入 URL:', embedUrl);
                 }
               }
@@ -893,7 +909,9 @@ console.log('脚本已加载 - Technical Specifications');
                 console.log('Vimeo 匹配:', match);
                 
                 if (match && match[1]) {
-                  embedUrl = 'https://player.vimeo.com/video/' + match[1] + '?autoplay=1';
+                  // 添加必要的参数以确保自动播放
+                  embedUrl = 'https://player.vimeo.com/video/' + match[1] + 
+                    '?autoplay=1&muted=1&playsinline=1';
                   console.log('Vimeo 嵌入 URL:', embedUrl);
                 }
               }
