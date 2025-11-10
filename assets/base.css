@@ -4487,7 +4487,9 @@ label.variant-option__button-label.variant-option__button-label--has-swatch {
   background: transparent;
 }
 
-
+scroll-hint.dialog-thumbnails-list.list-unstyled{
+  display: none;
+}
 @media screen and (max-width: 749px) {
   
 :not(.dialog-zoomed-gallery) > .product-media-container {
@@ -4495,5 +4497,8 @@ label.variant-option__button-label.variant-option__button-label--has-swatch {
 
   display: block;
 
+}
+scroll-hint.dialog-thumbnails-list.list-unstyled{
+  display: block;
 }
 }
