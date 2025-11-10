@@ -748,141 +748,124 @@
 
 <script>
 (() => {
-  // ==================== 工具函数：防抖（可选） ====================
-  const ready = (fn) => {
-    if (document.readyState !== 'loading') {
-      fn();
-    } else {
-      document.addEventListener('DOMContentLoaded', fn);
-    }
-  };
+  // 独立作用域，避免变量冲突
+  document.addEventListener('DOMContentLoaded', function() {
 
-  // ==================== 主初始化函数 ====================
-  const init = () => {
-    /* -------------------- 1. Tab 切换 -------------------- */
+    /* -------------------- Tab switching -------------------- */
     document.querySelectorAll('.specs-tab').forEach(tab => {
-      tab.addEventListener('click', function () {
+      tab.addEventListener('click', function() {
         const tabName = this.getAttribute('data-tab');
-
-        // 移除所有激活状态
+        
         document.querySelectorAll('.specs-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.specs-tab-content').forEach(c => c.classList.remove('active'));
-
-        // 激活当前
+        
         this.classList.add('active');
-        const target = document.querySelector(`[data-content="${tabName}"]`);
-        if (target) {
-          target.classList.add('active');
-        }
+        const targetContent = document.querySelector(`[data-content="${tabName}"]`);
+        if (targetContent) targetContent.classList.add('active');
       });
     });
 
-    /* -------------------- 2. FAQ 折叠（手风琴） -------------------- */
-    const faqItems = document.querySelectorAll('.faq-item');
-    
-    faqItems.forEach((item, index) => {
-      const question = item.querySelector('.faq-question');
-      const icon = item.querySelector('.faq-icon');
-      
-      if (!question) return;
-      
-      question.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
+    /* -------------------- FAQ accordion -------------------- */
+    document.querySelectorAll('.faq-question').forEach(question => {
+      question.addEventListener('click', function() {
+        const faqItem = this.closest('.faq-item');
+        const isActive = faqItem.classList.contains('active');
         
-        const isOpen = item.classList.contains('active');
+        // 关闭所有其他
+        document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
         
-        // 关闭所有其他FAQ
-        faqItems.forEach(otherItem => {
-          if (otherItem !== item) {
-            otherItem.classList.remove('active');
-            const otherIcon = otherItem.querySelector('.faq-icon');
-            if (otherIcon) {
-              otherIcon.style.transform = 'rotate(0deg)';
-            }
-          }
-        });
-        
-        // 切换当前FAQ
-        if (isOpen) {
-          item.classList.remove('active');
-          if (icon) icon.style.transform = 'rotate(0deg)';
-        } else {
-          item.classList.add('active');
-          if (icon) icon.style.transform = 'rotate(90deg)';
-        }
-      }, { capture: true, once: false });
+        // 如果之前不是激活状态，就激活当前
+        if (!isActive) faqItem.classList.add('active');
+      });
     });
 
-    /* -------------------- 3. 视频模态框 -------------------- */
+    /* -------------------- Video modal -------------------- */
     const videoModal = document.getElementById('videoModal');
-    const closeBtn = document.getElementById('closeVideoModal');
-    const playerContainer = document.getElementById('videoPlayerContainer');
+    const closeVideoModal = document.getElementById('closeVideoModal');
+    const videoPlayerContainer = document.getElementById('videoPlayerContainer');
 
-    if (videoModal && playerContainer) {
+    if (videoModal && videoPlayerContainer) {
       // 打开视频
       document.querySelectorAll('.video-item').forEach(item => {
-        item.addEventListener('click', function () {
-          const url = this.getAttribute('data-video-url');
-          if (!url) return;
+        item.addEventListener('click', function() {
+          const videoUrl = this.getAttribute('data-video-url');
+          if (!videoUrl) return;
 
           let embedUrl = '';
 
-          // YouTube（普通视频 + Shorts）
-          if (url.includes('youtube.com') || url.includes('youtu.be')) {
-            const match = url.match(/(?:v=|\/(?:shorts|embed|watch\?v=))([a-zA-Z0-9_-]{11})/);
-            if (match) embedUrl = `https://www.youtube.com/embed/${match[1]}?autoplay=1`;
+          // ✅ YouTube / Shorts 超级稳健版（支持所有格式）
+          if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+            let youtubeId = null;
+
+            // 1. youtu.be/xxx、/shorts/xxx、/embed/xxx
+            const pathMatch = videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/i);
+            if (pathMatch && pathMatch[1]) {
+              youtubeId = pathMatch[1];
+            } else {
+              // 2. ?v=xxx 或 &v=xxx
+              const queryMatch = videoUrl.match(/[?&]v=([a-zA-Z0-9_-]{11})/i);
+              if (queryMatch && queryMatch[1]) {
+                youtubeId = queryMatch[1];
+              }
+            }
+
+            if (youtubeId) {
+              embedUrl = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`;
+            }
           }
 
-          // Vimeo
-          if (url.includes('vimeo.com')) {
-            const match = url.match(/vimeo\.com\/(\d+)/);
-            if (match) embedUrl = `https://player.vimeo.com/video/${match[1]}?autoplay=1`;
+          // ✅ Vimeo
+          else if (videoUrl.includes('vimeo.com')) {
+            const vimeoMatch = videoUrl.match(/vimeo\.com\/(\d+)/);
+            if (vimeoMatch && vimeoMatch[1]) {
+              embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
+            }
           }
 
-          if (!embedUrl) return;
+          // 如果没有匹配到任何平台，直接尝试使用原链接（极少情况）
+          if (!embedUrl) {
+            embedUrl = videoUrl;
+          }
 
-          playerContainer.innerHTML = `
+          // 插入 iframe
+          videoPlayerContainer.innerHTML = `
             <iframe class="video-player" src="${embedUrl}" 
-                    frameborder="0" allow="autoplay; fullscreen; picture-in-picture" 
+                    frameborder="0" 
+                    allow="autoplay; fullscreen; picture-in-picture" 
                     allowfullscreen></iframe>
           `;
 
+          // 显示模态框
           videoModal.classList.add('active');
         });
       });
 
-      // 关闭函数
+      // 关闭视频函数
       const closeVideo = () => {
         videoModal.classList.remove('active');
-        playerContainer.innerHTML = '';
+        videoPlayerContainer.innerHTML = '';
       };
 
-      closeBtn?.addEventListener('click', closeVideo);
+      // 点击关闭按钮
+      if (closeVideoModal) {
+        closeVideoModal.addEventListener('click', closeVideo);
+      }
 
-      // 点击遮罩关闭
-      videoModal.addEventListener('click', e => {
-        if (e.target === videoModal) closeVideo();
+      // 点击背景关闭
+      videoModal.addEventListener('click', function(e) {
+        if (e.target === videoModal) {
+          closeVideo();
+        }
       });
 
-      // ESC 键关闭
-      document.addEventListener('keydown', e => {
+      // 按 ESC 键关闭
+      document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && videoModal.classList.contains('active')) {
           closeVideo();
         }
       });
     }
-  };
-
-  // ==================== 执行初始化 ====================
-  // 放在页面底部时直接执行最保险
-  ready(init);
-
-  // 如果因为 Liquid 动态渲染导致元素很晚出现，可再加一次轮询（可选）
-  // setTimeout(init, 500);
-  // setTimeout(init, 1500);
-
+  });
 })();
 </script>
 
