@@ -57,22 +57,8 @@ export class ZoomDialog extends Component {
       }
     };
 
-    /** @type {HTMLElement | null} */
-    const sourceImage = event.target instanceof Element ? event.target.closest('li,slideshow-slide') : null;
-
-    if (!supportsViewTransitions() || isLowPowerDevice() || !sourceImage || !targetImage) return open();
-
-    const transitionName = `gallery-item`;
-    sourceImage.style.setProperty('view-transition-name', transitionName);
-
-    await startViewTransition(() => {
-      open();
-      sourceImage.style.removeProperty('view-transition-name');
-      targetImage.style.setProperty('view-transition-name', transitionName);
-    });
-
-    targetImage.style.removeProperty('view-transition-name');
-
+    // 直接打开，不使用 view-transition 动画
+    open();
     this.selectThumbnail(index, { behavior: 'instant' });
   }
 
@@ -130,41 +116,8 @@ export class ZoomDialog extends Component {
    * Closes the zoom dialog.
    */
   async close() {
-    const { dialog, media } = this.refs;
-
-    if (!supportsViewTransitions() || isLowPowerDevice()) return this.closeDialog();
-
-    // Find the most visible image using IntersectionObserver
-    const mostVisibleElement = await getMostVisibleElement(media);
-
-    // Get the index and set up transition
-    const activeIndex = media.indexOf(mostVisibleElement);
-    const transitionName = `gallery-item`;
-
-    const mediaGallery = /** @type {import('./media-gallery').MediaGallery | undefined} */ (
-      this.closest('media-gallery')
-    );
-
-    const slideshowActive = mediaGallery?.presentation === 'carousel';
-
-    const slide = slideshowActive ? mediaGallery.slideshow?.slides?.[activeIndex] : mediaGallery?.media?.[activeIndex];
-
-    if (!slide) return this.closeDialog();
-
-    dialog.classList.add('dialog--closed');
-
-    await onAnimationEnd(this.refs.thumbnails);
-
-    mostVisibleElement.style.setProperty('view-transition-name', transitionName);
-
-    await startViewTransition(() => {
-      mostVisibleElement.style.removeProperty('view-transition-name');
-      slide.style.setProperty('view-transition-name', transitionName);
-      this.closeDialog();
-    });
-
-    slide.style.removeProperty('view-transition-name');
-    dialog.classList.remove('dialog--closed');
+    // 直接关闭，不使用 view-transition 动画
+    this.closeDialog();
   }
 
   closeDialog() {
@@ -200,9 +153,10 @@ export class ZoomDialog extends Component {
    */
   async handleThumbnailPointerEnter(index) {
     const { media } = this.refs;
-    if (!media[index]) return;
+    const mediaElement = media[index];
+    if (!mediaElement) return;
 
-    this.#loadHighResolutionImage(media[index]);
+    this.#loadHighResolutionImage(mediaElement);
   }
 
   /**
