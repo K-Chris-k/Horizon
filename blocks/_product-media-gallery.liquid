@@ -833,6 +833,7 @@
       transform: translateY(-50%) scale(0.95);
     }
 
+    /* 移动端：计数器相对于 product-media-container 定位（图片下方外面） */
     .dialog-zoomed-gallery .product-media-container .zoom-dialog-counter {
       position: absolute !important;
       bottom: 21% !important;
@@ -1418,18 +1419,6 @@
   (function() {
     'use strict';
     
-    // Debug: Output media gallery information
-    console.log('=== Product Media Gallery Debug ===');
-    const mediaGallery = document.querySelector('media-gallery[data-presentation="{{ block_settings.media_presentation }}"]');
-    if (mediaGallery) {
-      console.log('Rendered media count:', mediaGallery.getAttribute('data-media-count'));
-      console.log('Total product media:', mediaGallery.getAttribute('data-total-product-media'));
-      const containers = mediaGallery.querySelectorAll('.product-media-container');
-      console.log('Actual DOM elements:', containers.length);
-      console.log('Media containers:', containers);
-    }
-    console.log('====================================');
-    
     let currentActiveIndex = 0;
     let currentSlideshowIndex = 0; // Track main slideshow current index
     
@@ -1707,8 +1696,6 @@
             e.preventDefault();
             e.stopPropagation();
             
-            console.log('Grid container clicked, opening zoom with index:', mediaIndex);
-            
             if (zoomDialog && typeof zoomDialog.open === 'function') {
               zoomDialog.open(mediaIndex, e);
             }
@@ -1724,7 +1711,6 @@
           // 检查是否在dialog内部（可能是空白区域点击后的事件冒泡）
           const clickedInsideDialog = e.target.closest('dialog');
           if (clickedInsideDialog) {
-            console.log('Click inside dialog detected, ignoring');
             return;
           }
           
@@ -1734,14 +1720,11 @@
           // Fallback: use container's position in the list
           if (mediaIndex === null || isNaN(mediaIndex)) {
             mediaIndex = fallbackIndex;
-            console.log('Using fallback index:', mediaIndex);
           }
           
           // Prevent default zoom behavior
           e.preventDefault();
           e.stopPropagation();
-          
-          console.log('Zoomable container clicked, opening with index:', mediaIndex);
           
           // Update current slideshow index to match
           currentSlideshowIndex = mediaIndex;
@@ -1772,26 +1755,18 @@
       function bindCloseButton() {
         const closeBtn = dialog.querySelector('.dialog-zoomed-gallery__close-button');
         if (closeBtn) {
-          console.log('Binding close button');
           // 移除旧的事件监听器（如果存在）
           closeBtn.removeEventListener('click', handleCloseClick, true);
           closeBtn.removeEventListener('click', handleCloseClick, false);
           
           // 添加新的事件监听器（使用捕获阶段以确保优先处理）
           closeBtn.addEventListener('click', handleCloseClick, true);
-          
-          console.log('Close button bound successfully');
-        } else {
-          console.warn('Close button not found when trying to bind');
         }
       }
       
       // 统一的关闭对话框函数 - 使用多重保障确保关闭成功
       function closeZoomDialog() {
-        console.log('closeZoomDialog called, dialog.open:', dialog.open);
-        
         if (!dialog || !dialog.open) {
-          console.log('Dialog already closed');
           return;
         }
         
@@ -1801,31 +1776,28 @@
         try {
           // Method 1: 使用 zoom-dialog 组件的 closeDialog 方法
           if (zoomDialog && typeof zoomDialog.closeDialog === 'function') {
-            console.log('Attempting: zoomDialog.closeDialog()');
             zoomDialog.closeDialog();
             closeAttempted = true;
           }
         } catch (error) {
-          console.error('Method 1 failed:', error);
+          // Method 1 failed
         }
         
         // Method 2: 使用 zoom-dialog 组件的 close 方法（作为备份）
         if (!closeAttempted || dialog.open) {
           try {
             if (zoomDialog && typeof zoomDialog.close === 'function') {
-              console.log('Attempting: zoomDialog.close()');
               zoomDialog.close();
               closeAttempted = true;
             }
           } catch (error) {
-            console.error('Method 2 failed:', error);
+            // Method 2 failed
           }
         }
         
         // Method 3: 强制使用原生 dialog.close()
         if (dialog.open) {
           try {
-            console.log('Force closing with dialog.close()');
             dialog.close();
             
             // 手动触发 close 事件（以防万一）
@@ -1837,24 +1809,22 @@
               const dialogCloseEvent = new Event('dialog-close');
               window.dispatchEvent(dialogCloseEvent);
             } catch (e) {
-              console.log('Could not dispatch global event');
+              // Could not dispatch global event
             }
           } catch (error) {
-            console.error('Force close failed:', error);
+            // Force close failed
           }
         }
         
         // 验证关闭状态
         setTimeout(function() {
-          console.log('After close attempts, dialog.open:', dialog.open);
           if (dialog.open) {
-            console.error('Dialog still open after all attempts!');
             // 最后的强制手段：直接移除 open 属性
             try {
               dialog.removeAttribute('open');
               dialog.close();
             } catch (e) {
-              console.error('Last resort failed:', e);
+              // Last resort failed
             }
           }
         }, 50);
@@ -1862,14 +1832,11 @@
       
       // 关闭按钮点击处理函数
       function handleCloseClick(e) {
-        console.log('handleCloseClick triggered, target:', e.target);
-        
         // 阻止事件传播，避免触发dialog的点击事件
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
         
-        console.log('Close button clicked, calling closeZoomDialog');
         closeZoomDialog();
       }
       
@@ -1977,13 +1944,11 @@
         zoomDialog.open = function(index, event) {
           // 如果正在关闭，阻止打开
           if (isClosing) {
-            console.log('Prevented opening: dialog is closing');
             return;
           }
           
           initialOpenIndex = index;
           currentActiveIndex = index;
-          console.log('Zoom dialog opening with index:', index);
           
           // Pre-set the correct image BEFORE opening dialog to prevent flash
           mediaContainers.forEach(function(container, idx) {
@@ -2012,7 +1977,6 @@
       zoomDialog.addEventListener('zoom-media-selected', function(e) {
         if (e.detail !== undefined && e.detail !== null) {
           const targetIndex = e.detail;
-          console.log('Zoom media selected event, switching to index:', targetIndex);
           switchToImage(targetIndex);
         }
       });
@@ -2071,9 +2035,6 @@
       
       // Click outside image to close dialog - 简化逻辑：只保护特定元素，其他都关闭
       dialog.addEventListener('click', function(e) {
-        console.log('=== Dialog click event ===');
-        console.log('Target:', e.target.tagName, 'Class:', e.target.className);
-        
         // 黑名单：这些元素点击时不关闭dialog
         const isImage = e.target.tagName === 'IMG';
         const isVideo = e.target.tagName === 'VIDEO';
@@ -2084,16 +2045,11 @@
         
         // 如果点击的是受保护元素，不关闭
         if (isImage || isVideo || isNavButton || isThumbnail || isDragZoomWrapper || isDeferredMedia) {
-          console.log('-> Clicked on protected element (image/video/controls), NOT closing');
           return;
         }
         
-        // 其他所有情况都应该关闭dialog
-        console.log('-> Clicked on backdrop/empty area, triggering close');
-        
         // 设置关闭标志，防止重新打开
         isClosing = true;
-        console.log('Set isClosing = true');
         
         // 完全阻止事件传播
         e.preventDefault();
@@ -2103,10 +2059,8 @@
         // 查找关闭按钮并触发它的点击事件
         const closeButton = dialog.querySelector('.dialog-zoomed-gallery__close-button');
         if (closeButton) {
-          console.log('Found close button, triggering click');
           closeButton.click();
         } else {
-          console.warn('Close button not found, using fallback');
           // 备用关闭方法
           if (zoomDialog && typeof zoomDialog.close === 'function') {
             zoomDialog.close();
@@ -2118,7 +2072,6 @@
         // 300ms后重置关闭标志
         setTimeout(function() {
           isClosing = false;
-          console.log('Reset isClosing = false');
         }, 300);
       }, true); // 使用捕获阶段，优先处理
       
@@ -2182,8 +2135,6 @@
       
       // Reset currentActiveIndex when dialog closes
       dialog.addEventListener('close', function() {
-        console.log('Dialog close event fired, cleaning up state');
-        
         try {
           // Remove zoom-active from all containers
           mediaContainers.forEach(function(container) {
@@ -2200,19 +2151,15 @@
           // 确保重置关闭标志（双重保障）
           setTimeout(function() {
             isClosing = false;
-            console.log('Reset isClosing = false (from close event)');
           }, 100);
-          
-          console.log('State cleanup completed successfully');
         } catch (error) {
-          console.error('Error during state cleanup:', error);
+          // Error during state cleanup
         }
       });
       
       // 额外的后备清理 - 监听全局 dialog-close 事件
       window.addEventListener('dialog-close', function() {
         if (!dialog.open) {
-          console.log('Global dialog-close event, ensuring cleanup');
           mediaContainers.forEach(function(container) {
             container.classList.remove('zoom-active');
           });
@@ -2242,43 +2189,17 @@
       });
     }
     
-    // 诊断工具 - 帮助调试点击问题
-    function diagnoseClickIssue() {
-      console.log('=== Zoom Dialog Diagnostic Tool ===');
-      const zoomDialog = document.querySelector('#zoom-dialog-{{ block.id }}');
-      const dialog = zoomDialog ? zoomDialog.querySelector('dialog') : null;
-      
-      console.log('Zoom dialog element:', zoomDialog ? '✓ Found' : '✗ Not found');
-      console.log('Dialog element:', dialog ? '✓ Found' : '✗ Not found');
-      console.log('Dialog open:', dialog ? dialog.open : 'N/A');
-      
-      if (dialog) {
-        const closeBtn = dialog.querySelector('.dialog-zoomed-gallery__close-button');
-        console.log('Close button:', closeBtn ? '✓ Found' : '✗ Not found');
-        
-        console.log('Click listeners attached:', 'Check event listeners in DevTools');
-        console.log('\nTo test close function, run: window.testCloseZoomDialog()');
-      }
-    }
-    
-    // 暴露诊断函数到全局
-    window.diagnoseZoomDialog = diagnoseClickIssue;
-    
     // Run when DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', function() {
         initMobileThumbnails();
         initZoomButtonIntercept();
         initZoomGallery();
-        
-        console.log('Zoom gallery initialized. Run window.diagnoseZoomDialog() for diagnostics.');
       });
     } else {
       initMobileThumbnails();
       initZoomButtonIntercept();
       initZoomGallery();
-      
-      console.log('Zoom gallery initialized. Run window.diagnoseZoomDialog() for diagnostics.');
     }
   })();
 </script>
