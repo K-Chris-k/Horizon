@@ -813,7 +813,7 @@
             "image": "shopify://shop_images/phone-app-call-web-touch-1068x712.webp",
             "use_aspect_ratio": true,
             "title": "Easily control.",
-            "description": "Easily control and set up all functions remotely via a dedicated mobile app."
+            "description": "Easily control and set up all functions remotely via a dedicated mobile app. Seamlessly integrates with Google and Amazon smart speakers."
           }
         },
         "compatibility_item_PjA6Fz": {
@@ -821,8 +821,8 @@
           "settings": {
             "image": "shopify://shop_images/A_home_automation_request_to_Gemini_that_says__At_night_if_the_house_is_empty_use_lights_to_make_it_look_like_someone_s_home.__1.png",
             "use_aspect_ratio": true,
-            "title": "High compatibility.",
-            "description": "Seamlessly integrates with Google and Amazon smart speakers, enabling voice-controlled temperature adjustments and home automation with other smart devices through the speaker."
+            "title": "Self-learning.",
+            "description": "The thermostat analyses the actual room temperature data to determine precisely how far in advance it needs to activate the heating to reach the target temperature by the scheduled time. This learning process typically requires one to two weeks."
           }
         }
       },
