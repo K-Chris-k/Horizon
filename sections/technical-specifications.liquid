@@ -882,9 +882,7 @@ console.log('脚本已加载 - Technical Specifications');
                 console.log('YouTube 匹配:', match);
                 
                 if (match && match[1]) {
-                  // 添加必要的参数以确保自动播放
-                  embedUrl = 'https://www.youtube.com/embed/' + match[1] + 
-                    '?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1';
+                  embedUrl = 'https://www.youtube.com/embed/' + match[1] + '?autoplay=1';
                   console.log('YouTube 嵌入 URL:', embedUrl);
                 }
               }
@@ -895,9 +893,7 @@ console.log('脚本已加载 - Technical Specifications');
                 console.log('Vimeo 匹配:', match);
                 
                 if (match && match[1]) {
-                  // 添加必要的参数以确保自动播放
-                  embedUrl = 'https://player.vimeo.com/video/' + match[1] + 
-                    '?autoplay=1&muted=1&playsinline=1';
+                  embedUrl = 'https://player.vimeo.com/video/' + match[1] + '?autoplay=1';
                   console.log('Vimeo 嵌入 URL:', embedUrl);
                 }
               }
