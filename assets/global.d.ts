@@ -74,33 +74,4 @@ declare global {
   interface Navigator {
     readonly deviceMemory?: number;
   }
-
-  // View Transitions API - https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API
-  interface ViewTransition {
-    readonly finished: Promise<void>;
-    readonly ready: Promise<void>;
-    readonly updateCallbackDone: Promise<void>;
-    skipTransition(): void;
-    types: Set<string>;
-  }
-
-  interface PageSwapEvent extends Event {
-    readonly viewTransition: ViewTransition;
-    readonly activation?: {
-      readonly from?: NavigationHistoryEntry;
-      readonly entry: NavigationHistoryEntry;
-    };
-  }
-
-  interface PageRevealEvent extends Event {
-    readonly viewTransition: ViewTransition;
-  }
-
-  interface NavigationHistoryEntry {
-    readonly url?: string;
-    readonly key: string;
-    readonly id: string;
-    readonly index: number;
-    readonly sameDocument: boolean;
-  }
 }
