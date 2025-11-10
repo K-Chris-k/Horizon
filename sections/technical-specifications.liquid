@@ -793,6 +793,7 @@
 
         // 清理URL（去除空格）
         videoUrl = videoUrl.trim();
+        console.log('[Video] Processing URL:', videoUrl);
         
         let embedUrl = '';
         let videoType = '';
@@ -804,25 +805,25 @@
 
           // 方法1: 匹配短链接、Shorts、embed等路径格式
           // 支持: youtu.be/xxx, /shorts/xxx, /embed/xxx, /v/xxx, /watch/xxx
-          const pathMatch = videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|shorts\/|watch\/))([a-zA-Z0-9_-]{11})(?:[?&]|$)/i);
+          // 更宽松的正则表达式，支持带或不带www的域名
+          const pathMatch = videoUrl.match(/(?:youtu\.be\/|(?:www\.)?youtube\.com\/(?:embed\/|v\/|shorts\/|watch\/))([a-zA-Z0-9_-]{10,12})(?:[?&\/]|$)/i);
           if (pathMatch && pathMatch[1]) {
             youtubeId = pathMatch[1];
+            console.log('[Video] Extracted YouTube ID (method 1):', youtubeId);
           } else {
             // 方法2: 匹配查询参数 ?v=xxx 或 &v=xxx
-            const queryMatch = videoUrl.match(/[?&]v=([a-zA-Z0-9_-]{11})(?:[?&]|$)/i);
+            const queryMatch = videoUrl.match(/[?&]v=([a-zA-Z0-9_-]{10,12})(?:[?&]|$)/i);
             if (queryMatch && queryMatch[1]) {
               youtubeId = queryMatch[1];
+              console.log('[Video] Extracted YouTube ID (method 2):', youtubeId);
             }
           }
 
           if (youtubeId) {
-            // 添加更多参数确保播放: 
-            // autoplay=1: 自动播放
-            // rel=0: 不显示相关视频
-            // modestbranding=1: 简化YouTube logo
-            // enablejsapi=1: 启用JS API
-            // origin: 安全策略
-            embedUrl = 'https://www.youtube.com/embed/' + youtubeId + '?autoplay=1&rel=0&modestbranding=1&enablejsapi=1&origin=' + encodeURIComponent(window.location.origin);
+            // 使用简化的参数，避免某些浏览器的限制
+            // autoplay=1&muted=1: 静音自动播放（现代浏览器要求）
+            embedUrl = 'https://www.youtube.com/embed/' + youtubeId + '?autoplay=1&muted=1&rel=0&modestbranding=1';
+            console.log('[Video] Generated embed URL:', embedUrl);
           } else {
             console.error('[Video] Unable to extract YouTube video ID from:', videoUrl);
           }
@@ -833,12 +834,10 @@
           videoType = 'vimeo';
           
           // 支持多种Vimeo URL格式
-          // vimeo.com/123456789
-          // vimeo.com/video/123456789
-          // vimeo.com/channels/xxx/123456789
           const vimeoMatch = videoUrl.match(/vimeo\.com\/(?:video\/|channels\/[^\/]+\/)?(\d+)/i);
           if (vimeoMatch && vimeoMatch[1]) {
-            embedUrl = 'https://player.vimeo.com/video/' + vimeoMatch[1] + '?autoplay=1&title=0&byline=0&portrait=0';
+            embedUrl = 'https://player.vimeo.com/video/' + vimeoMatch[1] + '?autoplay=1&muted=1&title=0&byline=0&portrait=0';
+            console.log('[Video] Generated Vimeo embed URL:', embedUrl);
           } else {
             console.error('[Video] Unable to extract Vimeo video ID from:', videoUrl);
           }
@@ -848,19 +847,21 @@
         else if (videoUrl.match(/\.(mp4|webm|ogg)(\?|$)/i)) {
           videoType = 'direct';
           embedUrl = videoUrl;
+          console.log('[Video] Direct video file detected');
         }
         
         // ✅ 如果已经是embed链接，直接使用
         else if (videoUrl.includes('/embed/') || videoUrl.includes('player.')) {
           videoType = 'embed';
           embedUrl = videoUrl;
+          console.log('[Video] Using existing embed URL');
         }
 
         if (embedUrl) {
-          console.log('[Video] Successfully parsed:', videoType, embedUrl);
+          console.log('[Video] ✅ Successfully parsed:', videoType);
           return { url: embedUrl, type: videoType };
         } else {
-          console.error('[Video] Unable to parse video URL:', videoUrl);
+          console.error('[Video] ❌ Unable to parse video URL:', videoUrl);
           return null;
         }
       }
@@ -888,7 +889,7 @@
           if (videoData.type === 'direct') {
             // 直接视频文件使用video标签
             videoPlayerContainer.innerHTML = 
-              '<video class="video-player" controls autoplay>' +
+              '<video class="video-player" controls autoplay muted playsinline>' +
               '<source src="' + videoData.url + '" type="video/mp4">' +
               'Your browser does not support the video tag.' +
               '</video>';
@@ -898,23 +899,29 @@
             videoPlayerContainer.innerHTML = 
               '<iframe class="video-player" ' +
               'src="' + videoData.url + '" ' +
+              'title="Video Player" ' +
               'frameborder="0" ' +
               'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
-              'referrerpolicy="strict-origin-when-cross-origin" ' +
-              'allowfullscreen>' +
+              'allowfullscreen ' +
+              'loading="eager">' +
               '</iframe>';
           }
+
+          console.log('[Video] Video player created and inserted into DOM');
 
           // 显示模态框
           videoModal.classList.add('active');
           
           // 防止body滚动
           document.body.style.overflow = 'hidden';
+          
+          console.log('[Video] Modal opened successfully');
         });
       });
 
       // 关闭视频函数
       const closeVideo = () => {
+        console.log('[Video] Closing video modal');
         videoModal.classList.remove('active');
         videoPlayerContainer.innerHTML = '';
         
