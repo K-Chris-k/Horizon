@@ -747,7 +747,7 @@
                         Your browser does not support the video tag.
                       </video>
                     {%- else -%}
-                      <div class="video-thumbnail-wrapper">
+                      <div class="video-thumbnail-wrapper" data-video-type="youtube-vimeo">
                         {%- if block.settings.thumbnail != blank -%}
                           <img 
                             src="{{ block.settings.thumbnail | image_url: width: 600 }}" 
@@ -820,44 +820,57 @@
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
 
     if (videoModal && videoPlayerContainer) {
-      // 打开视频（仅适用于 YouTube/Vimeo）
-      document.querySelectorAll('.video-item').forEach(item => {
-        const thumbnailWrapper = item.querySelector('.video-thumbnail-wrapper');
-        if (thumbnailWrapper) {
-          thumbnailWrapper.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const videoUrl = item.getAttribute('data-video-url');
-            if (!videoUrl) return;
+      // 打开视频（支持 YouTube/Vimeo）
+      const videoItems = document.querySelectorAll('.video-item');
+      console.log('找到视频项:', videoItems.length);
+      
+      videoItems.forEach(item => {
+        const videoUrl = item.getAttribute('data-video-url');
+        console.log('视频 URL:', videoUrl);
+        
+        // 如果不是直接视频文件，添加点击事件
+        if (videoUrl && !videoUrl.match(/\.(mp4|webm|ogg|mov)(\?|$)/i)) {
+          const thumbnailWrapper = item.querySelector('.video-thumbnail-wrapper');
+          console.log('缩略图容器:', thumbnailWrapper);
+          
+          if (thumbnailWrapper) {
+            console.log('添加点击事件到:', videoUrl);
+            thumbnailWrapper.addEventListener('click', function(e) {
+              console.log('视频被点击!', videoUrl);
+              e.preventDefault();
+              e.stopPropagation();
 
-            // 只处理 YouTube 和 Vimeo 链接
-            if (!videoUrl.includes('youtube.com') && !videoUrl.includes('youtu.be') && !videoUrl.includes('vimeo.com')) {
-              return;
-            }
-
-            let embedUrl = videoUrl;
-            // ✅ 支持 YouTube / Shorts
-            if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-              const match = videoUrl.match(/(?:v=|\/(?:shorts|embed|v)\/)([a-zA-Z0-9_-]{11})/);
-              if (match && match[1]) {
-                embedUrl = `https://www.youtube.com/embed/${match[1]}?autoplay=1`;
+              let embedUrl = videoUrl;
+              
+              // ✅ 支持 YouTube / Shorts
+              if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+                const match = videoUrl.match(/(?:v=|\/(?:shorts|embed|v)\/)([a-zA-Z0-9_-]{11})/);
+                console.log('YouTube 匹配结果:', match);
+                if (match && match[1]) {
+                  embedUrl = `https://www.youtube.com/embed/${match[1]}?autoplay=1`;
+                  console.log('嵌入 URL:', embedUrl);
+                }
               }
-            }
-            // ✅ 支持 Vimeo
-            if (videoUrl.includes('vimeo.com')) {
-              const match = videoUrl.match(/vimeo\.com\/(\d+)/);
-              if (match && match[1]) {
-                embedUrl = `https://player.vimeo.com/video/${match[1]}?autoplay=1`;
+              // ✅ 支持 Vimeo
+              else if (videoUrl.includes('vimeo.com')) {
+                const match = videoUrl.match(/vimeo\.com\/(\d+)/);
+                console.log('Vimeo 匹配结果:', match);
+                if (match && match[1]) {
+                  embedUrl = `https://player.vimeo.com/video/${match[1]}?autoplay=1`;
+                  console.log('嵌入 URL:', embedUrl);
+                }
               }
-            }
 
-            // 插入 iframe 播放
-            videoPlayerContainer.innerHTML =
-              `<iframe class="video-player" src="${embedUrl}" frameborder="0"
-               allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+              // 插入 iframe 播放
+              videoPlayerContainer.innerHTML =
+                `<iframe class="video-player" src="${embedUrl}" frameborder="0"
+                 allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
 
-            // 打开模态框
-            videoModal.classList.add('active');
-          });
+              // 打开模态框
+              videoModal.classList.add('active');
+              console.log('模态框已打开');
+            });
+          }
         }
       });
 
