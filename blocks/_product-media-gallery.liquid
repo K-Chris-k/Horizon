@@ -21,10 +21,6 @@
   assign selected_variant_media = selected_product.selected_or_first_available_variant.featured_media
   assign first_3d_model = selected_product.media | where: 'media_type', 'model' | first
 
-  if block_settings.hide_variants
-    assign variant_images = selected_product.images | where: 'attached_to_variant?', true | map: 'src'
-  endif
-
   if block_settings.slideshow_controls_style == 'thumbnails'
     assign controls_on_media = false
   else
@@ -89,23 +85,25 @@
 -%}
 
 {%- liquid
-  assign sorted_media = '' | split: ','
+  # Show all product media - no filtering
+  # If selected_variant_media exists, show it first, then all others
+  # Otherwise, show all media in original order
+  
   if selected_variant_media
-    assign sorted_media = sorted_media | concat: selected_product.media | where: 'id', selected_variant_media.id
-
+    # Show selected variant image first, then all other media
+    assign sorted_media = selected_product.media | where: 'id', selected_variant_media.id
+    
     for media in selected_product.media
-      if block_settings.hide_variants and variant_images contains media.src and sorted_media.size > 0
-        continue
-      endif
-
       if media.id != selected_variant_media.id
         assign found_media = selected_product.media | where: 'id', media.id
         assign sorted_media = sorted_media | concat: found_media
       endif
     endfor
   else
+    # Show all media in original order
     assign sorted_media = selected_product.media
   endif
+  
   assign has_image_drop = sorted_media | has: 'media_type', 'image'
 
   # Determine if we're in single column mode (carousel or grid with one column)
@@ -297,6 +295,8 @@
   "
   style="{% render 'spacing-style', settings: block_settings %} --thumbnail-width: {{ block_settings.thumbnail_width }}px; --media-radius: {{ block_settings.media_radius }}px;{% if block_settings.icons_style contains 'large' %} --slideshow-icon-padding: 0px;{% endif %}--image-gap: {{ block_settings.image_gap }}px;{% unless block_settings.aspect_ratio == 'adapt' %} --gallery-aspect-ratio: {{ block_settings.aspect_ratio }};{% endunless %}"
   data-presentation="{{ block_settings.media_presentation }}"
+  data-media-count="{{ sorted_media.size }}"
+  data-total-product-media="{{ selected_product.media.size }}"
   {{ block.shopify_attributes }}
 >
   {% capture slides %}
@@ -374,18 +374,47 @@
     {% endcapture %}
   {% endif %}
 
-  {% render 'slideshow',
-    ref: 'slideshow',
-    class: slideshow_class,
-    slides: slides,
-    slide_count: sorted_media.size,
-    slideshow_arrows: slideshow_arrows,
-    arrows_position: icons_position,
-    controls: controls
-  %}
+  {% if block_settings.media_presentation == 'grid' %}
+    {%- comment -%} Grid Mode: Render all media directly without slideshow {%- endcomment -%}
+    <div class="media-gallery__grid">
+      {% for media in sorted_media %}
+        {%- liquid
+          if needs_both_sizes and forloop.first
+            assign media_sizes = sizes_single
+          else
+            assign media_sizes = sizes
+          endif
+        -%}
+        {% capture container_class %}{{ product_media_container_class }} product-media-container--{{ media.media_type }}{% if block.settings.zoom %} product-media-container--zoomable{% endif %}{% if forloop.index0 == lowest_aspect_ratio_index and block.settings.aspect_ratio == 'adapt' %} product-media-container--tallest{% endif %}{% endcapture %}
+        {% capture container_style %}{% if block_settings.aspect_ratio == 'adapt' %}--media-preview-ratio: {{ media.preview_image.aspect_ratio | default: 1.0 }};{% endif %}{% endcapture %}
+        {% capture container_attributes %}data-media-index="{{ forloop.index0 }}"{% if block_settings.zoom and media.media_type != 'model' %} on:click="#zoom-dialog-{{ block.id }}/open/{{ forloop.index0 }}"{% endif %}{% if settings.transition_to_main_product and forloop.first %} data-view-transition-type="product-image-transition"{% endif %}{% endcapture %}
+        
+        <div class="{{ container_class }}" style="{{ container_style }}" {{ container_attributes }}>
+          {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
+            <div class="product-media-constraint-wrapper">
+              {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
+            </div>
+          {% else %}
+            {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    {%- comment -%} Carousel Mode: Use slideshow component {%- endcomment -%}
+    {% render 'slideshow',
+      ref: 'slideshow',
+      class: slideshow_class,
+      slides: slides,
+      slide_count: sorted_media.size,
+      slideshow_arrows: slideshow_arrows,
+      arrows_position: icons_position,
+      controls: controls
+    %}
+  {% endif %}
 
-  {%- comment -%} Mobile thumbnail navigation {%- endcomment -%}
-  {% if sorted_media.size > 1 %}
+  {%- comment -%} Mobile thumbnail navigation - Only for grid mode {%- endcomment -%}
+  {% if sorted_media.size > 1 and block_settings.media_presentation == 'grid' %}
     <div class="mobile-thumbnail-nav mobile:block desktop:hidden">
       <div class="mobile-thumbnail-nav__container">
         {% for media in sorted_media %}
@@ -685,8 +714,8 @@
     /* 计数器相对于 li 容器定位，显示在图片下方 */
     .dialog-zoomed-gallery > li .zoom-dialog-counter {
       position: absolute !important;
-      bottom: -35px !important;
-      left: 93% !important;
+      bottom: 20px !important;
+      left: 92% !important;
 
       color: #fff;
       font-size: 12px;
@@ -1048,9 +1077,43 @@
     }
   }
   
-  /* Mobile: 旧的固定定位样式（已被下面的新样式替换） */
-  /* 移动端按钮现在相对于 product-media-container 定位，显示在图片外面 */
+
+  @media screen and (max-width: 1300px) {
+    .dialog-zoomed-gallery .product-media-container .dialog-zoomed-gallery__close-button {
+      left: 91% !important;
+    }
+    .dialog-zoomed-gallery > li .zoom-dialog-counter {
+      position: absolute !important;
+      bottom: 20px !important;
+      left: 90%!important;
   
+    }
+
+  }
+  @media screen and (max-width: 1200px) {
+    .dialog-zoomed-gallery .product-media-container .dialog-zoomed-gallery__close-button {
+      left: 91% !important;
+    }
+    .dialog-zoomed-gallery > li .zoom-dialog-counter {
+      position: absolute !important;
+      bottom: 20px !important;
+      left: 89% !important;
+  
+    }
+
+  }
+  @media screen and (max-width: 1024px) {
+    .dialog-zoomed-gallery .product-media-container .dialog-zoomed-gallery__close-button {
+      left: 91% !important;
+    }
+    .dialog-zoomed-gallery > li .zoom-dialog-counter {
+      position: absolute !important;
+      bottom: 20px !important;
+      left: 87% !important;
+  
+    }
+
+  }
   @media screen and (max-width: 749px) {
     /* 移动端：关闭按钮相对于 product-media-container 定位（图片外面） */
     .dialog-zoomed-gallery .product-media-container .dialog-zoomed-gallery__close-button {
@@ -1179,6 +1242,18 @@
   (function() {
     'use strict';
     
+    // Debug: Output media gallery information
+    console.log('=== Product Media Gallery Debug ===');
+    const mediaGallery = document.querySelector('media-gallery[data-presentation="{{ block_settings.media_presentation }}"]');
+    if (mediaGallery) {
+      console.log('Rendered media count:', mediaGallery.getAttribute('data-media-count'));
+      console.log('Total product media:', mediaGallery.getAttribute('data-total-product-media'));
+      const containers = mediaGallery.querySelectorAll('.product-media-container');
+      console.log('Actual DOM elements:', containers.length);
+      console.log('Media containers:', containers);
+    }
+    console.log('====================================');
+    
     let currentActiveIndex = 0;
     let currentSlideshowIndex = 0; // Track main slideshow current index
     
@@ -1187,10 +1262,46 @@
       const mediaGallery = document.querySelector('media-gallery[data-presentation="{{ block_settings.media_presentation }}"]');
       if (!mediaGallery) return;
       
+      const presentation = mediaGallery.getAttribute('data-presentation');
       const slideshow = mediaGallery.querySelector('slideshow-component, [ref="slideshow"]');
       const mobileThumbnails = document.querySelectorAll('.mobile-thumbnail-nav__item');
+      const gridContainers = mediaGallery.querySelectorAll('.media-gallery__grid .product-media-container');
       
-      if (!slideshow || mobileThumbnails.length === 0) return;
+      if (mobileThumbnails.length === 0) return;
+      
+      // Grid mode: Handle thumbnail clicks to scroll to the main image
+      if (presentation === 'grid' && gridContainers.length > 0) {
+        mobileThumbnails.forEach(function(thumbnail, index) {
+          thumbnail.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Update active state
+            mobileThumbnails.forEach(function(t) {
+              t.classList.remove('active');
+            });
+            thumbnail.classList.add('active');
+            
+            // Scroll the main image into view (first container is the main one on mobile)
+            if (gridContainers[0]) {
+              gridContainers[0].scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+              });
+            }
+            
+            // Scroll thumbnail into view
+            thumbnail.scrollIntoView({
+              behavior: 'smooth',
+              block: 'nearest',
+              inline: 'center'
+            });
+          });
+        });
+        return; // Exit early for grid mode
+      }
+      
+      // Carousel mode: Original slideshow logic
+      if (!slideshow) return;
       
       // Handle thumbnail click
       mobileThumbnails.forEach(function(thumbnail, index) {
@@ -1255,6 +1366,7 @@
       const mediaGallery = document.querySelector('media-gallery[data-presentation="{{ block_settings.media_presentation }}"]');
       if (!mediaGallery) return;
       
+      const presentation = mediaGallery.getAttribute('data-presentation');
       const zoomDialog = document.querySelector('#zoom-dialog-{{ block.id }}');
       if (!zoomDialog) return;
       
@@ -1272,7 +1384,33 @@
         return null;
       }
       
-      // Intercept click events on all zoomable containers
+      // For grid mode, attach click handlers directly to containers
+      if (presentation === 'grid') {
+        const gridContainers = mediaGallery.querySelectorAll('.media-gallery__grid .product-media-container--zoomable');
+        gridContainers.forEach(function(container, index) {
+          container.addEventListener('click', function(e) {
+            const clickedInsideDialog = e.target.closest('dialog');
+            if (clickedInsideDialog) return;
+            
+            let mediaIndex = findMediaIndex(container);
+            if (mediaIndex === null || isNaN(mediaIndex)) {
+              mediaIndex = index;
+            }
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            console.log('Grid container clicked, opening zoom with index:', mediaIndex);
+            
+            if (zoomDialog && typeof zoomDialog.open === 'function') {
+              zoomDialog.open(mediaIndex, e);
+            }
+          }, true);
+        });
+        return; // Exit early for grid mode
+      }
+      
+      // Carousel mode: Original logic for slideshow containers
       const zoomableContainers = mediaGallery.querySelectorAll('.product-media-container--zoomable');
       zoomableContainers.forEach(function(container, fallbackIndex) {
         container.addEventListener('click', function(e) {
