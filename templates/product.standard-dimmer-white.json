@@ -745,6 +745,15 @@
             "answer_color": "#666666"
           }
         },
+        "faq_yEbQXp": {
+          "type": "faq",
+          "settings": {
+            "question": "Can it be installed in a bathroom?",
+            "answer": "<p>Yes, but only if it meets the required safety standards and is placed in the right zone.</p><p><a href=\"https://www.repenic.com/blogs/knowledge/can-a-thermostat-be-installed-in-a-bathroom\" target=\"_blank\" title=\"https://www.repenic.com/blogs/knowledge/can-a-thermostat-be-installed-in-a-bathroom\">Click here to get more details.</a></p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
         "video_3AQDTi": {
           "type": "video",
           "disabled": true,
@@ -809,6 +818,7 @@
         "faq_R7Lcdx",
         "faq_pyFMRz",
         "faq_ycKbAe",
+        "faq_yEbQXp",
         "video_3AQDTi",
         "tab_item_pmPGa8",
         "tab_item_GKbMg4",
