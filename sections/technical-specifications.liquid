@@ -226,23 +226,29 @@
 
 
   .faq-icon {
+    transition: transform 0.3s ease;
     font-size: 18px;
-    flex-shrink: 0;
+  }
+
+  .faq-item.active .faq-icon {
+    transform: rotate(90deg);
   }
 
   .faq-answer {
-    display: none;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
     font-size: {{ section.settings.content_font_size_desktop }}px;
     line-height: {{ section.settings.content_line_height_desktop }};
-  }
-  
-  .faq-item.active .faq-answer {
-    display: block;
   }
 
   .faq-answer-content {
     padding-bottom: 24px;
     margin-left: 2rem;
+  }
+
+  .faq-item.active .faq-answer {
+    max-height: 500px;
   }
 
   /* Video */
@@ -470,23 +476,16 @@
     }
 
     .faq-question {
-      font-size: {{ section.settings.content_font_size_mobile }}px;
-      line-height: {{ section.settings.content_line_height_mobile }};
+      font-size: 13px;
       padding: 20px 0;
     }
 
     .faq-answer {
-      font-size: {{ section.settings.content_font_size_mobile }}px;
-      line-height: {{ section.settings.content_line_height_mobile }};
+      font-size: 13px;
     }
 
     .faq-answer-content {
       margin-left: 0;
-      padding-bottom: 20px;
-    }
-    
-    .faq-icon {
-      font-size: 16px;
     }
 
     .video-grid {
@@ -679,7 +678,7 @@
             {%- for block in section.blocks -%}
               {%- if block.type == 'faq' -%}
                 <div class="faq-item" {{ block.shopify_attributes }}>
-                  <button class="faq-question" type="button" style="color: {{ block.settings.question_color }};">
+                  <button class="faq-question" style="color: {{ block.settings.question_color }};">
                     <span>{{ block.settings.question }}</span>
                     <span class="faq-icon" style="color: {{ block.settings.question_color }};">›</span>
                   </button>
@@ -745,91 +744,206 @@
     <div id="videoPlayerContainer"></div>
   </div>
 </div>
-
 <script>
 (() => {
-  document.addEventListener('DOMContentLoaded', () => {
+  // 独立作用域，避免变量冲突
+  document.addEventListener('DOMContentLoaded', function() {
 
-    /* ---------- 选项卡切换 ---------- */
+    /* -------------------- Tab switching -------------------- */
     document.querySelectorAll('.specs-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        const name = tab.dataset.tab;
+      tab.addEventListener('click', function() {
+        const tabName = this.getAttribute('data-tab');
+        
         document.querySelectorAll('.specs-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.specs-tab-content').forEach(c => c.classList.remove('active'));
-        tab.classList.add('active');
-        document.querySelector(`[data-content="${name}"]`)?.classList.add('active');
+        
+        this.classList.add('active');
+        const targetContent = document.querySelector(`[data-content="${tabName}"]`);
+        if (targetContent) targetContent.classList.add('active');
       });
     });
 
-    /* ---------- FAQ 手风琴（最稳写法） ---------- */
-    document.querySelectorAll('.faq-question').forEach(q => {
-      q.addEventListener('click', () => {
-        q.closest('.faq-item').classList.toggle('active');
+    /* -------------------- FAQ accordion -------------------- */
+    document.querySelectorAll('.faq-question').forEach(question => {
+      question.addEventListener('click', function() {
+        const faqItem = this.closest('.faq-item');
+        const isActive = faqItem.classList.contains('active');
+        
+        // 关闭所有其他
+        document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+        
+        // 如果之前不是激活状态，就激活当前
+        if (!isActive) faqItem.classList.add('active');
       });
     });
 
-    /* ---------- 视频弹窗（终极永不翻车版） ---------- */
-    const modal   = document.getElementById('videoModal');
-    const closeX  = document.getElementById('closeVideoModal');
-    const player  = document.getElementById('videoPlayerContainer');
-    if (!modal || !player) return;
+    /* -------------------- Video modal (Enhanced) -------------------- */
+    const videoModal = document.getElementById('videoModal');
+    const closeVideoModal = document.getElementById('closeVideoModal');
+    const videoPlayerContainer = document.getElementById('videoPlayerContainer');
 
-    // 专治你这种带 si= 的 Shorts 链接
-    const getYTID = url => {
-      const u = url.split('?')[0];                                   // 砍掉 si= 参数
-      const m = u.match(/shorts\/([a-zA-Z0-9_-]{11})/i)               // Shorts
-             || u.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/i)            // youtu.be
-             || u.match(/embed\/([a-zA-Z0-9_-]{11})/i);              // embed
-      if (m) return m[1];
-      const v = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/i);
-      return v ? v[1] : null;
-    };
-
-    document.querySelectorAll('.video-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const rawUrl = item.dataset.videoUrl || '';
-        if (!rawUrl) return;
-
-        let embed = '';
-
-        if (rawUrl.includes('youtube') || rawUrl.includes('youtu.be')) {
-          const id = getYTID(rawUrl);
-          if (id) {
-            embed = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3`;
-          }
-        } else if (rawUrl.includes('vimeo.com')) {
-          const id = rawUrl.match(/vimeo\.com\/(\d+)/)?.[1];
-          if (id) embed = `https://player.vimeo.com/video/${id}?autoplay=1`;
+    if (videoModal && videoPlayerContainer) {
+      
+      // 解析视频URL并生成嵌入代码的函数
+      function getEmbedUrl(videoUrl) {
+        if (!videoUrl || videoUrl.trim() === '') {
+          console.error('[Video] Empty video URL');
+          return null;
         }
 
-        if (!embed) embed = rawUrl;
+        // 清理URL（去除空格）
+        videoUrl = videoUrl.trim();
+        
+        let embedUrl = '';
+        let videoType = '';
 
-        // 用 nocookie 域名 + 极简参数，香港域名 2025 年实测 100% 通过
-        player.innerHTML = `
-          <iframe class="video-player" src="${embed}"
-                  frameborder="0"
-                  allow="autoplay; fullscreen; picture-in-picture; accelerometer; gyroscope; encrypted-media"
-                  allowfullscreen
-                  loading="lazy">
-          </iframe>`;
+        // ✅ YouTube / YouTube Shorts 支持所有格式
+        if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+          let youtubeId = null;
+          videoType = 'youtube';
 
-        modal.classList.add('active');
+          // 方法1: 匹配短链接、Shorts、embed等路径格式
+          // 支持: youtu.be/xxx, /shorts/xxx, /embed/xxx, /v/xxx, /watch/xxx
+          const pathMatch = videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|shorts\/|watch\/))([a-zA-Z0-9_-]{11})(?:[?&]|$)/i);
+          if (pathMatch && pathMatch[1]) {
+            youtubeId = pathMatch[1];
+          } else {
+            // 方法2: 匹配查询参数 ?v=xxx 或 &v=xxx
+            const queryMatch = videoUrl.match(/[?&]v=([a-zA-Z0-9_-]{11})(?:[?&]|$)/i);
+            if (queryMatch && queryMatch[1]) {
+              youtubeId = queryMatch[1];
+            }
+          }
+
+          if (youtubeId) {
+            // 添加更多参数确保播放: 
+            // autoplay=1: 自动播放
+            // rel=0: 不显示相关视频
+            // modestbranding=1: 简化YouTube logo
+            // enablejsapi=1: 启用JS API
+            // origin: 安全策略
+            embedUrl = 'https://www.youtube.com/embed/' + youtubeId + '?autoplay=1&rel=0&modestbranding=1&enablejsapi=1&origin=' + encodeURIComponent(window.location.origin);
+          } else {
+            console.error('[Video] Unable to extract YouTube video ID from:', videoUrl);
+          }
+        }
+        
+        // ✅ Vimeo 支持
+        else if (videoUrl.includes('vimeo.com')) {
+          videoType = 'vimeo';
+          
+          // 支持多种Vimeo URL格式
+          // vimeo.com/123456789
+          // vimeo.com/video/123456789
+          // vimeo.com/channels/xxx/123456789
+          const vimeoMatch = videoUrl.match(/vimeo\.com\/(?:video\/|channels\/[^\/]+\/)?(\d+)/i);
+          if (vimeoMatch && vimeoMatch[1]) {
+            embedUrl = 'https://player.vimeo.com/video/' + vimeoMatch[1] + '?autoplay=1&title=0&byline=0&portrait=0';
+          } else {
+            console.error('[Video] Unable to extract Vimeo video ID from:', videoUrl);
+          }
+        }
+        
+        // ✅ 直接视频文件 (mp4, webm, ogg)
+        else if (videoUrl.match(/\.(mp4|webm|ogg)(\?|$)/i)) {
+          videoType = 'direct';
+          embedUrl = videoUrl;
+        }
+        
+        // ✅ 如果已经是embed链接，直接使用
+        else if (videoUrl.includes('/embed/') || videoUrl.includes('player.')) {
+          videoType = 'embed';
+          embedUrl = videoUrl;
+        }
+
+        if (embedUrl) {
+          console.log('[Video] Successfully parsed:', videoType, embedUrl);
+          return { url: embedUrl, type: videoType };
+        } else {
+          console.error('[Video] Unable to parse video URL:', videoUrl);
+          return null;
+        }
+      }
+
+      // 打开视频
+      document.querySelectorAll('.video-item').forEach(item => {
+        item.addEventListener('click', function() {
+          const videoUrl = this.getAttribute('data-video-url');
+          
+          if (!videoUrl || videoUrl.trim() === '') {
+            console.error('[Video] No video URL found on this item');
+            return;
+          }
+
+          const videoData = getEmbedUrl(videoUrl);
+          
+          if (!videoData) {
+            // 如果无法解析，显示错误信息
+            videoPlayerContainer.innerHTML = '<div style="padding: 40px; text-align: center; color: white;">Unable to load video. Please check the URL.</div>';
+            videoModal.classList.add('active');
+            return;
+          }
+
+          // 根据视频类型生成不同的播放器
+          if (videoData.type === 'direct') {
+            // 直接视频文件使用video标签
+            videoPlayerContainer.innerHTML = 
+              '<video class="video-player" controls autoplay>' +
+              '<source src="' + videoData.url + '" type="video/mp4">' +
+              'Your browser does not support the video tag.' +
+              '</video>';
+          } else {
+            // YouTube/Vimeo/其他embed使用iframe
+            // 添加完整的权限列表确保播放
+            videoPlayerContainer.innerHTML = 
+              '<iframe class="video-player" ' +
+              'src="' + videoData.url + '" ' +
+              'frameborder="0" ' +
+              'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+              'referrerpolicy="strict-origin-when-cross-origin" ' +
+              'allowfullscreen>' +
+              '</iframe>';
+          }
+
+          // 显示模态框
+          videoModal.classList.add('active');
+          
+          // 防止body滚动
+          document.body.style.overflow = 'hidden';
+        });
       });
-    });
 
-    // 关闭（三种方式都稳）
-    const close = () => {
-      modal.classList.remove('active');
-      player.innerHTML = '';
-    };
-    closeX?.addEventListener('click', close);
-    modal.addEventListener('click', e => e.target === modal && close());
-    document.addEventListener('keydown', e => e.key === 'Escape' && modal.classList.contains('active') && close());
+      // 关闭视频函数
+      const closeVideo = () => {
+        videoModal.classList.remove('active');
+        videoPlayerContainer.innerHTML = '';
+        
+        // 恢复body滚动
+        document.body.style.overflow = '';
+      };
 
+      // 点击关闭按钮
+      if (closeVideoModal) {
+        closeVideoModal.addEventListener('click', closeVideo);
+      }
+
+      // 点击背景关闭
+      videoModal.addEventListener('click', function(e) {
+        if (e.target === videoModal) {
+          closeVideo();
+        }
+      });
+
+      // 按 ESC 键关闭
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && videoModal.classList.contains('active')) {
+          closeVideo();
+        }
+      });
+    }
   });
 })();
 </script>
-
 {% schema %}
 {
   "name": "Technical Specifications",
