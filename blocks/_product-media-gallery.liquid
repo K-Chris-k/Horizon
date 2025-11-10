@@ -1,7 +1,13 @@
 
 
 <style> 
+media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
+  display:  block !important;
+}
 @media (max-width: 749px) {
+  media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
+  display:  none !important;
+}
   slideshow-container{}
 }
 
@@ -413,6 +419,32 @@
     %}
   {% endif %}
 
+  {%- comment -%} Mobile Grid Navigation Arrows - Only for grid mode {%- endcomment -%}
+  {% if sorted_media.size > 1 and block_settings.media_presentation == 'grid' %}
+    <div class="mobile-grid-nav mobile:block desktop:hidden">
+      <button
+        type="button"
+        class="mobile-grid-nav__button mobile-grid-nav__button--prev"
+        aria-label="Previous image"
+        data-action="prev"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="mobile-grid-nav__button mobile-grid-nav__button--next"
+        aria-label="Next image"
+        data-action="next"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  {% endif %}
+
   {%- comment -%} Mobile thumbnail navigation - Only for grid mode {%- endcomment -%}
   {% if sorted_media.size > 1 and block_settings.media_presentation == 'grid' %}
     <div class="mobile-thumbnail-nav mobile:block desktop:hidden">
@@ -617,6 +649,44 @@
     backdrop-filter: none;
   }
   
+
+  @media screen and (max-width: 1300px) {
+    .dialog-zoomed-gallery .product-media-container .dialog-zoomed-gallery__close-button {
+      left: 91% ;
+    }
+    .dialog-zoomed-gallery > li .zoom-dialog-counter {
+      position: absolute !important;
+      bottom: 20px !important;
+      left: 90%;
+  
+    }
+
+  }
+  @media screen and (max-width: 1200px) {
+    .dialog-zoomed-gallery .product-media-container .dialog-zoomed-gallery__close-button {
+      left: 91% ;
+    }
+    .dialog-zoomed-gallery > li .zoom-dialog-counter {
+      position: absolute ;
+      bottom: 20px ;
+      left: 89% ;
+  
+    }
+
+  }
+  @media screen and (max-width: 1024px) {
+    .dialog-zoomed-gallery .product-media-container .dialog-zoomed-gallery__close-button {
+      left: 91%;
+    }
+    .dialog-zoomed-gallery > li .zoom-dialog-counter {
+      position: absolute ;
+      bottom: 20px;
+      left: 87%;
+  
+    }
+
+  }
+
   /* Hide thumbnail list in zoom dialog on mobile */
   @media screen and (max-width: 749px) {
     zoom-dialog .dialog-thumbnails-list-container {
@@ -773,7 +843,7 @@
     .dialog-zoomed-gallery .product-media-container .zoom-dialog-counter {
       position: absolute !important;
       bottom: 21% !important;
-      left: 87% !important;
+      left: 85% !important;
       transform: translateX(-50%) !important;
       font-size: 12px;
       color: #fff;
@@ -879,6 +949,9 @@
       max-height: 75vh;
     }
   }
+
+
+
 
   @media screen and (max-width: 749px) {
     zoom-dialog dialog {
@@ -1078,48 +1151,14 @@
   }
   
 
-  @media screen and (max-width: 1300px) {
-    .dialog-zoomed-gallery .product-media-container .dialog-zoomed-gallery__close-button {
-      left: 91% !important;
-    }
-    .dialog-zoomed-gallery > li .zoom-dialog-counter {
-      position: absolute !important;
-      bottom: 20px !important;
-      left: 90%!important;
-  
-    }
 
-  }
-  @media screen and (max-width: 1200px) {
-    .dialog-zoomed-gallery .product-media-container .dialog-zoomed-gallery__close-button {
-      left: 91% !important;
-    }
-    .dialog-zoomed-gallery > li .zoom-dialog-counter {
-      position: absolute !important;
-      bottom: 20px !important;
-      left: 89% !important;
-  
-    }
-
-  }
-  @media screen and (max-width: 1024px) {
-    .dialog-zoomed-gallery .product-media-container .dialog-zoomed-gallery__close-button {
-      left: 91% !important;
-    }
-    .dialog-zoomed-gallery > li .zoom-dialog-counter {
-      position: absolute !important;
-      bottom: 20px !important;
-      left: 87% !important;
-  
-    }
-
-  }
   @media screen and (max-width: 749px) {
     /* 移动端：关闭按钮相对于 product-media-container 定位（图片外面） */
     .dialog-zoomed-gallery .product-media-container .dialog-zoomed-gallery__close-button {
       position: absolute !important;
       top: 16% !important;
       right: 15px !important;
+      left:88% !important;
       width: 36px !important;
       height: 36px !important;
       z-index: 10000 !important;
@@ -1170,6 +1209,116 @@
 
   /* Special styles for first zoomed image - add custom styles as needed */
   
+  /* Mobile Grid Mode: Show only current image, hide others */
+  @media screen and (max-width: 749px) {
+    /* Prevent entire media gallery area from causing page scroll issues */
+    .media-gallery--grid {
+      overflow: visible !important;
+      position: relative;
+      width: 100%;
+      max-width: 100vw;
+      contain: layout style; /* Optimize rendering */
+    }
+    
+    /* Main grid container - only show one image at a time */
+    .media-gallery--grid .media-gallery__grid {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      display: block !important;
+      overflow: hidden !important; /* Strictly hide overflow */
+      touch-action: pan-y pinch-zoom !important; /* Allow vertical page scroll but not on grid */
+      contain: layout; /* Contain layout shifts */
+    }
+    
+    /* Hide all images by default on mobile */
+    .media-gallery--grid .media-gallery__grid .product-media-container {
+      display: none; /* Hide all by default */
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      margin: 0;
+      padding: 0;
+      position: relative;
+    }
+    
+    /* Only show first image by default */
+    .media-gallery--grid .media-gallery__grid .product-media-container:first-child {
+      display: none !important;
+    }
+    
+    /* Show image when marked as mobile-current */
+    .media-gallery--grid .media-gallery__grid .product-media-container.mobile-current {
+      display: block !important;
+      position: relative;
+    }
+    
+    /* Ensure product-media doesn't cause overflow */
+    .media-gallery--grid .media-gallery__grid .product-media {
+      max-width: 100%;
+      overflow: hidden;
+    }
+  }
+
+  /* Mobile Grid Navigation Arrows */
+  .mobile-grid-nav {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .media-gallery--grid .mobile-grid-nav {
+      display: none;
+      position: relative;
+      width: 100%;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .mobile-grid-nav__button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+      pointer-events: auto;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-grid-nav__button:active {
+      transform: translateY(-50%) scale(0.9);
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .mobile-grid-nav__button svg {
+      width: 20px;
+      height: 20px;
+      color: #333;
+    }
+
+    .mobile-grid-nav__button--prev {
+      left: 12px;
+    }
+
+    .mobile-grid-nav__button--next {
+      right: 12px;
+    }
+
+    .mobile-grid-nav__button:disabled {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+  }
+
   /* Mobile thumbnail navigation */
   .mobile-thumbnail-nav {
     display: none;
@@ -1177,31 +1326,59 @@
 
   @media screen and (max-width: 749px) {
     .mobile-thumbnail-nav {
-      display: block;
-      width: 100%;
-    padding-bottom: 10px;
+      display: block !important;
+      width: 100% !important;
+      max-width: 100vw !important;
+      padding: 12px 0 !important;
       background: var(--color-background);
+      position: relative;
+      overflow: hidden !important; /* 严格防止溢出 */
+      margin: 12px 0 0 0 !important;
     }
 
     .mobile-thumbnail-nav__container {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding: 0 16px;
+      display: flex !important;
+      flex-wrap: nowrap !important; /* 严格禁止换行 */
+      flex-direction: row !important; /* 强制水平排列 */
+      align-items: flex-start !important;
+      gap: 12px !important;
+      overflow-x: scroll !important; /* 强制水平滚动 */
+      overflow-y: hidden !important; /* 严格禁止垂直滚动 */
+      padding: 0 16px !important;
       scroll-behavior: smooth;
-      scrollbar-width: none;
+      scrollbar-width: none !important;
       -webkit-overflow-scrolling: touch;
+      /* 严格防止滚动时影响页面 */
+      overscroll-behavior-x: contain !important;
+      overscroll-behavior-y: none !important;
+      overscroll-behavior: contain none !important;
+      touch-action: pan-x !important; /* 只允许水平滑动 */
+      max-width: 100vw !important;
+      min-height: 80px !important;
+      max-height: 80px !important;
+      height: 80px !important; /* 固定高度，防止多行 */
+      box-sizing: content-box !important;
+      position: relative !important;
+      isolation: isolate !important; /* 创建新的层叠上下文 */
     }
 
     .mobile-thumbnail-nav__container::-webkit-scrollbar {
-      display: none;
+      display: none !important;
+      height: 0 !important;
     }
 
     .mobile-thumbnail-nav__item {
-      flex: 0 0 auto;
-      width: 80px;
-      height: 80px;
-      padding: 0;
+      flex: 0 0 80px !important; /* 固定宽度，绝不缩放 */
+      flex-shrink: 0 !important; /* 绝不收缩 */
+      flex-grow: 0 !important; /* 绝不放大 */
+      min-width: 80px !important;
+      max-width: 80px !important;
+      width: 80px !important;
+      min-height: 80px !important;
+      max-height: 80px !important;
+      height: 80px !important;
+      padding: 0 !important;
+      margin: 0 !important;
       border: 2px solid transparent;
       border-radius: 8px;
       overflow: hidden;
@@ -1209,6 +1386,8 @@
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
+      display: inline-block !important; /* 强制inline-block */
+      vertical-align: top;
     }
 
     .mobile-thumbnail-nav__item::after {
@@ -1226,10 +1405,14 @@
     }
 
     .mobile-thumbnail-nav__item img {
-      width: 100%;
-      height: 100%;
+      width: 100% !important;
+      height: 100% !important;
       object-fit: cover;
       display: block;
+      pointer-events: none !important; /* 防止图片拖拽 */
+      user-select: none !important;
+      -webkit-user-drag: none !important;
+      -webkit-touch-callout: none !important;
     }
 
     .mobile-thumbnail-nav__item:active {
@@ -1241,18 +1424,6 @@
 <script>
   (function() {
     'use strict';
-    
-    // Debug: Output media gallery information
-    console.log('=== Product Media Gallery Debug ===');
-    const mediaGallery = document.querySelector('media-gallery[data-presentation="{{ block_settings.media_presentation }}"]');
-    if (mediaGallery) {
-      console.log('Rendered media count:', mediaGallery.getAttribute('data-media-count'));
-      console.log('Total product media:', mediaGallery.getAttribute('data-total-product-media'));
-      const containers = mediaGallery.querySelectorAll('.product-media-container');
-      console.log('Actual DOM elements:', containers.length);
-      console.log('Media containers:', containers);
-    }
-    console.log('====================================');
     
     let currentActiveIndex = 0;
     let currentSlideshowIndex = 0; // Track main slideshow current index
@@ -1269,34 +1440,165 @@
       
       if (mobileThumbnails.length === 0) return;
       
-      // Grid mode: Handle thumbnail clicks to scroll to the main image
+      // Grid mode: Handle thumbnail clicks and navigation
       if (presentation === 'grid' && gridContainers.length > 0) {
-        mobileThumbnails.forEach(function(thumbnail, index) {
-          thumbnail.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Update active state
-            mobileThumbnails.forEach(function(t) {
-              t.classList.remove('active');
-            });
-            thumbnail.classList.add('active');
-            
-            // Scroll the main image into view (first container is the main one on mobile)
-            if (gridContainers[0]) {
-              gridContainers[0].scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest'
-              });
+        let currentMobileIndex = 0;
+        const totalImages = mobileThumbnails.length;
+        
+        // Get navigation buttons
+        const prevBtn = mediaGallery.querySelector('.mobile-grid-nav__button--prev');
+        const nextBtn = mediaGallery.querySelector('.mobile-grid-nav__button--next');
+        
+        // Function to switch to specific image on mobile
+        function switchMobileImage(newIndex) {
+          if (newIndex < 0 || newIndex >= totalImages) return;
+          
+          currentMobileIndex = newIndex;
+          
+          // Hide all images, show only selected one
+          gridContainers.forEach(function(container, i) {
+            container.classList.remove('mobile-current');
+            if (i === newIndex) {
+              container.style.display = 'block';
+              container.classList.add('mobile-current');
+            } else {
+              container.style.display = 'none';
             }
-            
-            // Scroll thumbnail into view
-            thumbnail.scrollIntoView({
+          });
+          
+          // Update thumbnails active state
+          mobileThumbnails.forEach(function(t, i) {
+            if (i === newIndex) {
+              t.classList.add('active');
+            } else {
+              t.classList.remove('active');
+            }
+          });
+          
+          // Scroll thumbnail into view
+          if (mobileThumbnails[newIndex]) {
+            mobileThumbnails[newIndex].scrollIntoView({
               behavior: 'smooth',
               block: 'nearest',
               inline: 'center'
             });
+          }
+          
+          // Update navigation buttons state
+          if (prevBtn) prevBtn.disabled = (newIndex === 0);
+          if (nextBtn) nextBtn.disabled = (newIndex === totalImages - 1);
+        }
+        
+        // Initialize: Hide all except first image on mobile
+        if (window.innerWidth <= 749) {
+          gridContainers.forEach(function(container, i) {
+            if (i === 0) {
+              container.style.display = 'block';
+              container.classList.add('mobile-current');
+            } else {
+              container.style.display = 'none';
+            }
+          });
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+          if (window.innerWidth <= 749) {
+            // Mobile: only show current image
+            gridContainers.forEach(function(container, i) {
+              if (i === currentMobileIndex) {
+                container.style.display = 'block';
+              } else {
+                container.style.display = 'none';
+              }
+            });
+          } else {
+            // Desktop: show all images
+            gridContainers.forEach(function(container) {
+              container.style.display = 'block';
+            });
+          }
+        });
+        
+        // Handle thumbnail clicks
+        mobileThumbnails.forEach(function(thumbnail, index) {
+          thumbnail.addEventListener('click', function(e) {
+            e.preventDefault();
+            switchMobileImage(index);
           });
         });
+        
+        // Handle prev button
+        if (prevBtn) {
+          prevBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (currentMobileIndex > 0) {
+              switchMobileImage(currentMobileIndex - 1);
+            }
+          });
+        }
+        
+        // Handle next button
+        if (nextBtn) {
+          nextBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (currentMobileIndex < totalImages - 1) {
+              switchMobileImage(currentMobileIndex + 1);
+            }
+          });
+        }
+        
+        // Initialize button states
+        switchMobileImage(0);
+        
+         // Prevent thumbnail container scroll from affecting page scroll
+        const thumbnailContainer = document.querySelector('.mobile-thumbnail-nav__container');
+        const thumbnailNav = document.querySelector('.mobile-thumbnail-nav');
+        
+        if (thumbnailContainer && thumbnailNav) {
+          let startX = 0;
+          let startY = 0;
+          let isHorizontalScroll = false;
+          
+          // Track touch start
+          thumbnailNav.addEventListener('touchstart', function(e) {
+            const touch = e.touches[0];
+            startX = touch.clientX;
+            startY = touch.clientY;
+            isHorizontalScroll = false;
+          }, { passive: true });
+          
+          // Detect scroll direction and prevent vertical scroll/page scroll
+          thumbnailNav.addEventListener('touchmove', function(e) {
+            const touch = e.touches[0];
+            const deltaX = Math.abs(touch.clientX - startX);
+            const deltaY = Math.abs(touch.clientY - startY);
+            
+            // Determine if this is a horizontal scroll
+            if (!isHorizontalScroll && (deltaX > 5 || deltaY > 5)) {
+              isHorizontalScroll = deltaX > deltaY;
+            }
+            
+            // If scrolling horizontally on thumbnails, prevent page scroll
+            if (isHorizontalScroll) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }, { passive: false });
+          
+          thumbnailNav.addEventListener('touchend', function(e) {
+            isHorizontalScroll = false;
+            e.stopPropagation();
+          }, { passive: true });
+          
+          // Prevent wheel events
+          thumbnailNav.addEventListener('wheel', function(e) {
+            e.stopPropagation();
+          }, { passive: true });
+        }
+        
         return; // Exit early for grid mode
       }
       
@@ -1400,8 +1702,6 @@
             e.preventDefault();
             e.stopPropagation();
             
-            console.log('Grid container clicked, opening zoom with index:', mediaIndex);
-            
             if (zoomDialog && typeof zoomDialog.open === 'function') {
               zoomDialog.open(mediaIndex, e);
             }
@@ -1417,7 +1717,6 @@
           // 检查是否在dialog内部（可能是空白区域点击后的事件冒泡）
           const clickedInsideDialog = e.target.closest('dialog');
           if (clickedInsideDialog) {
-            console.log('Click inside dialog detected, ignoring');
             return;
           }
           
@@ -1427,14 +1726,11 @@
           // Fallback: use container's position in the list
           if (mediaIndex === null || isNaN(mediaIndex)) {
             mediaIndex = fallbackIndex;
-            console.log('Using fallback index:', mediaIndex);
           }
           
           // Prevent default zoom behavior
           e.preventDefault();
           e.stopPropagation();
-          
-          console.log('Zoomable container clicked, opening with index:', mediaIndex);
           
           // Update current slideshow index to match
           currentSlideshowIndex = mediaIndex;
@@ -1465,26 +1761,18 @@
       function bindCloseButton() {
         const closeBtn = dialog.querySelector('.dialog-zoomed-gallery__close-button');
         if (closeBtn) {
-          console.log('Binding close button');
           // 移除旧的事件监听器（如果存在）
           closeBtn.removeEventListener('click', handleCloseClick, true);
           closeBtn.removeEventListener('click', handleCloseClick, false);
           
           // 添加新的事件监听器（使用捕获阶段以确保优先处理）
           closeBtn.addEventListener('click', handleCloseClick, true);
-          
-          console.log('Close button bound successfully');
-        } else {
-          console.warn('Close button not found when trying to bind');
         }
       }
       
       // 统一的关闭对话框函数 - 使用多重保障确保关闭成功
       function closeZoomDialog() {
-        console.log('closeZoomDialog called, dialog.open:', dialog.open);
-        
         if (!dialog || !dialog.open) {
-          console.log('Dialog already closed');
           return;
         }
         
@@ -1494,31 +1782,28 @@
         try {
           // Method 1: 使用 zoom-dialog 组件的 closeDialog 方法
           if (zoomDialog && typeof zoomDialog.closeDialog === 'function') {
-            console.log('Attempting: zoomDialog.closeDialog()');
             zoomDialog.closeDialog();
             closeAttempted = true;
           }
         } catch (error) {
-          console.error('Method 1 failed:', error);
+          // Method 1 failed
         }
         
         // Method 2: 使用 zoom-dialog 组件的 close 方法（作为备份）
         if (!closeAttempted || dialog.open) {
           try {
             if (zoomDialog && typeof zoomDialog.close === 'function') {
-              console.log('Attempting: zoomDialog.close()');
               zoomDialog.close();
               closeAttempted = true;
             }
           } catch (error) {
-            console.error('Method 2 failed:', error);
+            // Method 2 failed
           }
         }
         
         // Method 3: 强制使用原生 dialog.close()
         if (dialog.open) {
           try {
-            console.log('Force closing with dialog.close()');
             dialog.close();
             
             // 手动触发 close 事件（以防万一）
@@ -1530,24 +1815,22 @@
               const dialogCloseEvent = new Event('dialog-close');
               window.dispatchEvent(dialogCloseEvent);
             } catch (e) {
-              console.log('Could not dispatch global event');
+              // Could not dispatch global event
             }
           } catch (error) {
-            console.error('Force close failed:', error);
+            // Force close failed
           }
         }
         
         // 验证关闭状态
         setTimeout(function() {
-          console.log('After close attempts, dialog.open:', dialog.open);
           if (dialog.open) {
-            console.error('Dialog still open after all attempts!');
             // 最后的强制手段：直接移除 open 属性
             try {
               dialog.removeAttribute('open');
               dialog.close();
             } catch (e) {
-              console.error('Last resort failed:', e);
+              // Last resort failed
             }
           }
         }, 50);
@@ -1555,14 +1838,11 @@
       
       // 关闭按钮点击处理函数
       function handleCloseClick(e) {
-        console.log('handleCloseClick triggered, target:', e.target);
-        
         // 阻止事件传播，避免触发dialog的点击事件
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
         
-        console.log('Close button clicked, calling closeZoomDialog');
         closeZoomDialog();
       }
       
@@ -1670,13 +1950,11 @@
         zoomDialog.open = function(index, event) {
           // 如果正在关闭，阻止打开
           if (isClosing) {
-            console.log('Prevented opening: dialog is closing');
             return;
           }
           
           initialOpenIndex = index;
           currentActiveIndex = index;
-          console.log('Zoom dialog opening with index:', index);
           
           // Pre-set the correct image BEFORE opening dialog to prevent flash
           mediaContainers.forEach(function(container, idx) {
@@ -1705,7 +1983,6 @@
       zoomDialog.addEventListener('zoom-media-selected', function(e) {
         if (e.detail !== undefined && e.detail !== null) {
           const targetIndex = e.detail;
-          console.log('Zoom media selected event, switching to index:', targetIndex);
           switchToImage(targetIndex);
         }
       });
@@ -1764,9 +2041,6 @@
       
       // Click outside image to close dialog - 简化逻辑：只保护特定元素，其他都关闭
       dialog.addEventListener('click', function(e) {
-        console.log('=== Dialog click event ===');
-        console.log('Target:', e.target.tagName, 'Class:', e.target.className);
-        
         // 黑名单：这些元素点击时不关闭dialog
         const isImage = e.target.tagName === 'IMG';
         const isVideo = e.target.tagName === 'VIDEO';
@@ -1777,16 +2051,11 @@
         
         // 如果点击的是受保护元素，不关闭
         if (isImage || isVideo || isNavButton || isThumbnail || isDragZoomWrapper || isDeferredMedia) {
-          console.log('-> Clicked on protected element (image/video/controls), NOT closing');
           return;
         }
         
-        // 其他所有情况都应该关闭dialog
-        console.log('-> Clicked on backdrop/empty area, triggering close');
-        
         // 设置关闭标志，防止重新打开
         isClosing = true;
-        console.log('Set isClosing = true');
         
         // 完全阻止事件传播
         e.preventDefault();
@@ -1796,10 +2065,8 @@
         // 查找关闭按钮并触发它的点击事件
         const closeButton = dialog.querySelector('.dialog-zoomed-gallery__close-button');
         if (closeButton) {
-          console.log('Found close button, triggering click');
           closeButton.click();
         } else {
-          console.warn('Close button not found, using fallback');
           // 备用关闭方法
           if (zoomDialog && typeof zoomDialog.close === 'function') {
             zoomDialog.close();
@@ -1811,7 +2078,6 @@
         // 300ms后重置关闭标志
         setTimeout(function() {
           isClosing = false;
-          console.log('Reset isClosing = false');
         }, 300);
       }, true); // 使用捕获阶段，优先处理
       
@@ -1875,8 +2141,6 @@
       
       // Reset currentActiveIndex when dialog closes
       dialog.addEventListener('close', function() {
-        console.log('Dialog close event fired, cleaning up state');
-        
         try {
           // Remove zoom-active from all containers
           mediaContainers.forEach(function(container) {
@@ -1893,19 +2157,15 @@
           // 确保重置关闭标志（双重保障）
           setTimeout(function() {
             isClosing = false;
-            console.log('Reset isClosing = false (from close event)');
           }, 100);
-          
-          console.log('State cleanup completed successfully');
         } catch (error) {
-          console.error('Error during state cleanup:', error);
+          // Error during state cleanup
         }
       });
       
       // 额外的后备清理 - 监听全局 dialog-close 事件
       window.addEventListener('dialog-close', function() {
         if (!dialog.open) {
-          console.log('Global dialog-close event, ensuring cleanup');
           mediaContainers.forEach(function(container) {
             container.classList.remove('zoom-active');
           });
@@ -1935,43 +2195,17 @@
       });
     }
     
-    // 诊断工具 - 帮助调试点击问题
-    function diagnoseClickIssue() {
-      console.log('=== Zoom Dialog Diagnostic Tool ===');
-      const zoomDialog = document.querySelector('#zoom-dialog-{{ block.id }}');
-      const dialog = zoomDialog ? zoomDialog.querySelector('dialog') : null;
-      
-      console.log('Zoom dialog element:', zoomDialog ? '✓ Found' : '✗ Not found');
-      console.log('Dialog element:', dialog ? '✓ Found' : '✗ Not found');
-      console.log('Dialog open:', dialog ? dialog.open : 'N/A');
-      
-      if (dialog) {
-        const closeBtn = dialog.querySelector('.dialog-zoomed-gallery__close-button');
-        console.log('Close button:', closeBtn ? '✓ Found' : '✗ Not found');
-        
-        console.log('Click listeners attached:', 'Check event listeners in DevTools');
-        console.log('\nTo test close function, run: window.testCloseZoomDialog()');
-      }
-    }
-    
-    // 暴露诊断函数到全局
-    window.diagnoseZoomDialog = diagnoseClickIssue;
-    
     // Run when DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', function() {
         initMobileThumbnails();
         initZoomButtonIntercept();
         initZoomGallery();
-        
-        console.log('Zoom gallery initialized. Run window.diagnoseZoomDialog() for diagnostics.');
       });
     } else {
       initMobileThumbnails();
       initZoomButtonIntercept();
       initZoomGallery();
-      
-      console.log('Zoom gallery initialized. Run window.diagnoseZoomDialog() for diagnostics.');
     }
   })();
 </script>

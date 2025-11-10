@@ -7,6 +7,31 @@
 
   const idleCallback = typeof requestIdleCallback === 'function' ? requestIdleCallback : setTimeout;
 
+  // Force scroll to top on every page load (before any view transition)
+  // This is critical for view transitions which may try to preserve scroll position
+  if (window.scrollY !== 0) {
+    window.scrollTo(0, 0);
+  }
+
+  /**
+   * Checks whether an Event object is carrying a `viewTransition` property
+   * (as used by the View Transition API) and narrows the type accordingly.
+   *
+   * @template {Event} T
+   * @param {T} event
+   * @returns {event is T & { viewTransition: ViewTransition }}
+   */
+  function hasViewTransition(event) {
+    return 'viewTransition' in event && event.viewTransition != null;
+  }
+
+  // Handle scroll to top for page navigation without view transitions
+  window.addEventListener('pagereveal', (event) => {
+    if (hasViewTransition(event)) return;
+    // No view transition, scroll to top immediately
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  });
+
   /**
    * @param {PageSwapEvent} event
    */
@@ -52,6 +77,9 @@
     const { viewTransition } = event;
     const customTransitionType = sessionStorage.getItem('custom-transition-type');
 
+    // Immediately scroll to top before the transition starts rendering
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
     if (customTransitionType) {
       viewTransition.types.clear();
       viewTransition.types.add(customTransitionType);
@@ -71,17 +99,15 @@
       viewTransition.types.clear();
       viewTransition.types.add('page-navigation');
     }
-  });
 
-  /**
-   * Checks whether an Event object is carrying a `viewTransition` property
-   * (as used by the View Transition API) and narrows the type accordingly.
-   *
-   * @template {Event} T
-   * @param {T} event
-   * @returns {event is T & { viewTransition: ViewTransition }}
-   */
-  function hasViewTransition(event) {
-    return 'viewTransition' in event && event.viewTransition instanceof ViewTransition;
-  }
+    // Scroll to top after view transition completes (double insurance)
+    await viewTransition.finished;
+    
+    // Use requestAnimationFrame to ensure it happens after any other scroll restoration
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      });
+    });
+  });
 })();
