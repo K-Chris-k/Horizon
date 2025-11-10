@@ -808,7 +808,7 @@
           "settings": {
             "feature_icon": "shopify://shop_images/0bb17ecb045f0527e8cd672581601bf5.png",
             "feature_title": "Programmable",
-            "feature_description": "Automatically adjust the room temperature and hot water."
+            "feature_description": "Automatically adjust the room temperature."
           }
         },
         "feature_item_WY3r6i": {
@@ -856,7 +856,7 @@
           "settings": {
             "feature_icon": "shopify://shop_images/2f9056a916907a1fcf3c8db98292b600.png",
             "feature_title": "BOOST",
-            "feature_description": "Boost your heating and hot water manually or via the app."
+            "feature_description": "Boost your heating manually or via the app."
           }
         },
         "feature_item_eyztjq": {
