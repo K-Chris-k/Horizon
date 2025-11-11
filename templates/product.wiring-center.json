@@ -868,6 +868,13 @@
             "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/Manual_-_wiring_center.pdf?v=1761700593"
           }
         },
+        "download_hjXC8d": {
+          "type": "download",
+          "settings": {
+            "label": "CE Declaration of Conformity",
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RT-WC8RF-CE.jpg?v=1762858777"
+          }
+        },
         "faq_H7iBHG": {
           "type": "faq",
           "settings": {
@@ -929,6 +936,7 @@
         "tech_spec_FeHtN9",
         "tech_spec_TDtrrP",
         "download_kWHF3k",
+        "download_hjXC8d",
         "faq_H7iBHG",
         "faq_KB6PEN",
         "faq_G8EmbM",
@@ -940,6 +948,10 @@
         "custom_class": "tech",
         "background_color": "#e6e6e6",
         "container_width": 1400,
+        "padding_top_desktop": 60,
+        "padding_bottom_desktop": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
         "title": "",
         "subtitle": "",
         "image": "shopify://shop_images/wiring_center_14046d05-c26d-4fad-b00c-1b3c20160bb4.png",
