@@ -641,6 +641,13 @@
             "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/Manual-RD-SPD.pdf?v=1761389502"
           }
         },
+        "download_AyFVL3": {
+          "type": "download",
+          "settings": {
+            "label": "UKCA Declaration of Conformity",
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RD-SPD-UKCA.jpg?v=1762857441"
+          }
+        },
         "faq_zGtq4z": {
           "type": "faq",
           "settings": {
@@ -735,6 +742,7 @@
         "tech_spec_fdRAFk",
         "tech_spec_AjjRNe",
         "download_AyFqar",
+        "download_AyFVL3",
         "faq_zGtq4z",
         "faq_R7Lcdx",
         "faq_ycKbAe",
