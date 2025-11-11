@@ -700,6 +700,13 @@
             "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/Manual-RD-MP.pdf?v=1761389502"
           }
         },
+        "download_cAjtJC": {
+          "type": "download",
+          "settings": {
+            "label": "UKCA Declaration of Conformity",
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RD-MP-UKCA.jpg?v=1762858045"
+          }
+        },
         "faq_zGtq4z": {
           "type": "faq",
           "settings": {
@@ -803,6 +810,7 @@
         "tech_spec_8EmDRd",
         "tech_spec_fdRAFk",
         "download_AyFqar",
+        "download_cAjtJC",
         "faq_zGtq4z",
         "faq_R7Lcdx",
         "faq_pyFMRz",
