@@ -691,6 +691,13 @@
             "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/Manual-RD-S2.pdf?v=1761389502"
           }
         },
+        "download_Y7bnbc": {
+          "type": "download",
+          "settings": {
+            "label": "UKCA Declaration of Conformity",
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RD-S1_RD-S2-UKCA.jpg?v=1762858374"
+          }
+        },
         "faq_zGtq4z": {
           "type": "faq",
           "settings": {
@@ -794,6 +801,7 @@
         "tech_spec_AjjRNe",
         "download_AyFqar",
         "download_KyTE74",
+        "download_Y7bnbc",
         "faq_zGtq4z",
         "faq_ycKbAe",
         "faq_R7Lcdx",
