@@ -614,6 +614,13 @@
             "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/Manual-RD-DC1.pdf?v=1761389502"
           }
         },
+        "download_9MAjyK": {
+          "type": "download",
+          "settings": {
+            "label": "UKCA Declaration of Conformity",
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RD-DC1.png?v=1762935234"
+          }
+        },
         "faq_zGtq4z": {
           "type": "faq",
           "settings": {
@@ -696,6 +703,7 @@
         "tech_spec_H7KH8q",
         "tech_spec_8EmDRd",
         "download_AyFqar",
+        "download_9MAjyK",
         "faq_zGtq4z",
         "faq_ycKbAe",
         "faq_pTfdqr",
