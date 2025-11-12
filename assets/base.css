@@ -1700,7 +1700,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container 
 
   /* Desktop: Two-column grid */
   .media-gallery--two-column .media-gallery__grid {
-    grid-template-columns: repeat(2, 1fr);
+    /* grid-template-columns: repeat(2, 1fr); */
     /* Expand grid to full width, ignoring container padding */
     margin-inline: calc(-1 * var(--padding-inline-start, 0px)) calc(-1 * var(--padding-inline-end, 0px));
     width: calc(100% + var(--padding-inline-start, 0px) + var(--padding-inline-end, 0px));

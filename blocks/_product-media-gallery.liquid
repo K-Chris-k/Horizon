@@ -26,6 +26,20 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
   assign selected_variant_media = selected_product.selected_or_first_available_variant.featured_media
   assign first_3d_model = selected_product.media | where: 'media_type', 'model' | first
 
+  # Get current selected variant options for initial filtering
+  assign selected_variant = selected_product.selected_or_first_available_variant
+  assign variant_option_values = ''
+  for option in selected_variant.options
+    # Replace spaces with underscores to match JS logic
+    assign option_value = option | replace: ' ', '_'
+    if variant_option_values == blank
+      assign variant_option_values = option_value
+    else
+      assign variant_option_values = variant_option_values | append: '_' | append: option_value
+    endif
+  endfor
+  # Now variant_option_values contains something like "250W_1_Gang"
+
   if block_settings.slideshow_controls_style == 'thumbnails'
     assign controls_on_media = false
   else
@@ -323,7 +337,15 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
         {% endif %}
       {% endcapture %}
       {% capture class %}
-        {{ product_media_container_class }} product-media-container--{{ media.media_type }}{% if block.settings.zoom %} product-media-container--zoomable{% endif %}{% if forloop.index0 == lowest_aspect_ratio_index and block.settings.aspect_ratio == 'adapt' %} product-media-container--tallest{% endif %}
+        {%- liquid
+          # Check if media alt matches current variant - add variant-filtered if not
+          assign media_alt_clean = media.alt | strip | replace: ' ', '_'
+          assign should_hide = false
+          if media_alt_clean != variant_option_values and media_alt_clean != blank
+            assign should_hide = true
+          endif
+        -%}
+        {{ product_media_container_class }} product-media-container--{{ media.media_type }}{% if block.settings.zoom %} product-media-container--zoomable{% endif %}{% if forloop.index0 == lowest_aspect_ratio_index and block.settings.aspect_ratio == 'adapt' %} product-media-container--tallest{% endif %}{% if should_hide %} variant-filtered{% endif %}
       {% endcapture %}
       {% if block_settings.aspect_ratio == 'adapt' %}
         {% capture style %}
@@ -331,9 +353,11 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
         {% endcapture %}
       {% endif %}
       {% if block_settings.zoom and media.media_type == 'model' %}
-        {%- capture attributes -%}data-media-index="{{ forloop.index0 }}"{% if settings.transition_to_main_product and forloop.first %} data-view-transition-type="product-image-transition"{% endif %}{% endcapture -%}
+        {%- capture attributes -%}data-media-index="{{ forloop.index0 }}" data-media-alt="{{ media.alt | escape }}"{% if settings.transition_to_main_product and forloop.first %} data-view-transition-type="product-image-transition"{% endif %}{% endcapture -%}
       {% elsif block_settings.zoom %}
-        {%- capture attributes -%}data-media-index="{{ forloop.index0 }}" on:click="#zoom-dialog-{{ block.id }}/open/{{ forloop.index0 }}"{% if settings.transition_to_main_product and forloop.first %} data-view-transition-type="product-image-transition"{% endif %}{% endcapture -%}
+        {%- capture attributes -%}data-media-index="{{ forloop.index0 }}" data-media-alt="{{ media.alt | escape }}" on:click="#zoom-dialog-{{ block.id }}/open/{{ forloop.index0 }}"{% if settings.transition_to_main_product and forloop.first %} data-view-transition-type="product-image-transition"{% endif %}{% endcapture -%}
+      {% else %}
+        {%- capture attributes -%}data-media-index="{{ forloop.index0 }}" data-media-alt="{{ media.alt | escape }}"{% if settings.transition_to_main_product and forloop.first %} data-view-transition-type="product-image-transition"{% endif %}{% endcapture -%}
       {% endif %}
 
       {% render 'slideshow-slide',
@@ -390,9 +414,16 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
             assign media_sizes = sizes
           endif
         -%}
-        {% capture container_class %}{{ product_media_container_class }} product-media-container--{{ media.media_type }}{% if block.settings.zoom %} product-media-container--zoomable{% endif %}{% if forloop.index0 == lowest_aspect_ratio_index and block.settings.aspect_ratio == 'adapt' %} product-media-container--tallest{% endif %}{% endcapture %}
+        {% capture container_class %}{%- liquid
+          # Check if media alt matches current variant - add variant-filtered if not
+          assign media_alt_clean = media.alt | strip | replace: ' ', '_'
+          assign should_hide = false
+          if media_alt_clean != variant_option_values and media_alt_clean != blank
+            assign should_hide = true
+          endif
+        -%}{{ product_media_container_class }} product-media-container--{{ media.media_type }}{% if block.settings.zoom %} product-media-container--zoomable{% endif %}{% if forloop.index0 == lowest_aspect_ratio_index and block.settings.aspect_ratio == 'adapt' %} product-media-container--tallest{% endif %}{% if should_hide %} variant-filtered{% endif %}{% endcapture %}
         {% capture container_style %}{% if block_settings.aspect_ratio == 'adapt' %}--media-preview-ratio: {{ media.preview_image.aspect_ratio | default: 1.0 }};{% endif %}{% endcapture %}
-        {% capture container_attributes %}data-media-index="{{ forloop.index0 }}"{% if block_settings.zoom and media.media_type != 'model' %} on:click="#zoom-dialog-{{ block.id }}/open/{{ forloop.index0 }}"{% endif %}{% if settings.transition_to_main_product and forloop.first %} data-view-transition-type="product-image-transition"{% endif %}{% endcapture %}
+        {% capture container_attributes %}data-media-index="{{ forloop.index0 }}" data-media-alt="{{ media.alt | escape }}"{% if block_settings.zoom and media.media_type != 'model' %} on:click="#zoom-dialog-{{ block.id }}/open/{{ forloop.index0 }}"{% endif %}{% if settings.transition_to_main_product and forloop.first %} data-view-transition-type="product-image-transition"{% endif %}{% endcapture %}
         
         <div class="{{ container_class }}" style="{{ container_style }}" {{ container_attributes }}>
           {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
@@ -566,11 +597,16 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           class="dialog-zoomed-gallery list-unstyled"
         >
           {%- for media in sorted_media -%}
+            {%- comment -%}
+              NOTE: Don't add variant-filtered class to zoom images at render time
+              Let JavaScript filter them dynamically when zoom opens
+            {%- endcomment -%}
             <li
               id="product-{{ media.id}}-{{ forloop.index }}"
               class="{{ product_media_container_class | remove: 'media-fit-cover' }} product-media-container--{{ media.media_type }}{% if media.media_type == 'image' %} product-media-container--zoomable{% endif %}"
               style="{% if block_settings.aspect_ratio == 'adapt' %} --media-preview-ratio: {{ media.preview_image.aspect_ratio | default: 1.0 }};{% endif %}"
               data-zoom-index="{{ forloop.index0 }}"
+              data-media-alt="{{ media.alt | escape }}"
               ref="media[]"
             >
               {% if media.media_type == 'image' %}
@@ -639,6 +675,55 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
 </media-gallery>
 
 {% stylesheet %}
+  /* Variant-based image filtering - HIGHEST PRIORITY to override inline styles */
+  .product-media-container.variant-filtered,
+  slideshow-slide.variant-filtered,
+  .media-gallery__grid .product-media-container.variant-filtered,
+  .dialog-zoomed-gallery > li.variant-filtered {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    /* Prevent rendering and layout calculation */
+    content-visibility: hidden !important;
+  }
+  
+  /* Ensure visible images maintain their size and layout */
+  .product-media-container:not(.variant-filtered),
+  .media-gallery__grid .product-media-container:not(.variant-filtered) {
+    display: block !important;
+    /* Don't override width/height - let the original styles work */
+  }
+  
+  /* Desktop: Ensure grid containers maintain proper sizing */
+  @media screen and (min-width: 750px) {
+    .media-gallery--grid .product-media-container:not(.variant-filtered) {
+      /* Let CSS grid handle sizing naturally */
+      width: auto;
+      height: auto;
+    }
+  }
+  
+  /* Mobile grid - only show first visible (non-filtered) image */
+  @media screen and (max-width: 749px) {
+    .media-gallery--grid .media-gallery__grid .product-media-container:not(.variant-filtered) {
+      display: block !important;
+    }
+    
+    .media-gallery--grid .media-gallery__grid .product-media-container:not(.variant-filtered):not(:first-of-type) {
+      display: none !important;
+    }
+    
+    .media-gallery--grid .media-gallery__grid .product-media-container:not(.variant-filtered).mobile-current {
+      display: block !important;
+    }
+  }
+  
   /* Disable scrolling on zoom dialog */
   zoom-dialog dialog {
     overflow: hidden !important;
@@ -1423,260 +1508,344 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
 <script>
   (function() {
     'use strict';
-    
+
     let currentActiveIndex = 0;
-    let currentSlideshowIndex = 0; // Track main slideshow current index
-    
-    // Initialize mobile thumbnail navigation and track slideshow index
+    let currentSlideshowIndex = 0;
+
+    function matchesVariant(mediaAlt, variantString) {
+      if (!variantString) {
+        return mediaAlt && mediaAlt.trim() !== '';
+      }
+      if (!mediaAlt || mediaAlt.trim() === '') {
+        return false;
+      }
+      return mediaAlt.trim() === variantString.trim();
+    }
+
+    function filterZoomDialogImages(selectedVariantString) {
+      const zoomDialog = document.querySelector('#zoom-dialog-{{ block.id }}');
+      if (!zoomDialog) return;
+
+      const zoomImages = Array.from(zoomDialog.querySelectorAll('.dialog-zoomed-gallery > li[data-media-alt]'));
+      if (zoomImages.length === 0) return;
+
+      let visibleCount = 0;
+
+      zoomImages.forEach(li => {
+        const mediaAlt = li.getAttribute('data-media-alt') || '';
+        const matches = matchesVariant(mediaAlt, selectedVariantString);
+
+        if (matches) {
+          li.classList.remove('variant-filtered');
+          li.style.removeProperty('display');
+          li.style.removeProperty('visibility');
+          li.style.removeProperty('opacity');
+          li.removeAttribute('hidden');
+          visibleCount++;
+        } else {
+          li.classList.add('variant-filtered');
+          li.style.display = 'none';
+          li.setAttribute('hidden', '');
+        }
+      });
+
+      if (visibleCount === 0) {
+        zoomImages.forEach(li => {
+          li.classList.remove('variant-filtered');
+          li.style.removeProperty('display');
+          li.style.removeProperty('opacity');
+          li.style.removeProperty('visibility');
+          li.removeAttribute('hidden');
+        });
+        visibleCount = zoomImages.length;
+      }
+
+      const counterTotal = zoomDialog.querySelector('.zoom-dialog-counter__total');
+      if (counterTotal) {
+        counterTotal.textContent = visibleCount;
+      }
+    }
+
+    function initVariantImageFiltering() {
+      const mediaGallery = document.querySelector('media-gallery[data-presentation="{{ block_settings.media_presentation }}"]');
+      if (!mediaGallery) return;
+
+      const presentation = mediaGallery.getAttribute('data-presentation');
+      const variantForm = document.querySelector('.variant-picker__form');
+      if (!variantForm) return;
+
+      function getSelectedVariantValues() {
+        const checkedInputs = Array.from(variantForm.querySelectorAll('input[type="radio"]:checked'));
+        const values = checkedInputs.map(input => input.value.trim().replace(/\s+/g, '_'));
+        return values.join('_');
+      }
+
+      function filterImagesByVariant() {
+        const selectedVariantString = getSelectedVariantValues();
+        filterZoomDialogImages(selectedVariantString);
+
+        if (presentation === 'grid') {
+          const gridContainers = Array.from(mediaGallery.querySelectorAll('.media-gallery__grid .product-media-container'));
+          let firstMatchIndex = -1;
+          let currentIndex = -1;
+
+          // 找到当前显示的图片索引
+          gridContainers.forEach((container, index) => {
+            if (container.classList.contains('mobile-current')) {
+              currentIndex = index;
+            }
+          });
+
+          // 如果没有找到当前索引，使用第一个可见的
+          if (currentIndex === -1) {
+            currentIndex = gridContainers.findIndex(c => !c.classList.contains('variant-filtered'));
+          }
+
+          gridContainers.forEach((container, index) => {
+            const mediaAlt = container.getAttribute('data-media-alt') || '';
+            const matches = matchesVariant(mediaAlt, selectedVariantString);
+
+            if (matches) {
+              container.classList.remove('variant-filtered');
+              container.style.removeProperty('display');
+              container.removeAttribute('hidden');
+              if (firstMatchIndex === -1) firstMatchIndex = index;
+            } else {
+              container.classList.add('variant-filtered');
+              container.style.display = 'none';
+              container.setAttribute('hidden', '');
+            }
+          });
+
+          if (window.innerWidth <= 749 && firstMatchIndex >= 0) {
+            // 检查当前索引的图片是否仍然可见
+            const currentStillVisible = currentIndex >= 0 && 
+                                       !gridContainers[currentIndex].classList.contains('variant-filtered');
+            
+            // 如果当前图片仍可见，保持位置；否则跳转到第一张
+            const targetIndex = currentStillVisible ? currentIndex : firstMatchIndex;
+            
+            // 更新全局索引
+            window._currentGridImageIndex = targetIndex;
+
+            gridContainers.forEach((container, index) => {
+              container.classList.toggle('mobile-current', !container.classList.contains('variant-filtered') && index === targetIndex);
+            });
+
+            const mobileThumbnails = Array.from(document.querySelectorAll('.mobile-thumbnail-nav__item'));
+            mobileThumbnails.forEach((thumb, index) => {
+              thumb.classList.toggle('active', index === targetIndex);
+              if (index === targetIndex) {
+                thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+              }
+            });
+          }
+
+          const mobileThumbnails = Array.from(document.querySelectorAll('.mobile-thumbnail-nav__item'));
+          mobileThumbnails.forEach((thumb, index) => {
+            thumb.style.display = (gridContainers[index] && gridContainers[index].classList.contains('variant-filtered')) ? 'none' : '';
+          });
+        } else {
+          const slideshow = mediaGallery.querySelector('slideshow-component, [ref="slideshow"]');
+          if (!slideshow) return;
+
+          const slides = Array.from(slideshow.querySelectorAll('[data-media-alt]'));
+          let firstMatchIndex = -1;
+          let currentSlideIndex = currentSlideshowIndex;
+
+          slides.forEach((slide, index) => {
+            const mediaAlt = slide.getAttribute('data-media-alt') || '';
+            const matches = matchesVariant(mediaAlt, selectedVariantString);
+
+            if (matches) {
+              slide.classList.remove('variant-filtered');
+              slide.style.removeProperty('display');
+              slide.removeAttribute('hidden');
+              if (firstMatchIndex === -1) firstMatchIndex = index;
+            } else {
+              slide.classList.add('variant-filtered');
+              slide.style.display = 'none';
+              slide.setAttribute('hidden', '');
+            }
+          });
+
+          // 检查当前幻灯片是否仍然可见
+          const currentStillVisible = currentSlideIndex >= 0 && 
+                                     currentSlideIndex < slides.length &&
+                                     !slides[currentSlideIndex].classList.contains('variant-filtered');
+          
+          // 如果当前幻灯片仍可见，保持位置；否则跳转到第一张
+          if (!currentStillVisible && firstMatchIndex >= 0 && typeof slideshow.select === 'function') {
+            slideshow.select(firstMatchIndex, null, { animate: false });
+            currentSlideshowIndex = firstMatchIndex;
+          }
+        }
+      }
+
+      let isFiltering = false;
+
+      document.addEventListener('variant:update', () => {
+        if (isFiltering) return;
+        isFiltering = true;
+        setTimeout(() => {
+          filterImagesByVariant();
+          isFiltering = false;
+        }, 300);
+      });
+
+      filterImagesByVariant();
+      setTimeout(filterImagesByVariant, 500);
+    }
+
     function initMobileThumbnails() {
       const mediaGallery = document.querySelector('media-gallery[data-presentation="{{ block_settings.media_presentation }}"]');
       if (!mediaGallery) return;
-      
+
       const presentation = mediaGallery.getAttribute('data-presentation');
       const slideshow = mediaGallery.querySelector('slideshow-component, [ref="slideshow"]');
-      const mobileThumbnails = document.querySelectorAll('.mobile-thumbnail-nav__item');
-      const gridContainers = mediaGallery.querySelectorAll('.media-gallery__grid .product-media-container');
-      
+      const mobileThumbnails = Array.from(document.querySelectorAll('.mobile-thumbnail-nav__item'));
+      const gridContainers = Array.from(mediaGallery.querySelectorAll('.media-gallery__grid .product-media-container'));
+
       if (mobileThumbnails.length === 0) return;
-      
-      // Grid mode: Handle thumbnail clicks and navigation
+
       if (presentation === 'grid' && gridContainers.length > 0) {
         let currentMobileIndex = 0;
         const totalImages = mobileThumbnails.length;
         
-        // Get navigation buttons
+        // 初始化全局索引
+        window._currentGridImageIndex = 0;
+
         const prevBtn = mediaGallery.querySelector('.mobile-grid-nav__button--prev');
         const nextBtn = mediaGallery.querySelector('.mobile-grid-nav__button--next');
-        
-        // Function to switch to specific image on mobile
+
         function switchMobileImage(newIndex) {
           if (newIndex < 0 || newIndex >= totalImages) return;
-          
+
           currentMobileIndex = newIndex;
-          
-          // Hide all images, show only selected one
-          gridContainers.forEach(function(container, i) {
-            container.classList.remove('mobile-current');
-            if (i === newIndex) {
-              container.style.display = 'block';
-              container.classList.add('mobile-current');
-            } else {
-              container.style.display = 'none';
-            }
+          // 同步到全局 grid 索引，用于 zoom 对话框
+          window._currentGridImageIndex = newIndex;
+
+          gridContainers.forEach((container, i) => {
+            container.classList.toggle('mobile-current', i === newIndex && !container.classList.contains('variant-filtered'));
           });
-          
-          // Update thumbnails active state
-          mobileThumbnails.forEach(function(t, i) {
-            if (i === newIndex) {
-              t.classList.add('active');
-            } else {
-              t.classList.remove('active');
-            }
+
+          mobileThumbnails.forEach((t, i) => {
+            t.classList.toggle('active', i === newIndex);
           });
-          
-          // Scroll thumbnail into view
+
           if (mobileThumbnails[newIndex]) {
-            mobileThumbnails[newIndex].scrollIntoView({
-              behavior: 'smooth',
-              block: 'nearest',
-              inline: 'center'
-            });
+            mobileThumbnails[newIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
           }
-          
-          // Update navigation buttons state
+
           if (prevBtn) prevBtn.disabled = (newIndex === 0);
           if (nextBtn) nextBtn.disabled = (newIndex === totalImages - 1);
         }
-        
-        // Initialize: Hide all except first image on mobile
-        if (window.innerWidth <= 749) {
-          gridContainers.forEach(function(container, i) {
-            if (i === 0) {
-              container.style.display = 'block';
-              container.classList.add('mobile-current');
-            } else {
-              container.style.display = 'none';
-            }
-          });
-        }
-        
-        // Handle window resize
-        window.addEventListener('resize', function() {
-          if (window.innerWidth <= 749) {
-            // Mobile: only show current image
-            gridContainers.forEach(function(container, i) {
-              if (i === currentMobileIndex) {
-                container.style.display = 'block';
-              } else {
-                container.style.display = 'none';
-              }
-            });
-          } else {
-            // Desktop: show all images
-            gridContainers.forEach(function(container) {
-              container.style.display = 'block';
-            });
-          }
-        });
-        
-        // Handle thumbnail clicks
-        mobileThumbnails.forEach(function(thumbnail, index) {
-          thumbnail.addEventListener('click', function(e) {
+
+        mobileThumbnails.forEach((thumbnail, index) => {
+          thumbnail.addEventListener('click', e => {
             e.preventDefault();
             switchMobileImage(index);
           });
         });
-        
-        // Handle prev button
+
         if (prevBtn) {
-          prevBtn.addEventListener('click', function(e) {
+          prevBtn.addEventListener('click', e => {
             e.preventDefault();
             e.stopPropagation();
-            if (currentMobileIndex > 0) {
-              switchMobileImage(currentMobileIndex - 1);
-            }
+            if (currentMobileIndex > 0) switchMobileImage(currentMobileIndex - 1);
           });
         }
-        
-        // Handle next button
+
         if (nextBtn) {
-          nextBtn.addEventListener('click', function(e) {
+          nextBtn.addEventListener('click', e => {
             e.preventDefault();
             e.stopPropagation();
-            if (currentMobileIndex < totalImages - 1) {
-              switchMobileImage(currentMobileIndex + 1);
-            }
+            if (currentMobileIndex < totalImages - 1) switchMobileImage(currentMobileIndex + 1);
           });
         }
-        
-        // Initialize button states
+
         switchMobileImage(0);
-        
-         // Prevent thumbnail container scroll from affecting page scroll
-        const thumbnailContainer = document.querySelector('.mobile-thumbnail-nav__container');
+
         const thumbnailNav = document.querySelector('.mobile-thumbnail-nav');
-        
-        if (thumbnailContainer && thumbnailNav) {
+
+        if (thumbnailNav) {
           let startX = 0;
           let startY = 0;
           let isHorizontalScroll = false;
-          
-          // Track touch start
-          thumbnailNav.addEventListener('touchstart', function(e) {
+
+          thumbnailNav.addEventListener('touchstart', e => {
             const touch = e.touches[0];
             startX = touch.clientX;
             startY = touch.clientY;
             isHorizontalScroll = false;
           }, { passive: true });
-          
-          // Detect scroll direction and prevent vertical scroll/page scroll
-          thumbnailNav.addEventListener('touchmove', function(e) {
+
+          thumbnailNav.addEventListener('touchmove', e => {
             const touch = e.touches[0];
             const deltaX = Math.abs(touch.clientX - startX);
             const deltaY = Math.abs(touch.clientY - startY);
-            
-            // Determine if this is a horizontal scroll
+
             if (!isHorizontalScroll && (deltaX > 5 || deltaY > 5)) {
               isHorizontalScroll = deltaX > deltaY;
             }
-            
-            // If scrolling horizontally on thumbnails, prevent page scroll
+
             if (isHorizontalScroll) {
               e.preventDefault();
-              e.stopPropagation();
             }
           }, { passive: false });
-          
-          thumbnailNav.addEventListener('touchend', function(e) {
+
+          thumbnailNav.addEventListener('touchend', e => {
             isHorizontalScroll = false;
-            e.stopPropagation();
           }, { passive: true });
-          
-          // Prevent wheel events
-          thumbnailNav.addEventListener('wheel', function(e) {
+
+          thumbnailNav.addEventListener('wheel', e => {
             e.stopPropagation();
           }, { passive: true });
         }
-        
-        return; // Exit early for grid mode
+
+        return;
       }
-      
-      // Carousel mode: Original slideshow logic
+
       if (!slideshow) return;
-      
-      // Handle thumbnail click
-      mobileThumbnails.forEach(function(thumbnail, index) {
-        thumbnail.addEventListener('click', function(e) {
+
+      mobileThumbnails.forEach((thumbnail, index) => {
+        thumbnail.addEventListener('click', e => {
           e.preventDefault();
-          
-          // Update current slideshow index
           currentSlideshowIndex = index;
-          
-          // Remove active class from all thumbnails
-          mobileThumbnails.forEach(function(t) {
-            t.classList.remove('active');
-          });
-          
-          // Add active class to clicked thumbnail
+          mobileThumbnails.forEach(t => t.classList.remove('active'));
           thumbnail.classList.add('active');
-          
-          // Navigate slideshow to the selected index
           if (typeof slideshow.select === 'function') {
             slideshow.select(index, e, { animate: true });
           }
-          
-          // Scroll thumbnail into view
-          thumbnail.scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'center'
-          });
+          thumbnail.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         });
       });
-      
-      // Listen for slideshow select event to update active thumbnail and index
-      if (slideshow) {
-        slideshow.addEventListener('slideshow:select', function(e) {
-          const index = e.detail?.index;
-          if (index !== undefined) {
-            // Update current slideshow index
-            currentSlideshowIndex = index;
-            
-            if (mobileThumbnails[index]) {
-              // Remove active from all
-              mobileThumbnails.forEach(function(t) {
-                t.classList.remove('active');
-              });
-              // Add active to selected
-              mobileThumbnails[index].classList.add('active');
-              
-              // Scroll thumbnail into view
-              mobileThumbnails[index].scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-                inline: 'center'
-              });
-            }
-          }
-        });
-      }
+
+      slideshow.addEventListener('slideshow:select', e => {
+        const index = e.detail?.index;
+        if (index === undefined) return;
+        currentSlideshowIndex = index;
+        if (mobileThumbnails[index]) {
+          mobileThumbnails.forEach(t => t.classList.remove('active'));
+          mobileThumbnails[index].classList.add('active');
+          mobileThumbnails[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      });
     }
-    
-    // Intercept zoom button clicks to use correct media index
+
     function initZoomButtonIntercept() {
       const mediaGallery = document.querySelector('media-gallery[data-presentation="{{ block_settings.media_presentation }}"]');
       if (!mediaGallery) return;
-      
+
       const presentation = mediaGallery.getAttribute('data-presentation');
       const zoomDialog = document.querySelector('#zoom-dialog-{{ block.id }}');
       if (!zoomDialog) return;
-      
-      // Function to find media index from element or its ancestors
+
       function findMediaIndex(element) {
         let current = element;
         let depth = 0;
         while (current && depth < 10) {
-          if (current.hasAttribute && current.hasAttribute('data-media-index')) {
+          if (current.hasAttribute('data-media-index')) {
             return parseInt(current.getAttribute('data-media-index'), 10);
           }
           current = current.parentElement;
@@ -1684,191 +1853,97 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
         }
         return null;
       }
-      
-      // For grid mode, attach click handlers directly to containers
+
       if (presentation === 'grid') {
-        const gridContainers = mediaGallery.querySelectorAll('.media-gallery__grid .product-media-container--zoomable');
-        gridContainers.forEach(function(container, index) {
-          container.addEventListener('click', function(e) {
-            const clickedInsideDialog = e.target.closest('dialog');
-            if (clickedInsideDialog) return;
-            
+        const gridContainers = Array.from(mediaGallery.querySelectorAll('.media-gallery__grid .product-media-container--zoomable'));
+        gridContainers.forEach((container, index) => {
+          container.addEventListener('click', e => {
+            if (e.target.closest('dialog')) return;
             let mediaIndex = findMediaIndex(container);
-            if (mediaIndex === null || isNaN(mediaIndex)) {
-              mediaIndex = index;
-            }
-            
+            if (mediaIndex === null || isNaN(mediaIndex)) mediaIndex = index;
             e.preventDefault();
             e.stopPropagation();
-            
-            if (zoomDialog && typeof zoomDialog.open === 'function') {
-              zoomDialog.open(mediaIndex, e);
+            // 在移动端 grid 模式下，使用当前显示的图片索引
+            if (window.innerWidth <= 749 && typeof window._currentGridImageIndex !== 'undefined') {
+              mediaIndex = window._currentGridImageIndex;
+            } else {
+              // 桌面端：更新全局索引为点击的图片
+              window._currentGridImageIndex = mediaIndex;
             }
+            if (typeof zoomDialog.open === 'function') zoomDialog.open(mediaIndex, e);
           }, true);
         });
-        return; // Exit early for grid mode
+        return;
       }
-      
-      // Carousel mode: Original logic for slideshow containers
-      const zoomableContainers = mediaGallery.querySelectorAll('.product-media-container--zoomable');
-      zoomableContainers.forEach(function(container, fallbackIndex) {
-        container.addEventListener('click', function(e) {
-          // 检查是否在dialog内部（可能是空白区域点击后的事件冒泡）
-          const clickedInsideDialog = e.target.closest('dialog');
-          if (clickedInsideDialog) {
-            return;
-          }
-          
-          // Try to get the media index from data attribute (check container and ancestors)
+
+      const zoomableContainers = Array.from(mediaGallery.querySelectorAll('.product-media-container--zoomable'));
+      zoomableContainers.forEach((container, fallbackIndex) => {
+        container.addEventListener('click', e => {
+          if (e.target.closest('dialog')) return;
           let mediaIndex = findMediaIndex(container);
-          
-          // Fallback: use container's position in the list
-          if (mediaIndex === null || isNaN(mediaIndex)) {
-            mediaIndex = fallbackIndex;
-          }
-          
-          // Prevent default zoom behavior
+          if (mediaIndex === null || isNaN(mediaIndex)) mediaIndex = fallbackIndex;
           e.preventDefault();
           e.stopPropagation();
-          
-          // Update current slideshow index to match
           currentSlideshowIndex = mediaIndex;
-          
-          // Open zoom dialog with the correct media index
-          if (zoomDialog && typeof zoomDialog.open === 'function') {
-            zoomDialog.open(mediaIndex, e);
-          }
-        }, true); // Use capture phase to intercept before other handlers
+          if (typeof zoomDialog.open === 'function') zoomDialog.open(mediaIndex, e);
+        }, true);
       });
     }
-    
+
     function initZoomGallery() {
       const zoomDialog = document.querySelector('#zoom-dialog-{{ block.id }}');
       if (!zoomDialog) return;
-      
+
       const dialog = zoomDialog.querySelector('dialog');
       if (!dialog) return;
-      
+
       const gallery = dialog.querySelector('.dialog-zoomed-gallery');
-      const mediaContainers = dialog.querySelectorAll('.dialog-zoomed-gallery > li');
-      const thumbnails = dialog.querySelectorAll('.dialog-thumbnails-list__thumbnail');
-      
-      // 防止关闭后立即重新打开的标志
+      const mediaContainers = Array.from(dialog.querySelectorAll('.dialog-zoomed-gallery > li'));
+      const thumbnails = Array.from(dialog.querySelectorAll('.dialog-thumbnails-list__thumbnail'));
+
       let isClosing = false;
-      
-      // 绑定关闭按钮点击事件的函数
+
       function bindCloseButton() {
         const closeBtn = dialog.querySelector('.dialog-zoomed-gallery__close-button');
         if (closeBtn) {
-          // 移除旧的事件监听器（如果存在）
-          closeBtn.removeEventListener('click', handleCloseClick, true);
-          closeBtn.removeEventListener('click', handleCloseClick, false);
-          
-          // 添加新的事件监听器（使用捕获阶段以确保优先处理）
-          closeBtn.addEventListener('click', handleCloseClick, true);
+          closeBtn.removeEventListener('click', handleCloseClick);
+          closeBtn.addEventListener('click', handleCloseClick);
         }
       }
-      
-      // 统一的关闭对话框函数 - 使用多重保障确保关闭成功
+
       function closeZoomDialog() {
-        if (!dialog || !dialog.open) {
-          return;
+        if (!dialog || !dialog.open) return;
+
+        if (typeof zoomDialog.closeDialog === 'function') {
+          zoomDialog.closeDialog();
+        } else if (typeof zoomDialog.close === 'function') {
+          zoomDialog.close();
+        } else {
+          dialog.close();
         }
-        
-        // 使用多重方法确保关闭，不是if-else，而是依次尝试
-        let closeAttempted = false;
-        
-        try {
-          // Method 1: 使用 zoom-dialog 组件的 closeDialog 方法
-          if (zoomDialog && typeof zoomDialog.closeDialog === 'function') {
-            zoomDialog.closeDialog();
-            closeAttempted = true;
-          }
-        } catch (error) {
-          // Method 1 failed
-        }
-        
-        // Method 2: 使用 zoom-dialog 组件的 close 方法（作为备份）
-        if (!closeAttempted || dialog.open) {
-          try {
-            if (zoomDialog && typeof zoomDialog.close === 'function') {
-              zoomDialog.close();
-              closeAttempted = true;
-            }
-          } catch (error) {
-            // Method 2 failed
-          }
-        }
-        
-        // Method 3: 强制使用原生 dialog.close()
-        if (dialog.open) {
-          try {
-            dialog.close();
-            
-            // 手动触发 close 事件（以防万一）
-            const closeEvent = new Event('close');
-            dialog.dispatchEvent(closeEvent);
-            
-            // 触发全局 dialog-close 事件
-            try {
-              const dialogCloseEvent = new Event('dialog-close');
-              window.dispatchEvent(dialogCloseEvent);
-            } catch (e) {
-              // Could not dispatch global event
-            }
-          } catch (error) {
-            // Force close failed
-          }
-        }
-        
-        // 验证关闭状态
-        setTimeout(function() {
-          if (dialog.open) {
-            // 最后的强制手段：直接移除 open 属性
-            try {
-              dialog.removeAttribute('open');
-              dialog.close();
-            } catch (e) {
-              // Last resort failed
-            }
-          }
+
+        setTimeout(() => {
+          if (dialog.open) dialog.removeAttribute('open');
         }, 50);
       }
-      
-      // 关闭按钮点击处理函数
+
       function handleCloseClick(e) {
-        // 阻止事件传播，避免触发dialog的点击事件
         e.preventDefault();
         e.stopPropagation();
-        e.stopImmediatePropagation();
-        
         closeZoomDialog();
       }
-      
-      // Move close button and counter to active media element (both desktop and mobile)
+
       function moveControlsToContainer() {
         const closeBtn = dialog.querySelector('.dialog-zoomed-gallery__close-button');
         const counter = dialog.querySelector('.zoom-dialog-counter');
-        
-        // 查找活动的容器
-        let activeContainer;
-        let targetElement;
-        
-        if (window.innerWidth > 749) {
-          // Desktop: find the active li element - 按钮和计数器附加到 li（图片外面）
-          activeContainer = dialog.querySelector('.dialog-zoomed-gallery > li.zoom-active');
-          targetElement = activeContainer; // 桌面端直接使用li容器
-        } else {
-          // Mobile: find the active product-media-container - 按钮和计数器附加到容器（图片外面）
-          activeContainer = dialog.querySelector('.product-media-container.zoom-active');
-          targetElement = activeContainer; // 移动端使用product-media-container容器
-        }
-        
+
+        let targetElement = window.innerWidth > 749 
+          ? dialog.querySelector('.dialog-zoomed-gallery > li.zoom-active') 
+          : dialog.querySelector('.product-media-container.zoom-active');
+
         if (closeBtn && counter && targetElement) {
-          // Move to target element if not already there
           if (!targetElement.contains(closeBtn)) {
             targetElement.appendChild(closeBtn);
-            // 移动后重新绑定事件
             bindCloseButton();
           }
           if (!targetElement.contains(counter)) {
@@ -1876,339 +1951,301 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           }
         }
       }
-      
-      // Find the first image in the zoom dialog and add special class
+
       const firstMediaImage = dialog.querySelector('.dialog-zoomed-gallery li:first-child .product-media__image');
-      if (firstMediaImage) {
-        firstMediaImage.classList.add('product-media__image--first-zoom');
-      }
-      
-      // Don't add zoom-active to first container by default to avoid flashing
-      // It will be added by switchToImage when dialog opens
-      
-      // 初始化关闭按钮事件
+      if (firstMediaImage) firstMediaImage.classList.add('product-media__image--first-zoom');
+
       bindCloseButton();
-      
-      // Move controls on dialog open
       moveControlsToContainer();
 
-      // Get navigation buttons and counter
       const prevBtn = document.getElementById('zoom-prev-{{ block.id }}');
       const nextBtn = document.getElementById('zoom-next-{{ block.id }}');
       const counterElement = document.getElementById('zoom-counter-{{ block.id }}');
       const counterCurrent = counterElement ? counterElement.querySelector('.zoom-dialog-counter__current') : null;
-      
-      // Function to update navigation buttons state (循环模式，按钮始终可用)
+
       function updateNavButtons() {
-        // 在循环模式下，不禁用任何按钮
         if (prevBtn) prevBtn.disabled = false;
         if (nextBtn) nextBtn.disabled = false;
       }
-      
-      // Function to update counter display
+
       function updateCounter() {
-        if (counterCurrent) {
-          counterCurrent.textContent = currentActiveIndex + 1;
-        }
+        if (!counterCurrent) return;
+
+        const visibleImages = mediaContainers.map((_, idx) => idx).filter(idx => !mediaContainers[idx].classList.contains('variant-filtered'));
+
+        const currentPosition = visibleImages.indexOf(currentActiveIndex) + 1 || 1;
+        counterCurrent.textContent = currentPosition;
+
+        const counterTotal = counterElement.querySelector('.zoom-dialog-counter__total');
+        if (counterTotal) counterTotal.textContent = visibleImages.length;
       }
-      
-      // Function to switch visible image
+
       function switchToImage(index) {
         if (index < 0 || index >= mediaContainers.length) return;
-        
-        // Remove zoom-active class from all images
-        mediaContainers.forEach(function(container) {
-          container.classList.remove('zoom-active');
-        });
-        
-        // Add zoom-active class to selected image
-        if (mediaContainers[index]) {
-          mediaContainers[index].classList.add('zoom-active');
-          currentActiveIndex = index;
+
+        let targetIndex = index;
+        let attempts = 0;
+        while (mediaContainers[targetIndex].classList.contains('variant-filtered') && attempts < mediaContainers.length) {
+          targetIndex = (targetIndex + 1) % mediaContainers.length;
+          attempts++;
         }
-        
-        // Update navigation buttons state
+
+        if (attempts >= mediaContainers.length) return;
+
+        mediaContainers.forEach(container => container.classList.remove('zoom-active'));
+        mediaContainers[targetIndex].classList.add('zoom-active');
+        currentActiveIndex = targetIndex;
+
         updateNavButtons();
-        
-        // Update counter display
         updateCounter();
-        
-        // Move controls to new active container (mobile only)
         moveControlsToContainer();
-        
-        // 确保关闭按钮事件依然有效
         bindCloseButton();
       }
-      
-      // Store the initial index to open - will be set by zoom button click
-      let initialOpenIndex = 0;
-      
-      // Override the zoomDialog.open method to capture the index
-      if (zoomDialog && typeof zoomDialog.open === 'function') {
-        const originalZoomOpen = zoomDialog.open.bind(zoomDialog);
+
+      const originalZoomOpen = zoomDialog.open ? zoomDialog.open.bind(zoomDialog) : null;
+      if (originalZoomOpen) {
         zoomDialog.open = function(index, event) {
-          // 如果正在关闭，阻止打开
-          if (isClosing) {
-            return;
-          }
-          
-          initialOpenIndex = index;
+          if (isClosing) return;
           currentActiveIndex = index;
-          
-          // Pre-set the correct image BEFORE opening dialog to prevent flash
-          mediaContainers.forEach(function(container, idx) {
-            if (idx === index) {
-              container.classList.add('zoom-active');
-            } else {
-              container.classList.remove('zoom-active');
-            }
-          });
-          
-          // Update counter before opening
-          if (counterCurrent) {
-            counterCurrent.textContent = index + 1;
-          }
-          
-          // Now open the dialog with the correct image already visible
           originalZoomOpen(index, event);
-          
-          // Move controls after opening (no delay needed since image is already correct)
-          moveControlsToContainer();
-          bindCloseButton();
+
+          setTimeout(() => {
+            const selectedVariantString = getSelectedVariantValuesFromForm();
+            filterZoomDialogImages(selectedVariantString);
+
+            // 检查点击的图片是否可见
+            const clickedImageVisible = currentActiveIndex >= 0 && 
+                                       currentActiveIndex < mediaContainers.length &&
+                                       !mediaContainers[currentActiveIndex].classList.contains('variant-filtered');
+
+            let targetIndex;
+            if (clickedImageVisible) {
+              // 如果点击的图片可见，使用点击的索引
+              targetIndex = currentActiveIndex;
+            } else {
+              // 如果点击的图片被过滤了，才使用第一张可见的
+              targetIndex = mediaContainers.findIndex(container => !container.classList.contains('variant-filtered'));
+            }
+
+            if (targetIndex >= 0) {
+              mediaContainers.forEach((container, idx) => container.classList.toggle('zoom-active', idx === targetIndex));
+              currentActiveIndex = targetIndex;
+              updateCounter();
+            }
+
+            moveControlsToContainer();
+            bindCloseButton();
+          }, 100);
         };
       }
-      
-      // Listen for zoom-media-selected event (fired by zoom-dialog.js)
-      zoomDialog.addEventListener('zoom-media-selected', function(e) {
-        if (e.detail !== undefined && e.detail !== null) {
-          const targetIndex = e.detail;
-          switchToImage(targetIndex);
-        }
+
+      // Define getSelectedVariantValuesFromForm if not defined elsewhere
+      function getSelectedVariantValuesFromForm() {
+        const variantForm = document.querySelector('.variant-picker__form');
+        if (!variantForm) return '';
+        const checkedInputs = Array.from(variantForm.querySelectorAll('input[type="radio"]:checked'));
+        const values = checkedInputs.map(input => input.value.trim().replace(/\s+/g, '_'));
+        return values.join('_');
+      }
+
+      zoomDialog.addEventListener('zoom-media-selected', e => {
+        if (e.detail !== undefined) switchToImage(e.detail);
       });
-      
-      // Navigation button click handlers (支持循环切换)
+
       if (prevBtn) {
-        prevBtn.addEventListener('click', function(e) {
+        prevBtn.addEventListener('click', e => {
           e.preventDefault();
           e.stopPropagation();
-          
-          // 循环切换：如果在第一张，跳到最后一张
-          let newIndex;
-          if (currentActiveIndex <= 0) {
-            newIndex = mediaContainers.length - 1;
-          } else {
-            newIndex = currentActiveIndex - 1;
+
+          let newIndex = currentActiveIndex - 1;
+          let attempts = 0;
+
+          while (attempts < mediaContainers.length) {
+            if (newIndex < 0) newIndex = mediaContainers.length - 1;
+            if (!mediaContainers[newIndex].classList.contains('variant-filtered')) break;
+            newIndex--;
+            attempts++;
           }
-          
-          switchToImage(newIndex);
-          // Update thumbnail selected state
-          thumbnails.forEach(function(thumb, i) {
-            thumb.setAttribute('aria-selected', i === currentActiveIndex ? 'true' : 'false');
-          });
+
+          if (attempts < mediaContainers.length) {
+            switchToImage(newIndex);
+            thumbnails.forEach((thumb, i) => thumb.setAttribute('aria-selected', i === currentActiveIndex ? 'true' : 'false'));
+          }
         });
       }
-      
+
       if (nextBtn) {
-        nextBtn.addEventListener('click', function(e) {
+        nextBtn.addEventListener('click', e => {
           e.preventDefault();
           e.stopPropagation();
-          
-          // 循环切换：如果在最后一张，跳到第一张
-          let newIndex;
-          if (currentActiveIndex >= mediaContainers.length - 1) {
-            newIndex = 0;
-          } else {
-            newIndex = currentActiveIndex + 1;
+
+          let newIndex = currentActiveIndex + 1;
+          let attempts = 0;
+
+          while (attempts < mediaContainers.length) {
+            if (newIndex >= mediaContainers.length) newIndex = 0;
+            if (!mediaContainers[newIndex].classList.contains('variant-filtered')) break;
+            newIndex++;
+            attempts++;
           }
-          
-          switchToImage(newIndex);
-          // Update thumbnail selected state
-          thumbnails.forEach(function(thumb, i) {
-            thumb.setAttribute('aria-selected', i === currentActiveIndex ? 'true' : 'false');
-          });
+
+          if (attempts < mediaContainers.length) {
+            switchToImage(newIndex);
+            thumbnails.forEach((thumb, i) => thumb.setAttribute('aria-selected', i === currentActiveIndex ? 'true' : 'false'));
+          }
         });
       }
-      
-      // Initialize navigation buttons state and counter
+
       updateNavButtons();
       updateCounter();
-      
-      // Listen for window resize to reposition controls on mobile
-      window.addEventListener('resize', function() {
-        moveControlsToContainer();
-      });
-      
-      // Click outside image to close dialog - 简化逻辑：只保护特定元素，其他都关闭
-      dialog.addEventListener('click', function(e) {
-        // 黑名单：这些元素点击时不关闭dialog
-        const isImage = e.target.tagName === 'IMG';
-        const isVideo = e.target.tagName === 'VIDEO';
-        const isNavButton = e.target.closest('.zoom-dialog-nav');
-        const isThumbnail = e.target.closest('.dialog-thumbnails-list-container');
-        const isDragZoomWrapper = e.target.closest('.product-media__drag-zoom-wrapper');
-        const isDeferredMedia = e.target.closest('deferred-media');
-        
-        // 如果点击的是受保护元素，不关闭
-        if (isImage || isVideo || isNavButton || isThumbnail || isDragZoomWrapper || isDeferredMedia) {
-          return;
-        }
-        
-        // 设置关闭标志，防止重新打开
-        isClosing = true;
-        
-        // 完全阻止事件传播
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        
-        // 查找关闭按钮并触发它的点击事件
-        const closeButton = dialog.querySelector('.dialog-zoomed-gallery__close-button');
-        if (closeButton) {
-          closeButton.click();
-        } else {
-          // 备用关闭方法
-          if (zoomDialog && typeof zoomDialog.close === 'function') {
+
+      window.addEventListener('resize', moveControlsToContainer);
+
+      dialog.addEventListener('click', e => {
+        if (e.target === dialog || e.target.classList.contains('dialog-zoomed-gallery')) {
+          isClosing = true;
+          e.preventDefault();
+          e.stopPropagation();
+          if (typeof zoomDialog.close === 'function') {
             zoomDialog.close();
-          } else if (dialog && dialog.open) {
+          } else if (dialog.open) {
             dialog.close();
           }
+          setTimeout(() => isClosing = false, 300);
         }
-        
-        // 300ms后重置关闭标志
-        setTimeout(function() {
-          isClosing = false;
-        }, 300);
-      }, true); // 使用捕获阶段，优先处理
-      
-      // Prevent scrolling on gallery only (not on thumbnails or buttons)
+      });
+
       function preventGalleryScroll(e) {
-        // Don't prevent events on thumbnails or buttons
-        if (e.target.closest('.dialog-thumbnails-list-container') || 
-            e.target.closest('button')) {
-          return;
-        }
-        
-        // Allow touch on drag-zoom-wrapper for pinch zoom
-        if (e.target.closest('.product-media__drag-zoom-wrapper')) {
-          return;
-        }
-        
+        if (e.target.closest('.dialog-thumbnails-list-container') || e.target.closest('button') || e.target.closest('.product-media__drag-zoom-wrapper')) return;
         e.preventDefault();
-        return false;
       }
-      
-      // Prevent wheel scrolling on gallery
+
       function preventWheel(e) {
-        // Don't prevent events on thumbnails
-        if (e.target.closest('.dialog-thumbnails-list-container')) {
-          return;
-        }
+        if (e.target.closest('.dialog-thumbnails-list-container')) return;
         e.preventDefault();
-        return false;
       }
-      
-      // Only prevent scroll events on gallery element
+
       if (gallery) {
         gallery.addEventListener('wheel', preventWheel, { passive: false });
         gallery.addEventListener('touchmove', preventGalleryScroll, { passive: false });
-        
-        // Force scroll position to 0
         gallery.scrollLeft = 0;
         gallery.scrollTop = 0;
       }
-      
-      // Listen to thumbnail clicks and switch images
-      thumbnails.forEach(function(thumbnail, index) {
-        thumbnail.addEventListener('click', function(e) {
-          // Let the original event handler work, but also switch our display
-          setTimeout(function() {
-            switchToImage(index);
-            // Update thumbnail selected state
-            thumbnails.forEach(function(thumb, i) {
-              thumb.setAttribute('aria-selected', i === index ? 'true' : 'false');
-            });
-          }, 0);
+
+      thumbnails.forEach((thumbnail, index) => {
+        thumbnail.addEventListener('click', () => {
+          switchToImage(index);
+          thumbnails.forEach((thumb, i) => thumb.setAttribute('aria-selected', i === index ? 'true' : 'false'));
         });
       });
-      
-      // Listen for custom zoom media selected event from zoom-dialog component
-      zoomDialog.addEventListener('zoom-media-selected', function(e) {
-        if (e.detail !== undefined) {
-          switchToImage(e.detail);
-        }
+
+      zoomDialog.addEventListener('zoom-media-selected', e => {
+        if (e.detail !== undefined) switchToImage(e.detail);
       });
-      
-      // Reset currentActiveIndex when dialog closes
-      dialog.addEventListener('close', function() {
-        try {
-          // Remove zoom-active from all containers
-          mediaContainers.forEach(function(container) {
-            container.classList.remove('zoom-active');
-          });
-          
-          // Reset index
-          currentActiveIndex = 0;
-          
-          // Update UI controls
-          updateNavButtons();
-          updateCounter();
-          
-          // 确保重置关闭标志（双重保障）
-          setTimeout(function() {
-            isClosing = false;
-          }, 100);
-        } catch (error) {
-          // Error during state cleanup
-        }
+
+      dialog.addEventListener('close', () => {
+        mediaContainers.forEach(container => container.classList.remove('zoom-active'));
+        currentActiveIndex = 0;
+        updateNavButtons();
+        updateCounter();
+        setTimeout(() => isClosing = false, 100);
       });
-      
-      // 额外的后备清理 - 监听全局 dialog-close 事件
-      window.addEventListener('dialog-close', function() {
+
+      window.addEventListener('dialog-close', () => {
         if (!dialog.open) {
-          mediaContainers.forEach(function(container) {
-            container.classList.remove('zoom-active');
-          });
+          mediaContainers.forEach(container => container.classList.remove('zoom-active'));
           currentActiveIndex = 0;
         }
       });
-      
-      // Support keyboard arrow keys for navigation (支持循环切换)
-      dialog.addEventListener('keydown', function(e) {
+
+      dialog.addEventListener('keydown', e => {
         if (e.key === 'ArrowLeft') {
           e.preventDefault();
-          // 循环切换：如果在第一张，跳到最后一张
-          let newIndex = currentActiveIndex <= 0 ? mediaContainers.length - 1 : currentActiveIndex - 1;
-          switchToImage(newIndex);
-          thumbnails.forEach(function(thumb, i) {
-            thumb.setAttribute('aria-selected', i === currentActiveIndex ? 'true' : 'false');
-          });
+          let newIndex = currentActiveIndex - 1;
+          let attempts = 0;
+          while (attempts < mediaContainers.length) {
+            if (newIndex < 0) newIndex = mediaContainers.length - 1;
+            if (!mediaContainers[newIndex].classList.contains('variant-filtered')) break;
+            newIndex--;
+            attempts++;
+          }
+          if (attempts < mediaContainers.length) {
+            switchToImage(newIndex);
+            thumbnails.forEach((thumb, i) => thumb.setAttribute('aria-selected', i === currentActiveIndex ? 'true' : 'false'));
+          }
         } else if (e.key === 'ArrowRight') {
           e.preventDefault();
-          // 循环切换：如果在最后一张，跳到第一张
-          let newIndex = currentActiveIndex >= mediaContainers.length - 1 ? 0 : currentActiveIndex + 1;
-          switchToImage(newIndex);
-          thumbnails.forEach(function(thumb, i) {
-            thumb.setAttribute('aria-selected', i === currentActiveIndex ? 'true' : 'false');
-          });
+          let newIndex = currentActiveIndex + 1;
+          let attempts = 0;
+          while (attempts < mediaContainers.length) {
+            if (newIndex >= mediaContainers.length) newIndex = 0;
+            if (!mediaContainers[newIndex].classList.contains('variant-filtered')) break;
+            newIndex++;
+            attempts++;
+          }
+          if (attempts < mediaContainers.length) {
+            switchToImage(newIndex);
+            thumbnails.forEach((thumb, i) => thumb.setAttribute('aria-selected', i === currentActiveIndex ? 'true' : 'false'));
+          }
         }
       });
     }
-    
-    // Run when DOM is ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() {
-        initMobileThumbnails();
-        initZoomButtonIntercept();
-        initZoomGallery();
-      });
-    } else {
+
+    function initializeAll() {
+      // 初始化全局图片索引（如果还未设置）
+      if (typeof window._currentGridImageIndex === 'undefined') {
+        window._currentGridImageIndex = 0;
+      }
+      
+      initVariantImageFiltering();
       initMobileThumbnails();
       initZoomButtonIntercept();
       initZoomGallery();
     }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeAll);
+    } else {
+      initializeAll();
+    }
+
+    const bodyObserver = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType === 1 && node.tagName === 'MEDIA-GALLERY') {
+            setTimeout(() => {
+              initializeAll();
+              setTimeout(() => {
+                const mediaGallery = document.querySelector('media-gallery[data-presentation="{{ block_settings.media_presentation }}"]');
+                if (mediaGallery) {
+                  const selectedVariantString = getSelectedVariantValuesFromForm();
+                  const presentation = mediaGallery.getAttribute('data-presentation');
+                  if (presentation === 'grid') {
+                    const gridContainers = Array.from(mediaGallery.querySelectorAll('.media-gallery__grid .product-media-container'));
+                    gridContainers.forEach(container => {
+                      const mediaAlt = container.getAttribute('data-media-alt') || '';
+                      if (matchesVariant(mediaAlt, selectedVariantString)) {
+                        container.classList.remove('variant-filtered');
+                        container.style.removeProperty('display');
+                        container.removeAttribute('hidden');
+                      } else {
+                        container.classList.add('variant-filtered');
+                        container.style.display = 'none';
+                        container.setAttribute('hidden', '');
+                      }
+                    });
+                  }
+                }
+              }, 500);
+            }, 100);
+          }
+        });
+      });
+    });
+
+    bodyObserver.observe(document.body, { childList: true, subtree: true });
   })();
 </script>
-
 <script>
   // 独立的关闭按钮处理脚本 - 完全隔离，不污染全局作用域
   (function() {

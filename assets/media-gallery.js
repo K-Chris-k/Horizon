@@ -46,6 +46,14 @@ export class MediaGallery extends Component {
     if (!newMediaGallery) return;
 
     this.replaceWith(newMediaGallery);
+    
+    // CRITICAL: Trigger custom event after replacement to re-apply filtering
+    setTimeout(() => {
+      document.dispatchEvent(new CustomEvent('media-gallery:replaced', { 
+        bubbles: true,
+        detail: { gallery: newMediaGallery }
+      }));
+    }, 50);
   };
 
   /**
