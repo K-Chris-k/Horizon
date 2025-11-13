@@ -1271,6 +1271,15 @@
             "answer_color": "#666666"
           }
         },
+        "faq_7iYH9n": {
+          "type": "faq",
+          "settings": {
+            "question": "Can this thermostat be used as a replacement for a Nest or Hive thermostat?",
+            "answer": "<p>Yes, this thermostat offers the same system compatibility and broadly similar functionality as Nest or Hive, so it can be used as a replacement for either. You can refer to<a href=\"https://www.repenic.com/blogs/knowledge/google-stopped-supporting-nest-1st-2nd-gen-thermostats-what-should-you-do-now-2025-update\" target=\"_blank\" title=\"https://www.repenic.com/blogs/knowledge/google-stopped-supporting-nest-1st-2nd-gen-thermostats-what-should-you-do-now-2025-update\"> this article</a> for more detailed information.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
         "faq_H7iBHG": {
           "type": "faq",
           "settings": {
@@ -1370,6 +1379,7 @@
         "download_8GhpGx",
         "download_7zi8BH",
         "faq_aimhEp",
+        "faq_7iYH9n",
         "faq_H7iBHG",
         "faq_xETUHf",
         "faq_cPpPJP",
