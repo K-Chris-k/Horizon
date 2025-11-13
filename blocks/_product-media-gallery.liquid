@@ -1,13 +1,20 @@
 
 <style> 
+/* Desktop: Show all images */
 media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
-  display:  block !important;
+  display: block !important;
 }
+
+/* Mobile: Hide all images by default, show only mobile-current */
 @media (max-width: 749px) {
   media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
-  display:  none !important;
-}
-  slideshow-container{}
+    display: none !important;
+  }
+  
+  /* Show current mobile image */
+  media-gallery.media-gallery--grid .media-gallery__grid .product-media-container.mobile-current{
+    display: block !important;
+  }
 }
 
 </style>
@@ -1242,12 +1249,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       position: relative;
     }
     
-    /* Only show first image by default */
-    .media-gallery--grid .media-gallery__grid .product-media-container:first-child {
-      display: none !important;
-    }
-    
-    /* Show image when marked as mobile-current */
+    /* Show image when marked as mobile-current - use !important to ensure visibility */
     .media-gallery--grid .media-gallery__grid .product-media-container.mobile-current {
       display: block !important;
       position: relative;
@@ -1439,6 +1441,11 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       
       if (mobileThumbnails.length === 0) return;
       
+      // Clean up old event listeners by storing references
+      if (window.__mobileThumbCleanup) {
+        window.__mobileThumbCleanup();
+      }
+      
       // Grid mode: Handle thumbnail clicks and navigation
       if (presentation === 'grid' && gridContainers.length > 0) {
         let currentMobileIndex = 0;
@@ -1454,14 +1461,11 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           
           currentMobileIndex = newIndex;
           
-          // Hide all images, show only selected one
+          // Hide all images, show only selected one - use class only
           gridContainers.forEach(function(container, i) {
             container.classList.remove('mobile-current');
             if (i === newIndex) {
-              container.style.display = 'block';
               container.classList.add('mobile-current');
-            } else {
-              container.style.display = 'none';
             }
           });
           
@@ -1491,11 +1495,9 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
         // Initialize: Hide all except first image on mobile
         if (window.innerWidth <= 749) {
           gridContainers.forEach(function(container, i) {
+            container.classList.remove('mobile-current');
             if (i === 0) {
-              container.style.display = 'block';
               container.classList.add('mobile-current');
-            } else {
-              container.style.display = 'none';
             }
           });
         }
@@ -1505,16 +1507,15 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           if (window.innerWidth <= 749) {
             // Mobile: only show current image
             gridContainers.forEach(function(container, i) {
+              container.classList.remove('mobile-current');
               if (i === currentMobileIndex) {
-                container.style.display = 'block';
-              } else {
-                container.style.display = 'none';
+                container.classList.add('mobile-current');
               }
             });
           } else {
-            // Desktop: show all images
+            // Desktop: remove mobile-current class from all
             gridContainers.forEach(function(container) {
-              container.style.display = 'block';
+              container.classList.remove('mobile-current');
             });
           }
         });
@@ -2206,6 +2207,14 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       initZoomButtonIntercept();
       initZoomGallery();
     }
+    
+    // Listen for variant updates and reinitialize mobile thumbnails
+    document.addEventListener('variant:update', function(event) {
+      // Wait for DOM to update before reinitializing
+      setTimeout(function() {
+        initMobileThumbnails();
+      }, 100);
+    });
   })();
 </script>
 
