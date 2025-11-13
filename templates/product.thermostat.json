@@ -1262,20 +1262,20 @@
             "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RT-R4CWF-CE.jpg?v=1762858632"
           }
         },
-        "faq_aimhEp": {
-          "type": "faq",
-          "settings": {
-            "question": "Does it work with my heating system?",
-            "answer": "<p>√ <a href=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\" target=\"_blank\" title=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\">Y-plan, S-plan, S-plan plus</a></p><p>√ Gas boilers, oil-fired boilers and electric boilers controlled by contactors (if your boiler works with a standard room thermostat and/or programmer, then our thermostat can control it).</p><p>X Storage heaters or individual plug-in electric room heaters.</p><p>X Electric underfloor heating system (heating mat, heating film, etc.).</p>",
-            "question_color": "#000000",
-            "answer_color": "#666666"
-          }
-        },
         "faq_7iYH9n": {
           "type": "faq",
           "settings": {
             "question": "Can this thermostat be used as a replacement for a Nest or Hive thermostat?",
             "answer": "<p>Yes, this thermostat offers the same system compatibility and broadly similar functionality as Nest or Hive, so it can be used as a replacement for either. You can refer to<a href=\"https://www.repenic.com/blogs/knowledge/google-stopped-supporting-nest-1st-2nd-gen-thermostats-what-should-you-do-now-2025-update\" target=\"_blank\" title=\"https://www.repenic.com/blogs/knowledge/google-stopped-supporting-nest-1st-2nd-gen-thermostats-what-should-you-do-now-2025-update\"> this article</a> for more detailed information.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
+        "faq_aimhEp": {
+          "type": "faq",
+          "settings": {
+            "question": "Does it work with my heating system?",
+            "answer": "<p>√ <a href=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\" target=\"_blank\" title=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\">Y-plan, S-plan, S-plan plus</a></p><p>√ Gas boilers, oil-fired boilers and electric boilers controlled by contactors (if your boiler works with a standard room thermostat and/or programmer, then our thermostat can control it).</p><p>X Storage heaters or individual plug-in electric room heaters.</p><p>X Electric underfloor heating system (heating mat, heating film, etc.).</p>",
             "question_color": "#000000",
             "answer_color": "#666666"
           }
@@ -1378,8 +1378,8 @@
         "download_rh6kb7",
         "download_8GhpGx",
         "download_7zi8BH",
-        "faq_aimhEp",
         "faq_7iYH9n",
+        "faq_aimhEp",
         "faq_H7iBHG",
         "faq_xETUHf",
         "faq_cPpPJP",
