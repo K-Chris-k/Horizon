@@ -1198,6 +1198,15 @@
             "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RT-RTWF01-CE.jpg?v=1762858667"
           }
         },
+        "faq_rx69EJ": {
+          "type": "faq",
+          "settings": {
+            "question": "Can this thermostat be used as a replacement for a Nest or Hive thermostat?",
+            "answer": "<p>No, this thermostat is not designed for the same type of heating systems as Nest or Hive. If you need a thermostat that can replace Nest or Hive, please take a look at our <a href=\"https://www.repenic.com/products/wifi-wireless-thermostat?variant=42507860475952\" target=\"_blank\" title=\"https://www.repenic.com/products/wifi-wireless-thermostat?variant=42507860475952\">WiFi wireless thermostat</a> instead.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
         "faq_H7iBHG": {
           "type": "faq",
           "settings": {
@@ -1277,6 +1286,7 @@
         "download_kWHF3k",
         "download_rh6kb7",
         "download_BAD9yP",
+        "faq_rx69EJ",
         "faq_H7iBHG",
         "faq_xETUHf",
         "faq_cPpPJP",
