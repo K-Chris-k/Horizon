@@ -5,7 +5,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
 }
 @media (max-width: 749px) {
   media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
-  display:  none !important;
+  display:  block;
 }
   slideshow-container{}
 }
@@ -480,17 +480,26 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     <div class="mobile-thumbnail-nav mobile:block desktop:hidden">
       <div class="mobile-thumbnail-nav__container">
         {% for media in sorted_media %}
+          {%- liquid
+            # 检查缩略图是否匹配当前variant
+            assign media_alt_clean = media.alt | strip | replace: ' ', '_'
+            assign should_hide_thumb = false
+            if media_alt_clean != variant_option_values and media_alt_clean != blank
+              assign should_hide_thumb = true
+            endif
+          -%}
           <button
             type="button"
-            class="mobile-thumbnail-nav__item {% if forloop.first %}active{% endif %}"
+            class="mobile-thumbnail-nav__item {% if forloop.first %}active{% endif %}{% if should_hide_thumb %} thumbnail-hidden{% endif %}"
             data-media-index="{{ forloop.index0 }}"
+            data-media-alt="{{ media.alt | escape }}"
             aria-label="View image {{ forloop.index }}"
           >
             {{
               media.preview_image
               | image_url: width: 200
               | image_tag:
-                loading: 'lazy',
+                loading: 'eager',
                 widths: '100, 200',
                 alt: media.alt
             }}
@@ -675,54 +684,195 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
 </media-gallery>
 
 {% stylesheet %}
-  /* Variant-based image filtering - HIGHEST PRIORITY to override inline styles */
-  .product-media-container.variant-filtered,
-  slideshow-slide.variant-filtered,
-  .media-gallery__grid .product-media-container.variant-filtered,
-  .dialog-zoomed-gallery > li.variant-filtered {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    position: absolute !important;
-    left: -9999px !important;
-    width: 0 !important;
-    height: 0 !important;
-    overflow: hidden !important;
-    /* Prevent rendering and layout calculation */
-    content-visibility: hidden !important;
+  /* 全局：强制禁用所有 variant 切换相关的过渡动画 */
+  .media-gallery--grid .product-media-container,
+  .media-gallery--grid .product-media-container *,
+  .media-gallery--grid .product-media,
+  .media-gallery--grid .product-media__image {
+    transition: none !important;
+    animation: none !important;
   }
   
-  /* Ensure visible images maintain their size and layout */
-  .product-media-container:not(.variant-filtered),
-  .media-gallery__grid .product-media-container:not(.variant-filtered) {
-    display: block !important;
-    /* Don't override width/height - let the original styles work */
+  /* 性能优化：启用硬件加速和即时渲染 */
+  .media-gallery--grid .product-media-container {
+    will-change: opacity, visibility;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
   
-  /* Desktop: Ensure grid containers maintain proper sizing */
+  .media-gallery--grid .product-media__image {
+    will-change: auto;
+    transform: translateZ(0);
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+  
+  /* 桌面端：使用 opacity + position 实现无闪烁切换 */
   @media screen and (min-width: 750px) {
-    .media-gallery--grid .product-media-container:not(.variant-filtered) {
-      /* Let CSS grid handle sizing naturally */
-      width: auto;
-      height: auto;
-    }
-  }
-  
-  /* Mobile grid - only show first visible (non-filtered) image */
-  @media screen and (max-width: 749px) {
-    .media-gallery--grid .media-gallery__grid .product-media-container:not(.variant-filtered) {
-      display: block !important;
+    /* Grid 容器设置为相对定位，为绝对定位的子元素提供定位上下文 */
+    .media-gallery--grid .media-gallery__grid {
+      position: relative;
     }
     
-    .media-gallery--grid .media-gallery__grid .product-media-container:not(.variant-filtered):not(:first-of-type) {
+    /* 所有图片都使用绝对定位叠加，预加载但隐藏 */
+    .media-gallery--grid .media-gallery__grid .product-media-container.variant-filtered {
+      position: absolute !important;
+      top: 0;
+      left: 0;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      z-index: -1 !important;
+      /* 保持 DOM 结构，但完全不可见和不可交互 */
+    }
+    
+    /* 可见图片立即显示，无过渡动画 */
+    .media-gallery--grid .media-gallery__grid .product-media-container:not(.variant-filtered) {
+      position: relative !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      z-index: 1 !important;
+      /* 移除 transition，实现立即切换 */
+    }
+  }
+  
+  /* 移动端：使用绝对定位叠加所有图片 - 覆盖 base.css 的样式 */
+  @media screen and (max-width: 749px) {
+    /* Grid 容器设置为相对定位 - 覆盖 base.css 的 display: block */
+    .media-gallery--grid .media-gallery__grid {
+      position: relative !important;
+      display: block !important;
+      min-height: 300px; /* 设置最小高度避免布局跳动 */
+      /* 覆盖 base.css 的 horizontal scroll 样式 */
+      white-space: normal !important;
+      overflow-x: visible !important;
+      overflow-y: visible !important;
+    }
+    
+    /* 清除 base.css 的伪元素 */
+    .media-gallery--grid .media-gallery__grid::after {
+      content: none !important;
       display: none !important;
     }
     
-    .media-gallery--grid .media-gallery__grid .product-media-container:not(.variant-filtered).mobile-current {
+    /* 所有图片绝对定位叠加 - 覆盖 base.css 的 display: block/inline-block */
+    .media-gallery--grid .media-gallery__grid .product-media-container {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: auto !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      /* 覆盖 base.css 的样式 */
       display: block !important;
+      margin: 0 !important;
+      white-space: normal !important;
+      /* 移除 transition，实现立即切换 */
+    }
+    
+    /* 第一张可见图片默认显示（在 JS 添加 mobile-current 之前） */
+    .media-gallery--grid .media-gallery__grid .product-media-container:not(.variant-filtered):first-of-type {
+      position: relative !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      z-index: 2 !important;
+    }
+    
+    /* 当前显示的图片 - 立即显示（优先级更高） */
+    .media-gallery--grid .media-gallery__grid .product-media-container.mobile-current:not(.variant-filtered) {
+      position: relative !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      z-index: 2 !important;
+      /* 移除 transition，实现立即切换 */
+    }
+    
+    /* 非当前的图片隐藏（即使是可见的variant） */
+    .media-gallery--grid .media-gallery__grid .product-media-container:not(.mobile-current):not(.variant-filtered) {
+      position: absolute !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    
+    /* 被过滤的图片完全隐藏 */
+    .media-gallery--grid .media-gallery__grid .product-media-container.variant-filtered {
+      position: absolute !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      z-index: -1 !important;
     }
   }
+  
+  /* Carousel 模式的平滑过渡 */
+  slideshow-slide.variant-filtered {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+  
+  /* Zoom 对话框中的过滤 */
+  .dialog-zoomed-gallery > li.variant-filtered {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+  
+  /* Ensure variant-filtered items don't get gallery layout classes */
+  .product-media-container.variant-filtered.gallery-first-large,
+  .product-media-container.variant-filtered.gallery-thumbnail {
+    grid-column: auto !important;
+  }
+  
+  /* Grid 布局在不同屏幕下的基础样式 - 由媒体查询覆盖 */
+  
+  /* 移动端布局在前面已经通过绝对定位方式重新定义 */
+  
+  /* 桌面端布局系统 - 基于固定类名，不依赖DOM位置 */
+  @media screen and (min-width: 750px) {
+    /* Grid布局 - 两列，使用 display flow */
+    .media-gallery--two-column .media-gallery__grid {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--image-gap, 0px);
+    }
+    
+    /* 第一张大图 - 占满一行（两列） */
+    .media-gallery--two-column .media-gallery__grid .product-media-container.gallery-first-large:not(.variant-filtered) {
+      grid-column: span 2 !important;
+      position: relative !important;
+    }
+    
+    /* 缩略图 - 一行两个（单列） */
+    .media-gallery--two-column .media-gallery__grid .product-media-container.gallery-thumbnail:not(.variant-filtered) {
+      grid-column: span 1 !important;
+      position: relative !important;
+    }
+    
+    /* One column layout */
+    .media-gallery--one-column .media-gallery__grid {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: var(--image-gap, 0px);
+    }
+    
+    .media-gallery--one-column .media-gallery__grid .product-media-container:not(.variant-filtered) {
+      grid-column: span 1 !important;
+      position: relative !important;
+    }
+  }
+  
   
   /* Disable scrolling on zoom dialog */
   zoom-dialog dialog {
@@ -1292,58 +1442,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
   }
 
   /* Special styles for first zoomed image - add custom styles as needed */
-  
-  /* Mobile Grid Mode: Show only current image, hide others */
-  @media screen and (max-width: 749px) {
-    /* Prevent entire media gallery area from causing page scroll issues */
-    .media-gallery--grid {
-      overflow: visible !important;
-      position: relative;
-      width: 100%;
-      max-width: 100vw;
-      contain: layout style; /* Optimize rendering */
-    }
-    
-    /* Main grid container - only show one image at a time */
-    .media-gallery--grid .media-gallery__grid {
-      position: relative;
-      width: 100%;
-      max-width: 100%;
-      height: auto;
-      display: block !important;
-      overflow: hidden !important; /* Strictly hide overflow */
-      touch-action: pan-y pinch-zoom !important; /* Allow vertical page scroll but not on grid */
-      contain: layout; /* Contain layout shifts */
-    }
-    
-    /* Hide all images by default on mobile */
-    .media-gallery--grid .media-gallery__grid .product-media-container {
-      display: none; /* Hide all by default */
-      width: 100%;
-      max-width: 100%;
-      height: auto;
-      margin: 0;
-      padding: 0;
-      position: relative;
-    }
-    
-    /* Only show first image by default */
-    .media-gallery--grid .media-gallery__grid .product-media-container:first-child {
-      display: none !important;
-    }
-    
-    /* Show image when marked as mobile-current */
-    .media-gallery--grid .media-gallery__grid .product-media-container.mobile-current {
-      display: block !important;
-      position: relative;
-    }
-    
-    /* Ensure product-media doesn't cause overflow */
-    .media-gallery--grid .media-gallery__grid .product-media {
-      max-width: 100%;
-      overflow: hidden;
-    }
-  }
 
   /* Mobile Grid Navigation Arrows */
   .mobile-grid-nav {
@@ -1502,6 +1600,11 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     .mobile-thumbnail-nav__item:active {
       transform: scale(0.95);
     }
+    
+    /* 隐藏被过滤的缩略图 */
+    .mobile-thumbnail-nav__item.thumbnail-hidden {
+      display: none !important;
+    }
   }
 {% endstylesheet %}
 
@@ -1531,31 +1634,23 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
 
       let visibleCount = 0;
 
+      // 只通过 class 控制，不操作 style 属性
       zoomImages.forEach(li => {
         const mediaAlt = li.getAttribute('data-media-alt') || '';
         const matches = matchesVariant(mediaAlt, selectedVariantString);
 
         if (matches) {
           li.classList.remove('variant-filtered');
-          li.style.removeProperty('display');
-          li.style.removeProperty('visibility');
-          li.style.removeProperty('opacity');
-          li.removeAttribute('hidden');
           visibleCount++;
         } else {
           li.classList.add('variant-filtered');
-          li.style.display = 'none';
-          li.setAttribute('hidden', '');
         }
       });
 
+      // 如果没有匹配的图片，显示所有图片
       if (visibleCount === 0) {
         zoomImages.forEach(li => {
           li.classList.remove('variant-filtered');
-          li.style.removeProperty('display');
-          li.style.removeProperty('opacity');
-          li.style.removeProperty('visibility');
-          li.removeAttribute('hidden');
         });
         visibleCount = zoomImages.length;
       }
@@ -1588,6 +1683,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           const gridContainers = Array.from(mediaGallery.querySelectorAll('.media-gallery__grid .product-media-container'));
           let firstMatchIndex = -1;
           let currentIndex = -1;
+          let hasChanges = false; // 跟踪是否有实际变化
 
           // 找到当前显示的图片索引
           gridContainers.forEach((container, index) => {
@@ -1601,22 +1697,65 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
             currentIndex = gridContainers.findIndex(c => !c.classList.contains('variant-filtered'));
           }
 
+          // 第一步：检查并更新过滤状态（只通过 class 控制，不操作 display）
           gridContainers.forEach((container, index) => {
             const mediaAlt = container.getAttribute('data-media-alt') || '';
             const matches = matchesVariant(mediaAlt, selectedVariantString);
+            const isCurrentlyFiltered = container.classList.contains('variant-filtered');
 
             if (matches) {
-              container.classList.remove('variant-filtered');
-              container.style.removeProperty('display');
-              container.removeAttribute('hidden');
+              if (isCurrentlyFiltered) {
+                hasChanges = true;
+                container.classList.remove('variant-filtered');
+                // 不再操作 display 和 hidden，让 CSS 处理
+              }
               if (firstMatchIndex === -1) firstMatchIndex = index;
             } else {
-              container.classList.add('variant-filtered');
-              container.style.display = 'none';
-              container.setAttribute('hidden', '');
+              if (!isCurrentlyFiltered) {
+                hasChanges = true;
+                container.classList.add('variant-filtered');
+                // 不再操作 display 和 hidden，让 CSS 处理
+              }
             }
           });
 
+          // 如果没有变化，直接返回，避免不必要的DOM操作
+          if (!hasChanges) {
+            return;
+          }
+
+          // 第二步：立即批量更新布局类（不使用 requestAnimationFrame，减少延迟）
+          // 更新布局类 - 第一张可见图片用大图布局，其他用缩略图布局
+          let visibleCount = 0;
+          let layoutChanges = [];
+          
+          gridContainers.forEach((container, index) => {
+            const shouldBeFirstLarge = !container.classList.contains('variant-filtered') && visibleCount === 0;
+            const shouldBeThumbnail = !container.classList.contains('variant-filtered') && visibleCount > 0;
+            
+            const hasFirstLarge = container.classList.contains('gallery-first-large');
+            const hasThumbnail = container.classList.contains('gallery-thumbnail');
+            
+            if (shouldBeFirstLarge !== hasFirstLarge || shouldBeThumbnail !== hasThumbnail) {
+              layoutChanges.push({ container, shouldBeFirstLarge, shouldBeThumbnail });
+            }
+            
+            if (!container.classList.contains('variant-filtered')) {
+              visibleCount++;
+            }
+          });
+          
+          // 批量应用布局变化
+          layoutChanges.forEach(({ container, shouldBeFirstLarge, shouldBeThumbnail }) => {
+            container.classList.remove('gallery-first-large', 'gallery-thumbnail');
+            if (shouldBeFirstLarge) {
+              container.classList.add('gallery-first-large');
+            } else if (shouldBeThumbnail) {
+              container.classList.add('gallery-thumbnail');
+            }
+          });
+
+          // 第三步：更新移动端当前图片（只在必要时）
           if (window.innerWidth <= 749 && firstMatchIndex >= 0) {
             // 检查当前索引的图片是否仍然可见
             const currentStillVisible = currentIndex >= 0 && 
@@ -1625,25 +1764,32 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
             // 如果当前图片仍可见，保持位置；否则跳转到第一张
             const targetIndex = currentStillVisible ? currentIndex : firstMatchIndex;
             
-            // 更新全局索引
-            window._currentGridImageIndex = targetIndex;
+            // 只在索引真正改变时更新
+            if (window._currentGridImageIndex !== targetIndex) {
+              window._currentGridImageIndex = targetIndex;
 
-            gridContainers.forEach((container, index) => {
-              container.classList.toggle('mobile-current', !container.classList.contains('variant-filtered') && index === targetIndex);
-            });
+              gridContainers.forEach((container, index) => {
+                const shouldBeCurrent = !container.classList.contains('variant-filtered') && index === targetIndex;
+                container.classList.toggle('mobile-current', shouldBeCurrent);
+              });
 
-            const mobileThumbnails = Array.from(document.querySelectorAll('.mobile-thumbnail-nav__item'));
-            mobileThumbnails.forEach((thumb, index) => {
-              thumb.classList.toggle('active', index === targetIndex);
-              if (index === targetIndex) {
-                thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-              }
-            });
+              const mobileThumbnails = Array.from(document.querySelectorAll('.mobile-thumbnail-nav__item'));
+              mobileThumbnails.forEach((thumb, index) => {
+                thumb.classList.toggle('active', index === targetIndex);
+                if (index === targetIndex) {
+                  thumb.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
+                }
+              });
+            }
           }
 
+          // 第四步：更新缩略图显示（根据 data-media-alt 过滤）
           const mobileThumbnails = Array.from(document.querySelectorAll('.mobile-thumbnail-nav__item'));
           mobileThumbnails.forEach((thumb, index) => {
-            thumb.style.display = (gridContainers[index] && gridContainers[index].classList.contains('variant-filtered')) ? 'none' : '';
+            const thumbAlt = thumb.getAttribute('data-media-alt') || '';
+            const thumbAltClean = thumbAlt.trim().replace(/\s+/g, '_');
+            const matches = matchesVariant(thumbAltClean, selectedVariantString);
+            thumb.classList.toggle('thumbnail-hidden', !matches && thumbAltClean !== '');
           });
         } else {
           const slideshow = mediaGallery.querySelector('slideshow-component, [ref="slideshow"]');
@@ -1652,23 +1798,36 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           const slides = Array.from(slideshow.querySelectorAll('[data-media-alt]'));
           let firstMatchIndex = -1;
           let currentSlideIndex = currentSlideshowIndex;
+          let hasChanges = false;
 
+          // 检查并更新过滤状态（只通过 class 控制，不操作 display）
           slides.forEach((slide, index) => {
             const mediaAlt = slide.getAttribute('data-media-alt') || '';
             const matches = matchesVariant(mediaAlt, selectedVariantString);
+            const isCurrentlyFiltered = slide.classList.contains('variant-filtered');
 
             if (matches) {
-              slide.classList.remove('variant-filtered');
-              slide.style.removeProperty('display');
-              slide.removeAttribute('hidden');
+              if (isCurrentlyFiltered) {
+                hasChanges = true;
+                slide.classList.remove('variant-filtered');
+                // 不再操作 display 和 hidden，让 CSS 处理
+              }
               if (firstMatchIndex === -1) firstMatchIndex = index;
             } else {
-              slide.classList.add('variant-filtered');
-              slide.style.display = 'none';
-              slide.setAttribute('hidden', '');
+              if (!isCurrentlyFiltered) {
+                hasChanges = true;
+                slide.classList.add('variant-filtered');
+                // 不再操作 display 和 hidden，让 CSS 处理
+              }
             }
           });
 
+          // 如果没有变化，直接返回
+          if (!hasChanges) {
+            return;
+          }
+
+          // 立即处理幻灯片切换（不使用 requestAnimationFrame）
           // 检查当前幻灯片是否仍然可见
           const currentStillVisible = currentSlideIndex >= 0 && 
                                      currentSlideIndex < slides.length &&
@@ -1682,19 +1841,51 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
         }
       }
 
-      let isFiltering = false;
+      let lastVariantString = '';
+      let isProcessing = false;
 
       document.addEventListener('variant:update', () => {
-        if (isFiltering) return;
-        isFiltering = true;
-        setTimeout(() => {
-          filterImagesByVariant();
-          isFiltering = false;
-        }, 300);
+        // 使用 requestAnimationFrame 实现零延迟响应
+        if (isProcessing) return;
+        isProcessing = true;
+        
+        requestAnimationFrame(() => {
+          const currentVariantString = getSelectedVariantValues();
+          // 只在 variant 真正改变时才执行过滤
+          if (currentVariantString !== lastVariantString) {
+            lastVariantString = currentVariantString;
+            filterImagesByVariant();
+          }
+          isProcessing = false;
+        });
       });
 
+      // 立即执行初始过滤，无延迟
+      const initialVariantString = getSelectedVariantValues();
+      lastVariantString = initialVariantString;
       filterImagesByVariant();
-      setTimeout(filterImagesByVariant, 500);
+
+      // 过滤后设置布局类和移动端初始显示
+      const gridContainers = Array.from(document.querySelectorAll('.media-gallery__grid .product-media-container'));
+      let visibleCount = 0;
+      let firstVisibleIndex = -1;
+      
+      gridContainers.forEach((container, index) => {
+        if (!container.classList.contains('variant-filtered')) {
+          if (visibleCount === 0) {
+            container.classList.add('gallery-first-large');
+            firstVisibleIndex = index;
+            // 移动端：设置第一张可见图片为当前显示
+            if (window.innerWidth <= 749) {
+              container.classList.add('mobile-current');
+              window._currentGridImageIndex = index;
+            }
+          } else {
+            container.classList.add('gallery-thumbnail');
+          }
+          visibleCount++;
+        }
+      });
     }
 
     function initMobileThumbnails() {
@@ -1709,17 +1900,28 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       if (mobileThumbnails.length === 0) return;
 
       if (presentation === 'grid' && gridContainers.length > 0) {
-        let currentMobileIndex = 0;
         const totalImages = mobileThumbnails.length;
         
-        // 初始化全局索引
-        window._currentGridImageIndex = 0;
+        // 使用已经设置的全局索引，或找到第一张可见图片
+        let currentMobileIndex = window._currentGridImageIndex || 0;
+        
+        // 如果当前索引的图片被过滤了，找到第一张可见的
+        if (gridContainers[currentMobileIndex]?.classList.contains('variant-filtered')) {
+          currentMobileIndex = gridContainers.findIndex(c => !c.classList.contains('variant-filtered'));
+          if (currentMobileIndex === -1) currentMobileIndex = 0;
+          window._currentGridImageIndex = currentMobileIndex;
+        }
 
         const prevBtn = mediaGallery.querySelector('.mobile-grid-nav__button--prev');
         const nextBtn = mediaGallery.querySelector('.mobile-grid-nav__button--next');
 
         function switchMobileImage(newIndex) {
           if (newIndex < 0 || newIndex >= totalImages) return;
+          
+          // 如果这个图片被过滤了，不要切换
+          if (gridContainers[newIndex]?.classList.contains('variant-filtered')) {
+            return;
+          }
 
           currentMobileIndex = newIndex;
           // 同步到全局 grid 索引，用于 zoom 对话框
@@ -1734,7 +1936,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           });
 
           if (mobileThumbnails[newIndex]) {
-            mobileThumbnails[newIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            mobileThumbnails[newIndex].scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
           }
 
           if (prevBtn) prevBtn.disabled = (newIndex === 0);
@@ -1744,6 +1946,10 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
         mobileThumbnails.forEach((thumbnail, index) => {
           thumbnail.addEventListener('click', e => {
             e.preventDefault();
+            // 如果缩略图被隐藏（被过滤），不执行操作
+            if (thumbnail.classList.contains('thumbnail-hidden')) {
+              return;
+            }
             switchMobileImage(index);
           });
         });
@@ -1764,7 +1970,14 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           });
         }
 
-        switchMobileImage(0);
+        // 初始化缩略图的激活状态
+        mobileThumbnails.forEach((thumb, i) => {
+          const isHidden = thumb.classList.contains('thumbnail-hidden');
+          thumb.classList.toggle('active', i === currentMobileIndex && !isHidden);
+        });
+
+        // 使用已经设置好的索引（第一张可见图片）
+        switchMobileImage(currentMobileIndex);
 
         const thumbnailNav = document.querySelector('.mobile-thumbnail-nav');
 
@@ -1856,22 +2069,41 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
 
       if (presentation === 'grid') {
         const gridContainers = Array.from(mediaGallery.querySelectorAll('.media-gallery__grid .product-media-container--zoomable'));
+        
+        // 统一的点击处理函数
+        const handleContainerClick = (container, index, e) => {
+          if (e.target.closest('dialog')) return;
+          
+          let mediaIndex = findMediaIndex(container);
+          if (mediaIndex === null || isNaN(mediaIndex)) mediaIndex = index;
+          
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // 在移动端 grid 模式下，使用当前显示的图片索引
+          if (window.innerWidth <= 749 && typeof window._currentGridImageIndex !== 'undefined') {
+            mediaIndex = window._currentGridImageIndex;
+          } else {
+            // 桌面端：更新全局索引为点击的图片
+            window._currentGridImageIndex = mediaIndex;
+          }
+          
+          if (typeof zoomDialog.open === 'function') {
+            zoomDialog.open(mediaIndex, e);
+          }
+        };
+        
         gridContainers.forEach((container, index) => {
-          container.addEventListener('click', e => {
-            if (e.target.closest('dialog')) return;
-            let mediaIndex = findMediaIndex(container);
-            if (mediaIndex === null || isNaN(mediaIndex)) mediaIndex = index;
-            e.preventDefault();
-            e.stopPropagation();
-            // 在移动端 grid 模式下，使用当前显示的图片索引
-            if (window.innerWidth <= 749 && typeof window._currentGridImageIndex !== 'undefined') {
-              mediaIndex = window._currentGridImageIndex;
-            } else {
-              // 桌面端：更新全局索引为点击的图片
-              window._currentGridImageIndex = mediaIndex;
+          // 使用 click 和 touchend 两种事件确保移动端能触发
+          container.addEventListener('click', (e) => handleContainerClick(container, index, e), { capture: true, passive: false });
+          container.addEventListener('touchend', (e) => {
+            // 只在tap（快速点击）时触发zoom，避免滚动时触发
+            const touch = e.changedTouches[0];
+            const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (elem && container.contains(elem)) {
+              handleContainerClick(container, index, e);
             }
-            if (typeof zoomDialog.open === 'function') zoomDialog.open(mediaIndex, e);
-          }, true);
+          }, { capture: true, passive: false });
         });
         return;
       }
@@ -2191,11 +2423,50 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       });
     }
 
+    // 预加载所有产品图片，避免切换时闪烁
+    function preloadAllImages() {
+      const mediaGallery = document.querySelector('media-gallery[data-presentation="{{ block_settings.media_presentation }}"]');
+      if (!mediaGallery) return;
+
+      // 获取所有图片元素
+      const images = mediaGallery.querySelectorAll('.product-media__image');
+      
+      // 立即加载所有图片
+      images.forEach(img => {
+        // 移除懒加载属性
+        if (img.hasAttribute('loading')) {
+          img.removeAttribute('loading');
+        }
+        
+        // 设置为立即加载
+        img.loading = 'eager';
+        
+        // 提升解码优先级
+        if (img.decoding) {
+          img.decoding = 'sync';
+        }
+        
+        // 触发图片加载
+        if (img.dataset.src && !img.src) {
+          img.src = img.dataset.src;
+        }
+        
+        // 如果图片还未加载完成，强制触发加载
+        if (!img.complete && img.src) {
+          const tempImg = new Image();
+          tempImg.src = img.src;
+        }
+      });
+    }
+
     function initializeAll() {
       // 初始化全局图片索引（如果还未设置）
       if (typeof window._currentGridImageIndex === 'undefined') {
         window._currentGridImageIndex = 0;
       }
+      
+      // 预加载所有图片
+      preloadAllImages();
       
       initVariantImageFiltering();
       initMobileThumbnails();
@@ -2209,38 +2480,25 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       initializeAll();
     }
 
+    // 优化 MutationObserver，立即初始化无延迟
+    let isObserverInitialized = false;
     const bodyObserver = new MutationObserver(mutations => {
+      let hasMediaGalleryAdded = false;
+      
       mutations.forEach(mutation => {
         mutation.addedNodes.forEach(node => {
           if (node.nodeType === 1 && node.tagName === 'MEDIA-GALLERY') {
-            setTimeout(() => {
-              initializeAll();
-              setTimeout(() => {
-                const mediaGallery = document.querySelector('media-gallery[data-presentation="{{ block_settings.media_presentation }}"]');
-                if (mediaGallery) {
-                  const selectedVariantString = getSelectedVariantValuesFromForm();
-                  const presentation = mediaGallery.getAttribute('data-presentation');
-                  if (presentation === 'grid') {
-                    const gridContainers = Array.from(mediaGallery.querySelectorAll('.media-gallery__grid .product-media-container'));
-                    gridContainers.forEach(container => {
-                      const mediaAlt = container.getAttribute('data-media-alt') || '';
-                      if (matchesVariant(mediaAlt, selectedVariantString)) {
-                        container.classList.remove('variant-filtered');
-                        container.style.removeProperty('display');
-                        container.removeAttribute('hidden');
-                      } else {
-                        container.classList.add('variant-filtered');
-                        container.style.display = 'none';
-                        container.setAttribute('hidden', '');
-                      }
-                    });
-                  }
-                }
-              }, 500);
-            }, 100);
+            hasMediaGalleryAdded = true;
           }
         });
       });
+      
+      // 只在真正添加了 media-gallery 且未初始化时才初始化
+      if (hasMediaGalleryAdded && !isObserverInitialized) {
+        isObserverInitialized = true;
+        // 立即初始化，无延迟
+        initializeAll();
+      }
     });
 
     bodyObserver.observe(document.body, { childList: true, subtree: true });

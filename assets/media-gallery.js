@@ -33,27 +33,25 @@ export class MediaGallery extends Component {
   }
 
   /**
-   * Handles a variant update event by replacing the current media gallery with a new one.
+   * Handles a variant update event - DON'T replace DOM, just dispatch event for filtering
    *
    * @param {VariantUpdateEvent} event - The variant update event.
    */
   #handleVariantUpdate = (event) => {
-    const source = event.detail.data.html;
-
-    if (!source) return;
-    const newMediaGallery = source.querySelector('media-gallery');
-
-    if (!newMediaGallery) return;
-
-    this.replaceWith(newMediaGallery);
+    // ✅ 不再替换整个 DOM，只触发 variant:update 事件
+    // 让 _product-media-gallery.liquid 中的脚本处理图片过滤
+    // 这样可以避免图片重新加载导致的闪烁
     
-    // CRITICAL: Trigger custom event after replacement to re-apply filtering
-    setTimeout(() => {
-      document.dispatchEvent(new CustomEvent('media-gallery:replaced', { 
-        bubbles: true,
-        detail: { gallery: newMediaGallery }
-      }));
-    }, 50);
+    // 如果需要处理新产品（combined listing），再考虑替换
+    if (event.detail.data.newProduct) {
+      const source = event.detail.data.html;
+      if (!source) return;
+      const newMediaGallery = source.querySelector('media-gallery');
+      if (!newMediaGallery) return;
+      this.replaceWith(newMediaGallery);
+    }
+    
+    // 其他情况只触发过滤，不替换DOM
   };
 
   /**

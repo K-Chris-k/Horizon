@@ -1527,9 +1527,19 @@ media-gallery {
   width: 100%;
 }
 
+/* ✅ 强制禁用所有产品媒体的transition，避免variant切换闪烁 */
+media-gallery .product-media-container,
+media-gallery .product-media-container *,
+media-gallery .product-media,
+media-gallery .product-media__image,
+media-gallery img {
+  transition: none !important;
+  animation: none !important;
+}
+
 :where(media-gallery, .product-grid__item) {
   .media-gallery__grid {
-    grid-template-columns: 1fr;
+    /* 默认样式被移除，使用基于类名的布局系统 */
     gap: var(--image-gap);
   }
 }
@@ -1564,9 +1574,7 @@ media-gallery {
   }
 }
 
-media-gallery:where(.media-gallery--grid) .media-gallery__grid {
-  display: grid;
-}
+/* Grid模式的display由two-column/one-column类控制，不在这里设置默认值 */
 
 media-gallery.media-gallery--grid .media-gallery__grid .product-media-container {
   /* Needed for safari to stretch to full grid height */
@@ -1589,9 +1597,9 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container 
     width: 100%;
   }
 
-  /* First item: main large image taking full width */
-  .media-gallery--two-column .product-media-container:first-child,
-  .media-gallery--one-column .product-media-container:first-child {
+  /* 移动端：第一张大图占满宽度 - 使用新的类名系统 */
+  .media-gallery--two-column .product-media-container.gallery-first-large,
+  .media-gallery--one-column .product-media-container.gallery-first-large {
     display: block;
     width: 100%;
     height: auto;
@@ -1623,16 +1631,17 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container 
     display: none;
   }
 
-  /* Remaining items: thumbnails in horizontal scroll - ONLY apply to grid, not zoom dialog */
-  .media-gallery--two-column .media-gallery__grid .product-media-container:not(:first-child),
-  .media-gallery--one-column .media-gallery__grid .product-media-container:not(:first-child) {
+  /* 移动端：缩略图 - 横向滚动 - 使用新的类名系统 */
+  .media-gallery--two-column .media-gallery__grid .product-media-container.gallery-thumbnail,
+  .media-gallery--one-column .media-gallery__grid .product-media-container.gallery-thumbnail {
     display: inline-block;
     width: 100%;
     height: 100%;
     aspect-ratio: 1;
     margin-right: 8px;
     cursor: pointer;
-    transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    /* ❌ 移除 transition，避免variant切换时闪烁 */
+    /* transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease; */
     vertical-align: top;
     white-space: normal;
     --media-preview-ratio: 1 !important;
@@ -1644,47 +1653,47 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container 
     margin-left: var(--padding-inline-start, 12px);
   }
 
-  /* Active/hover state for thumbnails */
-  .media-gallery--two-column .media-gallery__grid .product-media-container:not(:first-child):hover,
-  .media-gallery--one-column .media-gallery__grid .product-media-container:not(:first-child):hover {
+  /* 移动端缩略图：悬停和激活状态 */
+  .media-gallery--two-column .media-gallery__grid .product-media-container.gallery-thumbnail:hover,
+  .media-gallery--one-column .media-gallery__grid .product-media-container.gallery-thumbnail:hover {
     opacity: 0.7;
   }
 
-  .media-gallery--two-column .media-gallery__grid .product-media-container:not(:first-child):active,
-  .media-gallery--one-column .media-gallery__grid .product-media-container:not(:first-child):active {
+  .media-gallery--two-column .media-gallery__grid .product-media-container.gallery-thumbnail:active,
+  .media-gallery--one-column .media-gallery__grid .product-media-container.gallery-thumbnail:active {
     opacity: 0.5;
     transform: scale(0.95);
   }
 
-  /* Selected state for the thumbnail that matches the main image */
-  .media-gallery--two-column .media-gallery__grid .product-media-container:not(:first-child).thumbnail-selected,
-  .media-gallery--one-column .media-gallery__grid .product-media-container:not(:first-child).thumbnail-selected {
+  /* 移动端缩略图：选中状态 */
+  .media-gallery--two-column .media-gallery__grid .product-media-container.gallery-thumbnail.thumbnail-selected,
+  .media-gallery--one-column .media-gallery__grid .product-media-container.gallery-thumbnail.thumbnail-selected {
     border-color: #000;
     opacity: 1;
     margin-left: 12px;
   }
 
-  /* Ensure images fit within thumbnail containers */
-  .media-gallery--two-column .media-gallery__grid .product-media-container:not(:first-child) img,
-  .media-gallery--one-column .media-gallery__grid .product-media-container:not(:first-child) img,
-  .media-gallery--two-column .media-gallery__grid .product-media-container:not(:first-child) .product-media__image,
-  .media-gallery--one-column .media-gallery__grid .product-media-container:not(:first-child) .product-media__image {
+  /* 移动端缩略图：图片填充 */
+  .media-gallery--two-column .media-gallery__grid .product-media-container.gallery-thumbnail img,
+  .media-gallery--one-column .media-gallery__grid .product-media-container.gallery-thumbnail img,
+  .media-gallery--two-column .media-gallery__grid .product-media-container.gallery-thumbnail .product-media__image,
+  .media-gallery--one-column .media-gallery__grid .product-media-container.gallery-thumbnail .product-media__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  /* Hide zoom button on mobile thumbnails (not on main image) */
-  .media-gallery--two-column .media-gallery__grid .product-media-container:not(:first-child) .product-media-container__zoom-button,
-  .media-gallery--one-column .media-gallery__grid .product-media-container:not(:first-child) .product-media-container__zoom-button {
+  /* 移动端缩略图：隐藏zoom按钮 */
+  .media-gallery--two-column .media-gallery__grid .product-media-container.gallery-thumbnail .product-media-container__zoom-button,
+  .media-gallery--one-column .media-gallery__grid .product-media-container.gallery-thumbnail .product-media-container__zoom-button {
     display: none;
   }
 
-  /* Ensure product-media fills thumbnail container */
-  .media-gallery--two-column .media-gallery__grid .product-media-container:not(:first-child) .product-media,
-  .media-gallery--one-column .media-gallery__grid .product-media-container:not(:first-child) .product-media,
-  .media-gallery--two-column .media-gallery__grid .product-media-container:not(:first-child) .product-media-constraint-wrapper,
-  .media-gallery--one-column .media-gallery__grid .product-media-container:not(:first-child) .product-media-constraint-wrapper {
+  /* 移动端缩略图：确保product-media填充容器 */
+  .media-gallery--two-column .media-gallery__grid .product-media-container.gallery-thumbnail .product-media,
+  .media-gallery--one-column .media-gallery__grid .product-media-container.gallery-thumbnail .product-media,
+  .media-gallery--two-column .media-gallery__grid .product-media-container.gallery-thumbnail .product-media-constraint-wrapper,
+  .media-gallery--one-column .media-gallery__grid .product-media-container.gallery-thumbnail .product-media-constraint-wrapper {
     width: 100%;
     height: 100%;
     max-width: 100%;
@@ -1698,33 +1707,46 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container 
     --viewport-offset: unset;
   }
 
-  /* Desktop: Two-column grid */
-  .media-gallery--two-column .media-gallery__grid {
-    /* grid-template-columns: repeat(2, 1fr); */
+  /* 桌面端：Two-column grid布局（显式设置，覆盖所有默认样式） */
+  .media-gallery--two-column.media-gallery--grid .media-gallery__grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: var(--image-gap, 0px);
     /* Expand grid to full width, ignoring container padding */
     margin-inline: calc(-1 * var(--padding-inline-start, 0px)) calc(-1 * var(--padding-inline-end, 0px));
     width: calc(100% + var(--padding-inline-start, 0px) + var(--padding-inline-end, 0px));
   }
 
-  .media-gallery--two-column .product-media-container:first-child,
-  .media-gallery--two-column .product-media-container:only-child {
-    /* First child spans 2 columns and takes full width */
-    grid-column: span 2;
-    width: 100%;
+  /* 桌面端：第一张大图占两列（一行） */
+  .media-gallery--two-column .product-media-container.gallery-first-large {
+    grid-column: span 2 !important;
+    width: 100% !important;
+    display: block !important;
+  }
+  
+  /* 桌面端：缩略图占一列（一行两个） */
+  .media-gallery--two-column .product-media-container.gallery-thumbnail {
+    grid-column: span 1 !important;
+    width: 100% !important;
+    display: block !important;
   }
 
-  /* Desktop: One-column grid */
-  .media-gallery--one-column .media-gallery__grid {
-    grid-template-columns: 1fr;
+  /* 桌面端：One-column grid布局 */
+  .media-gallery--one-column.media-gallery--grid .media-gallery__grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: var(--image-gap, 0px);
     /* Expand grid to full width, ignoring container padding */
     margin-inline: calc(-1 * var(--padding-inline-start, 0px)) calc(-1 * var(--padding-inline-end, 0px));
     width: calc(100% + var(--padding-inline-start, 0px) + var(--padding-inline-end, 0px));
   }
 
-  .media-gallery--one-column .product-media-container {
-    /* Single column */
-    grid-column: span 1;
-    width: 100%;
+  /* 桌面端：One-column所有图片都占一列 */
+  .media-gallery--one-column .product-media-container.gallery-first-large,
+  .media-gallery--one-column .product-media-container.gallery-thumbnail {
+    grid-column: span 1 !important;
+    width: 100% !important;
+    display: block !important;
   }
 }
 
@@ -1927,7 +1949,8 @@ zoom-dialog dialog {
 /* If the product media is playing, hide the preview image */
 .product-media-container:has(.deferred-media__playing) .product-media__image {
   opacity: 0;
-  transition: opacity var(--animation-speed) var(--animation-easing);
+  /* ❌ 移除 transition，避免与variant切换冲突 */
+  /* transition: opacity var(--animation-speed) var(--animation-easing); */
 }
 
 /* Deferred media & Product model  */
@@ -2023,7 +2046,8 @@ deferred-media {
 deferred-media img {
   height: 100%;
   object-fit: cover;
-  transition: opacity 0.3s ease;
+  /* ❌ 移除 transition，避免与variant切换冲突 */
+  /* transition: opacity 0.3s ease; */
 }
 
 deferred-media iframe {
@@ -4489,14 +4513,12 @@ scroll-hint.dialog-thumbnails-list.list-unstyled{
   display: none;
 }
 @media screen and (max-width: 749px) {
+  /* ✅ 移除强制 display: block，让 _product-media-gallery.liquid 的样式控制显示 */
+  /* :not(.dialog-zoomed-gallery) > .product-media-container {
+    display: block;
+  } */
   
-:not(.dialog-zoomed-gallery) > .product-media-container {
-
-
-  display: block;
-
-}
-scroll-hint.dialog-thumbnails-list.list-unstyled{
-  display: block;
-}
+  scroll-hint.dialog-thumbnails-list.list-unstyled{
+    display: block;
+  }
 }
