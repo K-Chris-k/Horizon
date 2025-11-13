@@ -282,7 +282,7 @@
                     "text_PhK3qq": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>The wireless thermostat comes with hotkeys, color screen, and a rotary knob, you can control all functions with just a few taps. Its unique 4-channel design helps you save up to £239 compared to similar products.</p>",
+                        "text": "<p>This <strong>WiFi wireless thermostat</strong> has the <strong>same heating system compatibility</strong> as the Nest 1st and 2nd generation, and its <strong>smart features are essentially identical</strong>, making it a <strong>direct replacement</strong> for the Nest thermostat.</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -640,7 +640,7 @@
         "content_image_width_desktop": 250,
         "content_image_width_mobile": 300,
         "content_image_offset_desktop": 20,
-        "content_text": "<p>This wireless Wi-Fi smart thermostat is compatible with mainstream UK plumbing systems (S/Y plan, combi boiler, system boiler), featuring hot water and heating control. <a href=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\" target=\"_blank\" title=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\">Click here to see if it fits your house.</a></p>",
+        "content_text": "<p><a href=\"https://www.repenic.com/blogs/knowledge/google-stopped-supporting-nest-1st-2nd-gen-thermostats-what-should-you-do-now-2025-update\" target=\"_blank\" title=\"https://www.repenic.com/blogs/knowledge/google-stopped-supporting-nest-1st-2nd-gen-thermostats-what-should-you-do-now-2025-update\">Click here to check why it is an alternative to Nest</a></p>",
         "content_text_color": "#333333",
         "content_text_font_size_desktop": 18,
         "content_text_font_size_mobile": 14,
@@ -1754,13 +1754,13 @@
   "order": [
     "main",
     "smart_thermostat_features_dqfQ6j",
+    "technical_specifications_Ek79Ct",
     "feature_accordion_F36Mep",
     "flexible_showcase_9gNB8G",
     "product_carousel_HLfn4H",
     "control_compatibility_fUtAm8",
     "product_features_tabs_rjg8kJ",
     "section_QhAMng",
-    "technical_specifications_Ek79Ct",
     "featured_blog_posts_rBriXQ",
     "176216187330e480f2",
     "product_recommendations_8yy8PK"
