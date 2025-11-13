@@ -1634,11 +1634,11 @@
             "text_h367gq": {
               "type": "text",
               "settings": {
-                "text": "<p><br/>Compatible with all smart control platforms supporting <em><strong>Zigbee 3.0</strong></em>. Unlock more personalised features when used with open platforms such as <em><strong>Home Assistant and Homey</strong></em>. Click the button below to learn more.</p>",
+                "text": "<p><br/>Compatible with all smart control platforms supporting <em><strong>Zigbee 3.0</strong></em>. Unlock more personalised features when used with open platforms such as <em><strong>Homey and Hubitat</strong></em>. Click the button below to learn more.</p>",
                 "width": "fit-content",
                 "max_width": "narrow",
                 "alignment": "left",
-                "type_preset": "rte",
+                "type_preset": "custom",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
                 "line_height": "normal",
