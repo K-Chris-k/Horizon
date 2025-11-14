@@ -26,11 +26,11 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
   assign selected_variant_media = selected_product.selected_or_first_available_variant.featured_media
   assign first_3d_model = selected_product.media | where: 'media_type', 'model' | first
 
-  # Get current selected variant options for initial filtering
+
   assign selected_variant = selected_product.selected_or_first_available_variant
   assign variant_option_values = ''
   for option in selected_variant.options
-    # Replace spaces with underscores to match JS logic
+
     assign option_value = option | replace: ' ', '_'
     if variant_option_values == blank
       assign variant_option_values = option_value
@@ -38,7 +38,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       assign variant_option_values = variant_option_values | append: '_' | append: option_value
     endif
   endfor
-  # Now variant_option_values contains something like "250W_1_Gang"
+
 
   if block_settings.slideshow_controls_style == 'thumbnails'
     assign controls_on_media = false
@@ -63,7 +63,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
   endif
 
   assign slideshow_controls_style = block_settings.slideshow_controls_style
-  # Use a counter instead of dots when there are many images to avoid cropping/overflow.
+
   if slideshow_controls_style == 'dots' and selected_product.media.size > 15
     assign slideshow_controls_style = 'counter'
   endif
@@ -176,14 +176,12 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
         align-items: center;
       }
 
-      /* Mobile constraint wrapper sizing - use width-based approach since max-height is disabled */
       .product-media-constraint-wrapper {
         width: 100%;
         max-width: 100%;
         flex-shrink: 0;
       }
 
-      /* Desktop constraint wrapper sizing */
       @media screen and (min-width: 750px) {
         .product-media-constraint-wrapper {
           width: min(100%, calc(var(--constrained-height) * {{ block_settings.aspect_ratio }}));
@@ -191,7 +189,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       }
     {% endif %}
 
-    /* Constrain all deferred-media content to parent bounds when specific aspect ratio is set */
     .product-media-container:not(.dialog-zoomed-gallery *) .product-media deferred-media,
     .product-media-container:not(.dialog-zoomed-gallery *) .product-media product-model {
       width: 100%;
@@ -200,7 +197,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       left: 0;
     }
 
-    /* Ensure video and iframe elements respect container aspect ratio */
     .product-media-container:not(.dialog-zoomed-gallery *) .product-media deferred-media video,
     .product-media-container:not(.dialog-zoomed-gallery *) .product-media deferred-media iframe {
       width: 100%;
@@ -214,7 +210,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       height: 100%;
     }
 
-    /* Clear gallery aspect ratio for zoom dialog - let media display at natural aspect ratios */
+
     .dialog-zoomed-gallery .product-media {
       --gallery-aspect-ratio: var(--ratio);
     }
@@ -225,14 +221,12 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       --product-media-fit: {{ block_settings.media_fit }};
     }
 
-    /* Media fit for all media elements */
     .media-fit-{{ block_settings.media_fit }} :is(img, video, iframe, .deferred-media__poster-image) {
       object-fit: {{ block_settings.media_fit }};
       width: 100%;
       height: 100%;
     }
 
-    /* 3D Models (no object-fit support, just sizing) */
     .media-fit-{{ block_settings.media_fit }} model-viewer {
       width: 100%;
       height: 100%;
@@ -244,21 +238,18 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       --product-media-fit: cover;
     }
 
-    /* Media fit for all media elements - default to cover */
     .media-fit-cover :is(img, video, iframe, .deferred-media__poster-image) {
       object-fit: cover;
       width: 100%;
       height: 100%;
     }
 
-    /* 3D Models (no object-fit support, just sizing) */
     .media-fit-cover model-viewer {
       width: 100%;
       height: 100%;
     }
   {% endunless %}
 
-  /* Add background color so carousel arrows' mix-blend-mode works correctly even on transparent areas. */
   {% if block_settings.media_fit == 'contain' %}
     .media-fit-contain :is(img, .deferred-media__poster-image) {
       background-color: var(--color-background);
@@ -340,8 +331,10 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
         {%- liquid
           # Check if media alt matches current variant - add variant-filtered if not
           assign media_alt_clean = media.alt | strip | replace: ' ', '_'
+          assign media_alt_lower = media.alt | strip | downcase
           assign should_hide = false
-          if media_alt_clean != variant_option_values and media_alt_clean != blank
+          # 如果是默认标签（default），始终显示，不过滤
+          if media_alt_lower != 'default' and media_alt_clean != variant_option_values and media_alt_clean != blank
             assign should_hide = true
           endif
         -%}
@@ -405,23 +398,57 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
 
   {% if block_settings.media_presentation == 'grid' %}
     {%- comment -%} Grid Mode: Render all media directly without slideshow {%- endcomment -%}
+    {%- comment -%} 首先计算可见图片数量，用于分配布局类 {%- endcomment -%}
+    {%- liquid
+      assign visible_media_count = 0
+      for media in sorted_media
+        assign media_alt_clean = media.alt | strip | replace: ' ', '_'
+        assign media_alt_lower = media.alt | strip | downcase
+        assign should_hide = false
+        if media_alt_lower != 'default' and media_alt_clean != variant_option_values and media_alt_clean != blank
+          assign should_hide = true
+        endif
+        unless should_hide
+          assign visible_media_count = visible_media_count | plus: 1
+        endunless
+      endfor
+    -%}
     <div class="media-gallery__grid">
+      {%- liquid
+        assign current_visible_index = 0
+      -%}
       {% for media in sorted_media %}
         {%- liquid
+          # 计算 sizes
           if needs_both_sizes and forloop.first
             assign media_sizes = sizes_single
           else
             assign media_sizes = sizes
           endif
-        -%}
-        {% capture container_class %}{%- liquid
-          # Check if media alt matches current variant - add variant-filtered if not
+          
+          # 检查是否应该隐藏这个图片
           assign media_alt_clean = media.alt | strip | replace: ' ', '_'
+          assign media_alt_lower = media.alt | strip | downcase
           assign should_hide = false
-          if media_alt_clean != variant_option_values and media_alt_clean != blank
+          # 如果是默认标签（default），始终显示，不过滤
+          if media_alt_lower != 'default' and media_alt_clean != variant_option_values and media_alt_clean != blank
             assign should_hide = true
           endif
-        -%}{{ product_media_container_class }} product-media-container--{{ media.media_type }}{% if block.settings.zoom %} product-media-container--zoomable{% endif %}{% if forloop.index0 == lowest_aspect_ratio_index and block.settings.aspect_ratio == 'adapt' %} product-media-container--tallest{% endif %}{% if should_hide %} variant-filtered{% endif %}{% endcapture %}
+          
+          # 添加布局类：第一张可见图片用 gallery-first-large，其他用 gallery-thumbnail
+          # 无论是否启用 large_first_image，都要添加布局类以确保正确渲染
+          assign layout_class = ''
+          unless should_hide
+            if current_visible_index == 0
+              if block_settings.media_columns == 'two' and block_settings.large_first_image
+                assign layout_class = ' gallery-first-large'
+              endif
+            elsif block_settings.media_columns == 'two' and block_settings.large_first_image
+              assign layout_class = ' gallery-thumbnail'
+            endif
+          endunless
+        -%}
+        {% capture container_class %}{{ product_media_container_class }} product-media-container--{{ media.media_type }}{% if block.settings.zoom %} product-media-container--zoomable{% endif %}{% if forloop.index0 == lowest_aspect_ratio_index and block.settings.aspect_ratio == 'adapt' %} product-media-container--tallest{% endif %}{% if should_hide %} variant-filtered{% endif %}{{ layout_class }}{% endcapture %}
         {% capture container_style %}{% if block_settings.aspect_ratio == 'adapt' %}--media-preview-ratio: {{ media.preview_image.aspect_ratio | default: 1.0 }};{% endif %}{% endcapture %}
         {% capture container_attributes %}data-media-index="{{ forloop.index0 }}" data-media-alt="{{ media.alt | escape }}"{% if block_settings.zoom and media.media_type != 'model' %} on:click="#zoom-dialog-{{ block.id }}/open/{{ forloop.index0 }}"{% endif %}{% if settings.transition_to_main_product and forloop.first %} data-view-transition-type="product-image-transition"{% endif %}{% endcapture %}
         
@@ -434,6 +461,12 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
             {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
           {% endif %}
         </div>
+        {%- liquid
+          # 更新可见图片索引计数器
+          unless should_hide
+            assign current_visible_index = current_visible_index | plus: 1
+          endunless
+        -%}
       {% endfor %}
     </div>
   {% else %}
@@ -483,8 +516,10 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           {%- liquid
             # 检查缩略图是否匹配当前variant
             assign media_alt_clean = media.alt | strip | replace: ' ', '_'
+            assign media_alt_lower = media.alt | strip | downcase
             assign should_hide_thumb = false
-            if media_alt_clean != variant_option_values and media_alt_clean != blank
+            # 如果是默认标签（default），始终显示，不过滤
+            if media_alt_lower != 'default' and media_alt_clean != variant_option_values and media_alt_clean != blank
               assign should_hide_thumb = true
             endif
           -%}
@@ -829,38 +864,35 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     left: -9999px !important;
   }
   
-  /* Ensure variant-filtered items don't get gallery layout classes */
+
   .product-media-container.variant-filtered.gallery-first-large,
   .product-media-container.variant-filtered.gallery-thumbnail {
     grid-column: auto !important;
   }
   
-  /* Grid 布局在不同屏幕下的基础样式 - 由媒体查询覆盖 */
-  
-  /* 移动端布局在前面已经通过绝对定位方式重新定义 */
-  
-  /* 桌面端布局系统 - 基于固定类名，不依赖DOM位置 */
   @media screen and (min-width: 750px) {
-    /* Grid布局 - 两列，使用 display flow */
+ 
     .media-gallery--two-column .media-gallery__grid {
       display: grid !important;
       grid-template-columns: repeat(2, 1fr);
       gap: var(--image-gap, 0px);
     }
     
-    /* 第一张大图 - 占满一行（两列） */
-    .media-gallery--two-column .media-gallery__grid .product-media-container.gallery-first-large:not(.variant-filtered) {
+    .media-gallery--two-column.media-gallery--large-first-image .media-gallery__grid .product-media-container.gallery-first-large:not(.variant-filtered) {
       grid-column: span 2 !important;
       position: relative !important;
     }
     
-    /* 缩略图 - 一行两个（单列） */
-    .media-gallery--two-column .media-gallery__grid .product-media-container.gallery-thumbnail:not(.variant-filtered) {
+    .media-gallery--two-column.media-gallery--large-first-image .media-gallery__grid .product-media-container.gallery-thumbnail:not(.variant-filtered) {
       grid-column: span 1 !important;
       position: relative !important;
     }
     
-    /* One column layout */
+    .media-gallery--two-column:not(.media-gallery--large-first-image) .media-gallery__grid .product-media-container:not(.variant-filtered) {
+      grid-column: span 1 !important;
+      position: relative !important;
+    }
+    
     .media-gallery--one-column .media-gallery__grid {
       display: grid !important;
       grid-template-columns: 1fr !important;
@@ -1615,7 +1647,16 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     let currentActiveIndex = 0;
     let currentSlideshowIndex = 0;
 
+    // 默认标签：使用这个标签的图片将始终显示，不受variant过滤影响
+    const DEFAULT_TAG = 'default';
+
     function matchesVariant(mediaAlt, variantString) {
+      // 如果图片使用默认标签，始终显示
+      const cleanAlt = (mediaAlt || '').trim().toLowerCase();
+      if (cleanAlt === DEFAULT_TAG.toLowerCase()) {
+        return true;
+      }
+      
       if (!variantString) {
         return mediaAlt && mediaAlt.trim() !== '';
       }
@@ -1719,19 +1760,15 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
             }
           });
 
-          // 如果没有变化，直接返回，避免不必要的DOM操作
-          if (!hasChanges) {
-            return;
-          }
-
-          // 第二步：立即批量更新布局类（不使用 requestAnimationFrame，减少延迟）
-          // 更新布局类 - 第一张可见图片用大图布局，其他用缩略图布局
+          const isLargeFirstEnabled = mediaGallery.classList.contains('media-gallery--large-first-image');
           let visibleCount = 0;
           let layoutChanges = [];
           
           gridContainers.forEach((container, index) => {
-            const shouldBeFirstLarge = !container.classList.contains('variant-filtered') && visibleCount === 0;
-            const shouldBeThumbnail = !container.classList.contains('variant-filtered') && visibleCount > 0;
+            const isVisible = !container.classList.contains('variant-filtered');
+            // 只在启用大图模式时才添加布局类
+            const shouldBeFirstLarge = isLargeFirstEnabled && isVisible && visibleCount === 0;
+            const shouldBeThumbnail = isLargeFirstEnabled && isVisible && visibleCount > 0;
             
             const hasFirstLarge = container.classList.contains('gallery-first-large');
             const hasThumbnail = container.classList.contains('gallery-thumbnail');
@@ -1740,7 +1777,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
               layoutChanges.push({ container, shouldBeFirstLarge, shouldBeThumbnail });
             }
             
-            if (!container.classList.contains('variant-filtered')) {
+            if (isVisible) {
               visibleCount++;
             }
           });
@@ -1754,6 +1791,11 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
               container.classList.add('gallery-thumbnail');
             }
           });
+          
+          // 如果没有过滤变化且布局也没变化，直接返回
+          if (!hasChanges && layoutChanges.length === 0) {
+            return;
+          }
 
           // 第三步：更新移动端当前图片（只在必要时）
           if (window.innerWidth <= 749 && firstMatchIndex >= 0) {
@@ -1787,7 +1829,13 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           const mobileThumbnails = Array.from(document.querySelectorAll('.mobile-thumbnail-nav__item'));
           mobileThumbnails.forEach((thumb, index) => {
             const thumbAlt = thumb.getAttribute('data-media-alt') || '';
+            const thumbAltLower = thumbAlt.trim().toLowerCase();
             const thumbAltClean = thumbAlt.trim().replace(/\s+/g, '_');
+            // 如果是默认标签，始终显示
+            if (thumbAltLower === DEFAULT_TAG.toLowerCase()) {
+              thumb.classList.remove('thumbnail-hidden');
+              return;
+            }
             const matches = matchesVariant(thumbAltClean, selectedVariantString);
             thumb.classList.toggle('thumbnail-hidden', !matches && thumbAltClean !== '');
           });
@@ -1865,27 +1913,38 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       lastVariantString = initialVariantString;
       filterImagesByVariant();
 
-      // 过滤后设置布局类和移动端初始显示
-      const gridContainers = Array.from(document.querySelectorAll('.media-gallery__grid .product-media-container'));
-      let visibleCount = 0;
-      let firstVisibleIndex = -1;
-      
-      gridContainers.forEach((container, index) => {
-        if (!container.classList.contains('variant-filtered')) {
-          if (visibleCount === 0) {
-            container.classList.add('gallery-first-large');
-            firstVisibleIndex = index;
-            // 移动端：设置第一张可见图片为当前显示
-            if (window.innerWidth <= 749) {
-              container.classList.add('mobile-current');
-              window._currentGridImageIndex = index;
+      // 过滤后设置布局类和移动端初始显示（只针对当前 media-gallery）
+      // 注意：filterImagesByVariant() 已经设置了布局类，这里强制确保正确性
+      if (presentation === 'grid') {
+        const gridContainers = Array.from(mediaGallery.querySelectorAll('.media-gallery__grid .product-media-container'));
+        const isLargeFirstEnabled = mediaGallery.classList.contains('media-gallery--large-first-image');
+        let visibleCount = 0;
+        let firstVisibleIndex = -1;
+        
+        gridContainers.forEach((container, index) => {
+          // 清除所有布局类，重新设置
+          container.classList.remove('gallery-first-large', 'gallery-thumbnail');
+          
+          if (!container.classList.contains('variant-filtered')) {
+            if (visibleCount === 0) {
+              // 第一张可见图片：只在启用大图模式时添加 gallery-first-large
+              if (isLargeFirstEnabled) {
+                container.classList.add('gallery-first-large');
+              }
+              firstVisibleIndex = index;
+              // 移动端：设置第一张可见图片为当前显示
+              if (window.innerWidth <= 749) {
+                container.classList.add('mobile-current');
+                window._currentGridImageIndex = index;
+              }
+            } else if (isLargeFirstEnabled) {
+              // 后续可见图片：只在启用大图模式时添加 gallery-thumbnail
+              container.classList.add('gallery-thumbnail');
             }
-          } else {
-            container.classList.add('gallery-thumbnail');
+            visibleCount++;
           }
-          visibleCount++;
-        }
-      });
+        });
+      }
     }
 
     function initMobileThumbnails() {
