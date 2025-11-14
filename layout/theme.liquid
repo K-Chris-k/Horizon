@@ -32,6 +32,24 @@
         gtag('config', 'AW-17164794132');
       </script>
 
+      <!-- Event snippet for Add to cart conversion page -->
+      <script>
+        gtag('event', 'conversion', {
+            'send_to': 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
+            'value': 1.0,
+            'currency': 'GBP'
+        });
+      </script>
+      <!-- Event snippet for Purchase conversion page -->
+      <script>
+        gtag('event', 'conversion', {
+            'send_to': 'AW-17164794132/uAMUCJvH6NYaEJTy5_g_',
+            'value': 1.0,
+            'currency': 'GBP',
+            'transaction_id': ''
+        });
+      </script>
+
 
     {%- if settings.favicon != blank -%}
       <link
