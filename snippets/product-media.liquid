@@ -11,6 +11,7 @@
   @param {object} [selected_product] - The currently selected product.
   @param {boolean} [first_3d_model] - Indicates if this is the first 3D model.
   @param {boolean} [is_main_product_media] - Indicates if this is the main product image.
+  @param {string} [custom_alt] - Custom alt text to override media.alt (optional).
 
   @example
   {% render 'product-media', media: media, preview_image_only: false, loading: 'lazy' %}
@@ -18,6 +19,7 @@
 
 {% liquid
   assign widths = widths | default: '240, 352, 832, 1200, 1600, 1920, 2560, 3840'
+  assign image_alt = custom_alt | default: media.alt
 %}
 
 <div
@@ -38,7 +40,7 @@
     | image_url: width: 3840
     | image_tag:
       widths: widths,
-      alt: media.alt,
+      alt: image_alt,
       sizes: sizes,
       loading: loading,
       class: 'product-media__image',
@@ -65,7 +67,7 @@
               | image_url: width: 3840
               | image_tag:
                 widths: widths,
-                alt: media.alt,
+                alt: image_alt,
                 sizes: sizes,
                 loading: loading,
                 class: 'deferred-media__poster-image'

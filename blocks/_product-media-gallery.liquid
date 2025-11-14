@@ -124,7 +124,8 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
   endif
   
   assign has_image_drop = sorted_media | has: 'media_type', 'image'
-
+-%}
+{%- liquid
   # Determine if we're in single column mode (carousel or grid with one column)
   assign is_single_column = false
   if block_settings.media_presentation == 'carousel' or sorted_media.size == 1 or block_settings.media_presentation == 'grid' and block_settings.media_columns == 'one'
@@ -318,20 +319,40 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
             else
               assign media_sizes = sizes
             endif
+            
+            # Extract display alt text from parentheses if present
+            # Format: "variant_id(Display Alt Text)" -> use "Display Alt Text" for alt
+            assign media_alt_text = media.alt
+            if media.alt contains '('
+              assign alt_parts = media.alt | split: '('
+              if alt_parts.size > 1
+                assign display_alt_raw = alt_parts[1] | split: ')' | first
+                if display_alt_raw != blank
+                  assign media_alt_text = display_alt_raw
+                endif
+              endif
+            endif
         -%}
 {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
           <div class="product-media-constraint-wrapper">
-            {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
+            {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, custom_alt: media_alt_text -%}
           </div>
         {% else %}
-          {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
+          {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, custom_alt: media_alt_text -%}
         {% endif %}
       {% endcapture %}
       {% capture class %}
         {%- liquid
           # Check if media alt matches current variant - add variant-filtered if not
-          assign media_alt_clean = media.alt | strip | replace: ' ', '_'
-          assign media_alt_lower = media.alt | strip | downcase
+          # Extract variant identifier (part before parentheses)
+          assign variant_identifier = media.alt | strip
+          if variant_identifier contains '('
+            assign variant_parts = variant_identifier | split: '('
+            assign variant_identifier = variant_parts[0] | strip
+          endif
+          
+          assign media_alt_clean = variant_identifier | replace: ' ', '_'
+          assign media_alt_lower = variant_identifier | downcase
           assign should_hide = false
           # 如果是默认标签（default），始终显示，不过滤
           if media_alt_lower != 'default' and media_alt_clean != variant_option_values and media_alt_clean != blank
@@ -402,8 +423,15 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     {%- liquid
       assign visible_media_count = 0
       for media in sorted_media
-        assign media_alt_clean = media.alt | strip | replace: ' ', '_'
-        assign media_alt_lower = media.alt | strip | downcase
+        # Extract variant identifier (part before parentheses)
+        assign count_variant_id = media.alt | strip
+        if count_variant_id contains '('
+          assign count_var_parts = count_variant_id | split: '('
+          assign count_variant_id = count_var_parts[0] | strip
+        endif
+        
+        assign media_alt_clean = count_variant_id | replace: ' ', '_'
+        assign media_alt_lower = count_variant_id | downcase
         assign should_hide = false
         if media_alt_lower != 'default' and media_alt_clean != variant_option_values and media_alt_clean != blank
           assign should_hide = true
@@ -426,9 +454,28 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
             assign media_sizes = sizes
           endif
           
+          # Extract display alt text from parentheses if present
+          assign media_alt_text = media.alt
+          if media.alt contains '('
+            assign alt_parts = media.alt | split: '('
+            if alt_parts.size > 1
+              assign display_alt_raw = alt_parts[1] | split: ')' | first
+              if display_alt_raw != blank
+                assign media_alt_text = display_alt_raw
+              endif
+            endif
+          endif
+          
           # 检查是否应该隐藏这个图片
-          assign media_alt_clean = media.alt | strip | replace: ' ', '_'
-          assign media_alt_lower = media.alt | strip | downcase
+          # Extract variant identifier (part before parentheses)
+          assign variant_identifier = media.alt | strip
+          if variant_identifier contains '('
+            assign variant_parts = variant_identifier | split: '('
+            assign variant_identifier = variant_parts[0] | strip
+          endif
+          
+          assign media_alt_clean = variant_identifier | replace: ' ', '_'
+          assign media_alt_lower = variant_identifier | downcase
           assign should_hide = false
           # 如果是默认标签（default），始终显示，不过滤
           if media_alt_lower != 'default' and media_alt_clean != variant_option_values and media_alt_clean != blank
@@ -436,14 +483,16 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           endif
           
           # 添加布局类：第一张可见图片用 gallery-first-large，其他用 gallery-thumbnail
-          # 无论是否启用 large_first_image，都要添加布局类以确保正确渲染
+          # 在两列模式下，第一张可见图片始终获得 gallery-first-large 类
           assign layout_class = ''
           unless should_hide
             if current_visible_index == 0
-              if block_settings.media_columns == 'two' and block_settings.large_first_image
+              # 两列模式下，第一张可见图片始终 span 2 列
+              if block_settings.media_columns == 'two'
                 assign layout_class = ' gallery-first-large'
               endif
             elsif block_settings.media_columns == 'two' and block_settings.large_first_image
+              # 只有启用 large_first_image 时，后续图片才添加 gallery-thumbnail 类
               assign layout_class = ' gallery-thumbnail'
             endif
           endunless
@@ -455,14 +504,13 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
         <div class="{{ container_class }}" style="{{ container_style }}" {{ container_attributes }}>
           {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
             <div class="product-media-constraint-wrapper">
-              {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
+              {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, custom_alt: media_alt_text -%}
             </div>
           {% else %}
-            {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
+            {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, custom_alt: media_alt_text -%}
           {% endif %}
         </div>
         {%- liquid
-          # 更新可见图片索引计数器
           unless should_hide
             assign current_visible_index = current_visible_index | plus: 1
           endunless
@@ -514,9 +562,28 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       <div class="mobile-thumbnail-nav__container">
         {% for media in sorted_media %}
           {%- liquid
+            # Extract display alt text from parentheses if present
+            assign thumb_alt_text = media.alt
+            if media.alt contains '('
+              assign thumb_alt_parts = media.alt | split: '('
+              if thumb_alt_parts.size > 1
+                assign thumb_display_alt = thumb_alt_parts[1] | split: ')' | first
+                if thumb_display_alt != blank
+                  assign thumb_alt_text = thumb_display_alt
+                endif
+              endif
+            endif
+            
             # 检查缩略图是否匹配当前variant
-            assign media_alt_clean = media.alt | strip | replace: ' ', '_'
-            assign media_alt_lower = media.alt | strip | downcase
+            # Extract variant identifier (part before parentheses)
+            assign thumb_variant_id = media.alt | strip
+            if thumb_variant_id contains '('
+              assign thumb_var_parts = thumb_variant_id | split: '('
+              assign thumb_variant_id = thumb_var_parts[0] | strip
+            endif
+            
+            assign media_alt_clean = thumb_variant_id | replace: ' ', '_'
+            assign media_alt_lower = thumb_variant_id | downcase
             assign should_hide_thumb = false
             # 如果是默认标签（default），始终显示，不过滤
             if media_alt_lower != 'default' and media_alt_clean != variant_option_values and media_alt_clean != blank
@@ -536,7 +603,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
               | image_tag:
                 loading: 'eager',
                 widths: '100, 200',
-                alt: media.alt
+                alt: thumb_alt_text
             }}
           </button>
         {% endfor %}
@@ -575,11 +642,23 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
                   if block_settings.aspect_ratio == 'adapt'
                     assign aspect_ratio = media.preview_image.aspect_ratio | default: 1.0
                   endif
+                  
+                  # Extract display alt text from parentheses if present
+                  assign zoom_thumb_alt = media.alt
+                  if media.alt contains '('
+                    assign zoom_alt_parts = media.alt | split: '('
+                    if zoom_alt_parts.size > 1
+                      assign zoom_display_alt = zoom_alt_parts[1] | split: ')' | first
+                      if zoom_display_alt != blank
+                        assign zoom_thumb_alt = zoom_display_alt
+                      endif
+                    endif
+                  endif
                 %}
                 <button
                   type="button"
                   class="button button-unstyled dialog-thumbnails-list__thumbnail"
-                  aria-label="{{ 'accessibility.scroll_to' | t: title: media.alt | default: media.media_type }}"
+                  aria-label="{{ 'accessibility.scroll_to' | t: title: zoom_thumb_alt | default: media.media_type }}"
                   on:click="/handleThumbnailClick/{{ forloop.index0 }}"
                   on:pointerenter="/handleThumbnailPointerEnter/{{ forloop.index0 }}"
                   style="--aspect-ratio: {{ aspect_ratio }}; --gallery-aspect-ratio: {{ aspect_ratio }};"
@@ -600,7 +679,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
                       loading: 'lazy',
                       sizes: 'auto, 110, (min-width: 750px) 160',
                       widths: '240, 352, 832, 1200',
-                      alt: media.alt,
+                      alt: zoom_thumb_alt,
                       style: focal_point_style
                     | escape
                   }}
@@ -645,6 +724,19 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
               NOTE: Don't add variant-filtered class to zoom images at render time
               Let JavaScript filter them dynamically when zoom opens
             {%- endcomment -%}
+            {%- liquid
+              # Extract display alt text from parentheses if present
+              assign zoom_media_alt = media.alt
+              if media.alt contains '('
+                assign zoom_media_parts = media.alt | split: '('
+                if zoom_media_parts.size > 1
+                  assign zoom_media_display = zoom_media_parts[1] | split: ')' | first
+                  if zoom_media_display != blank
+                    assign zoom_media_alt = zoom_media_display
+                  endif
+                endif
+              endif
+            -%}
             <li
               id="product-{{ media.id}}-{{ forloop.index }}"
               class="{{ product_media_container_class | remove: 'media-fit-cover' }} product-media-container--{{ media.media_type }}{% if media.media_type == 'image' %} product-media-container--zoomable{% endif %}"
@@ -659,7 +751,8 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
                     media: media,
                     sizes: '100vw',
                     loading: 'lazy',
-                    is_main_product_media: forloop.first
+                    is_main_product_media: forloop.first,
+                    custom_alt: zoom_media_alt
                   -%}
                 </drag-zoom-wrapper>
               {% else %}
@@ -667,7 +760,8 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
                   media: media,
                   sizes: '100vw',
                   loading: 'lazy',
-                  is_main_product_media: forloop.first
+                  is_main_product_media: forloop.first,
+                  custom_alt: zoom_media_alt
                 -%}
               {% endif %}
             </li>
@@ -719,7 +813,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
 </media-gallery>
 
 {% stylesheet %}
-  /* 全局：强制禁用所有 variant 切换相关的过渡动画 */
   .media-gallery--grid .product-media-container,
   .media-gallery--grid .product-media-container *,
   .media-gallery--grid .product-media,
@@ -728,7 +821,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     animation: none !important;
   }
   
-  /* 性能优化：启用硬件加速和即时渲染 */
   .media-gallery--grid .product-media-container {
     will-change: opacity, visibility;
     transform: translateZ(0);
@@ -743,14 +835,11 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     image-rendering: crisp-edges;
   }
   
-  /* 桌面端：使用 opacity + position 实现无闪烁切换 */
   @media screen and (min-width: 750px) {
-    /* Grid 容器设置为相对定位，为绝对定位的子元素提供定位上下文 */
     .media-gallery--grid .media-gallery__grid {
       position: relative;
     }
     
-    /* 所有图片都使用绝对定位叠加，预加载但隐藏 */
     .media-gallery--grid .media-gallery__grid .product-media-container.variant-filtered {
       position: absolute !important;
       top: 0;
@@ -759,40 +848,32 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       visibility: hidden !important;
       pointer-events: none !important;
       z-index: -1 !important;
-      /* 保持 DOM 结构，但完全不可见和不可交互 */
     }
     
-    /* 可见图片立即显示，无过渡动画 */
     .media-gallery--grid .media-gallery__grid .product-media-container:not(.variant-filtered) {
       position: relative !important;
       opacity: 1 !important;
       visibility: visible !important;
       pointer-events: auto !important;
       z-index: 1 !important;
-      /* 移除 transition，实现立即切换 */
     }
   }
   
-  /* 移动端：使用绝对定位叠加所有图片 - 覆盖 base.css 的样式 */
   @media screen and (max-width: 749px) {
-    /* Grid 容器设置为相对定位 - 覆盖 base.css 的 display: block */
     .media-gallery--grid .media-gallery__grid {
       position: relative !important;
       display: block !important;
       min-height: 300px; /* 设置最小高度避免布局跳动 */
-      /* 覆盖 base.css 的 horizontal scroll 样式 */
       white-space: normal !important;
       overflow-x: visible !important;
       overflow-y: visible !important;
     }
     
-    /* 清除 base.css 的伪元素 */
     .media-gallery--grid .media-gallery__grid::after {
       content: none !important;
       display: none !important;
     }
     
-    /* 所有图片绝对定位叠加 - 覆盖 base.css 的 display: block/inline-block */
     .media-gallery--grid .media-gallery__grid .product-media-container {
       position: absolute !important;
       top: 0 !important;
@@ -802,14 +883,11 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       opacity: 0 !important;
       visibility: hidden !important;
       pointer-events: none !important;
-      /* 覆盖 base.css 的样式 */
       display: block !important;
       margin: 0 !important;
       white-space: normal !important;
-      /* 移除 transition，实现立即切换 */
     }
     
-    /* 第一张可见图片默认显示（在 JS 添加 mobile-current 之前） */
     .media-gallery--grid .media-gallery__grid .product-media-container:not(.variant-filtered):first-of-type {
       position: relative !important;
       opacity: 1 !important;
@@ -818,17 +896,14 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       z-index: 2 !important;
     }
     
-    /* 当前显示的图片 - 立即显示（优先级更高） */
     .media-gallery--grid .media-gallery__grid .product-media-container.mobile-current:not(.variant-filtered) {
       position: relative !important;
       opacity: 1 !important;
       visibility: visible !important;
       pointer-events: auto !important;
       z-index: 2 !important;
-      /* 移除 transition，实现立即切换 */
     }
     
-    /* 非当前的图片隐藏（即使是可见的variant） */
     .media-gallery--grid .media-gallery__grid .product-media-container:not(.mobile-current):not(.variant-filtered) {
       position: absolute !important;
       opacity: 0 !important;
@@ -836,7 +911,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       pointer-events: none !important;
     }
     
-    /* 被过滤的图片完全隐藏 */
     .media-gallery--grid .media-gallery__grid .product-media-container.variant-filtered {
       position: absolute !important;
       opacity: 0 !important;
@@ -846,7 +920,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     }
   }
   
-  /* Carousel 模式的平滑过渡 */
   slideshow-slide.variant-filtered {
     opacity: 0 !important;
     visibility: hidden !important;
@@ -855,7 +928,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     left: -9999px !important;
   }
   
-  /* Zoom 对话框中的过滤 */
   .dialog-zoomed-gallery > li.variant-filtered {
     opacity: 0 !important;
     visibility: hidden !important;
@@ -888,7 +960,12 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       position: relative !important;
     }
     
-    .media-gallery--two-column:not(.media-gallery--large-first-image) .media-gallery__grid .product-media-container:not(.variant-filtered) {
+    .media-gallery--two-column:not(.media-gallery--large-first-image) .media-gallery__grid .product-media-container.gallery-first-large:not(.variant-filtered) {
+      grid-column: span 2 !important;
+      position: relative !important;
+    }
+    
+    .media-gallery--two-column:not(.media-gallery--large-first-image) .media-gallery__grid .product-media-container:not(.variant-filtered):not(.gallery-first-large) {
       grid-column: span 1 !important;
       position: relative !important;
     }
@@ -953,7 +1030,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
 
   }
 
-  /* Hide thumbnail list in zoom dialog on mobile */
   @media screen and (max-width: 749px) {
     zoom-dialog .dialog-thumbnails-list-container {
       display: none !important;
@@ -971,7 +1047,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     opacity: 0;
   }
   
-  /* Ensure dialog opens instantly without animation */
   zoom-dialog dialog {
     animation: none !important;
     transition: none !important;
@@ -988,7 +1063,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     background: rgba(0, 0, 0, 0.8) !important;
   }
   
-  /* Disable view-transition animations for zoom dialog */
   ::view-transition-group(gallery-item) {
     animation-duration: 0.001ms !important;
   }
@@ -999,14 +1073,12 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     animation-name: none !important;
   }
   
-  /* Force zoom dialog to open instantly at correct position */
   zoom-dialog .dialog-zoomed-gallery > li,
   zoom-dialog .dialog-zoomed-gallery .product-media-container {
     animation: none !important;
     transition: opacity 0s !important;
   }
 
-  /* Navigation arrows - Desktop styles */
   .zoom-dialog-nav {
     position: fixed;
     top: 50%;
@@ -1044,10 +1116,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
   .zoom-dialog-nav--next {
     right: 40px;
   }
-
-  /* Image counter - Desktop: positioned relative to li container (below image) */
   @media screen and (min-width: 750px) {
-    /* 计数器相对于 li 容器定位，显示在图片下方 */
     .dialog-zoomed-gallery > li .zoom-dialog-counter {
       position: absolute !important;
       bottom: 20px !important;
@@ -1069,10 +1138,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     }
   }
   
-  /* Mobile: 旧的固定定位计数器样式（已被下面的新样式替换） */
-  /* 移动端计数器现在相对于 product-media-container 定位，显示在图片下方外面 */
 
-  /* Mobile styles */
   @media screen and (max-width: 749px) {
     .zoom-dialog-nav {
       width: 44px;
@@ -1105,7 +1171,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       transform: translateY(-50%) scale(0.95);
     }
 
-    /* 移动端：计数器相对于 product-media-container 定位（图片下方外面） */
     .dialog-zoomed-gallery .product-media-container .zoom-dialog-counter {
       position: absolute !important;
       bottom: 21% !important;
@@ -1134,7 +1199,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     flex: inherit;
   }
 
-  /* Desktop zoom dialog */
   @media screen and (min-width: 750px) {
     zoom-dialog dialog {
       overflow: hidden !important;
@@ -1162,22 +1226,19 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      /* 让容器自适应内容大小 */
       width: auto !important;
       height: auto !important;
       max-width: 90vw;
       max-height: 85vh;
-      overflow: visible !important; /* 确保外层的按钮和计数器可见 */
-      padding: 20px 20px 50px 20px; /* 为外层元素留出空间 */
+      overflow: visible !important;
+      padding: 20px 20px 50px 20px; 
     }
 
     .dialog-zoomed-gallery > li.zoom-active {
       opacity: 1;
       pointer-events: auto;
-      /* Keep position absolute but it still acts as positioning context for absolute children */
     }
     
-    /* Remove transition for initial load */
     dialog[open] .dialog-zoomed-gallery > li.zoom-active {
       transition: none;
       width: unset;
@@ -1190,10 +1251,9 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
                   0 20px 60px rgba(0, 0, 0, 0.6),
                   0 40px 100px rgba(0, 0, 0, 0.5);
       border-radius: 4px;
-      overflow: visible; /* 保持阴影效果可见 */
+      overflow: visible; 
     }
     
-    /* Make drag-zoom-wrapper relative for button positioning */
     .dialog-zoomed-gallery .product-media__drag-zoom-wrapper {
       position: relative;
       overflow: hidden;
@@ -1202,7 +1262,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
 
     .dialog-zoomed-gallery .product-media__image {
       max-width: 100%;
-      max-height: 75vh; /* 减小高度为外层元素留出空间 */
+      max-height: 75vh;
       width: auto !important;
       height: auto !important;
       object-fit: contain;
@@ -1229,17 +1289,14 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     }
 
     .dialog-zoomed-gallery {
-      /* Completely disable all scrolling and touch navigation */
       overscroll-behavior: none !important;
       scrollbar-width: none !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      /* scroll-snap-type: x mandatory; */ /* Disabled to prevent swipe navigation */
       overflow: hidden !important;
       overflow-x: hidden !important;
       overflow-y: hidden !important;
-      /* scroll-behavior: smooth; */ /* Disabled to prevent scroll navigation */
       height: 100% !important;
       width: 100% !important;
       touch-action: none !important;
@@ -1251,8 +1308,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     }
 
     .dialog-zoomed-gallery .product-media-container {
-      /* flex: 0 0 100%; */ /* Disabled for non-swipe layout */
-      /* scroll-snap-align: start; */ /* Disabled to prevent snap scrolling */
+  
       position: absolute !important;
       top: 0 !important;
       left: 0 !important;
@@ -1268,23 +1324,19 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      /* 为外层的关闭按钮和计数器留出空间 */
       padding: 60px 20px 80px 20px !important;
       box-sizing: border-box !important;
     }
     
-    /* Show only the active image */
     .dialog-zoomed-gallery .product-media-container.zoom-active {
       opacity: 1;
       pointer-events: auto;
     }
     
-    /* Remove transition for initial load */
     dialog[open] .dialog-zoomed-gallery .product-media-container.zoom-active {
       transition: none;
     }
     
-    /* Image wrapper with relative positioning for absolute buttons */
     .dialog-zoomed-gallery .product-media {
       position: relative;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4);
@@ -1309,7 +1361,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       width: 100%;
       height: 100%;
       max-width: 100%;
-      max-height: calc(100vh - 180px); /* 为外层按钮和计数器留空间 */
+      max-height: calc(100vh - 180px); 
       object-fit: contain;
       display: block;
       border-radius: 8px;
@@ -1353,7 +1405,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       --product-media-fit: contain;
 
       object-fit: var(--product-media-fit);
-      max-height: calc(100vh - 180px); /* 为外层按钮和计数器留空间 */
+      max-height: calc(100vh - 180px);
       width: auto;
       height: auto;
       border-radius: 8px;
@@ -1374,9 +1426,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     }
   }
 
-  /* Desktop: Close button positioned relative to li container (outside image) */
   @media screen and (min-width: 750px) {
-    /* 关闭按钮相对于 li 容器定位，显示在图片外面 */
     .dialog-zoomed-gallery > li .dialog-zoomed-gallery__close-button {
       position: absolute !important;
       top: -18px !important;
@@ -1419,7 +1469,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
 
 
   @media screen and (max-width: 749px) {
-    /* 移动端：关闭按钮相对于 product-media-container 定位（图片外面） */
     .dialog-zoomed-gallery .product-media-container .dialog-zoomed-gallery__close-button {
       position: absolute !important;
       top: 16% !important;
@@ -1469,13 +1518,9 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
   }
 
   .dialog-zoomed-gallery .product-media-container--model .product-media__image {
-    /* Make the height match the height of the model-viewer */
     height: 100vh;
   }
 
-  /* Special styles for first zoomed image - add custom styles as needed */
-
-  /* Mobile Grid Navigation Arrows */
   .mobile-grid-nav {
     display: none;
   }
@@ -1546,34 +1591,33 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       padding: 12px 0 !important;
       background: var(--color-background);
       position: relative;
-      overflow: hidden !important; /* 严格防止溢出 */
+      overflow: hidden !important; /
       margin: 12px 0 0 0 !important;
     }
 
     .mobile-thumbnail-nav__container {
       display: flex !important;
-      flex-wrap: nowrap !important; /* 严格禁止换行 */
-      flex-direction: row !important; /* 强制水平排列 */
+      flex-wrap: nowrap !important; 
+      flex-direction: row !important; 
       align-items: flex-start !important;
       gap: 12px !important;
-      overflow-x: scroll !important; /* 强制水平滚动 */
-      overflow-y: hidden !important; /* 严格禁止垂直滚动 */
+      overflow-x: scroll !important; 
+      overflow-y: hidden !important; 
       padding: 0 16px !important;
       scroll-behavior: smooth;
       scrollbar-width: none !important;
       -webkit-overflow-scrolling: touch;
-      /* 严格防止滚动时影响页面 */
       overscroll-behavior-x: contain !important;
       overscroll-behavior-y: none !important;
       overscroll-behavior: contain none !important;
-      touch-action: pan-x !important; /* 只允许水平滑动 */
+      touch-action: pan-x !important; 
       max-width: 100vw !important;
       min-height: 80px !important;
       max-height: 80px !important;
-      height: 80px !important; /* 固定高度，防止多行 */
+      height: 80px !important; 
       box-sizing: content-box !important;
       position: relative !important;
-      isolation: isolate !important; /* 创建新的层叠上下文 */
+      isolation: isolate !important; 
     }
 
     .mobile-thumbnail-nav__container::-webkit-scrollbar {
@@ -1582,9 +1626,9 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     }
 
     .mobile-thumbnail-nav__item {
-      flex: 0 0 80px !important; /* 固定宽度，绝不缩放 */
-      flex-shrink: 0 !important; /* 绝不收缩 */
-      flex-grow: 0 !important; /* 绝不放大 */
+      flex: 0 0 80px !important; 
+      flex-shrink: 0 !important;
+      flex-grow: 0 !important; 
       min-width: 80px !important;
       max-width: 80px !important;
       width: 80px !important;
@@ -1600,7 +1644,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
-      display: inline-block !important; /* 强制inline-block */
+      display: inline-block !important;
       vertical-align: top;
     }
 
@@ -1632,8 +1676,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     .mobile-thumbnail-nav__item:active {
       transform: scale(0.95);
     }
-    
-    /* 隐藏被过滤的缩略图 */
     .mobile-thumbnail-nav__item.thumbnail-hidden {
       display: none !important;
     }
@@ -1650,20 +1692,34 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
     // 默认标签：使用这个标签的图片将始终显示，不受variant过滤影响
     const DEFAULT_TAG = 'default';
 
+    // Extract variant identifier from alt text (part before parentheses)
+    // Format: "variant_id(Display Alt Text)" -> returns "variant_id"
+    function extractVariantIdentifier(mediaAlt) {
+      if (!mediaAlt) return '';
+      const parenIndex = mediaAlt.indexOf('(');
+      if (parenIndex > 0) {
+        return mediaAlt.substring(0, parenIndex).trim();
+      }
+      return mediaAlt.trim();
+    }
+
     function matchesVariant(mediaAlt, variantString) {
+      // Extract variant identifier (ignore parentheses content)
+      const variantId = extractVariantIdentifier(mediaAlt);
+      
       // 如果图片使用默认标签，始终显示
-      const cleanAlt = (mediaAlt || '').trim().toLowerCase();
+      const cleanAlt = variantId.toLowerCase();
       if (cleanAlt === DEFAULT_TAG.toLowerCase()) {
         return true;
       }
       
       if (!variantString) {
-        return mediaAlt && mediaAlt.trim() !== '';
+        return variantId !== '';
       }
-      if (!mediaAlt || mediaAlt.trim() === '') {
+      if (!variantId) {
         return false;
       }
-      return mediaAlt.trim() === variantString.trim();
+      return variantId === variantString.trim();
     }
 
     function filterZoomDialogImages(selectedVariantString) {
@@ -1761,13 +1817,15 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           });
 
           const isLargeFirstEnabled = mediaGallery.classList.contains('media-gallery--large-first-image');
+          const isTwoColumn = mediaGallery.classList.contains('media-gallery--two-column');
           let visibleCount = 0;
           let layoutChanges = [];
           
           gridContainers.forEach((container, index) => {
             const isVisible = !container.classList.contains('variant-filtered');
-            // 只在启用大图模式时才添加布局类
-            const shouldBeFirstLarge = isLargeFirstEnabled && isVisible && visibleCount === 0;
+            // 在两列模式下，第一张可见图片始终获得 gallery-first-large 类
+            // 无论是否启用 large-first-image 选项
+            const shouldBeFirstLarge = isTwoColumn && isVisible && visibleCount === 0;
             const shouldBeThumbnail = isLargeFirstEnabled && isVisible && visibleCount > 0;
             
             const hasFirstLarge = container.classList.contains('gallery-first-large');
@@ -1792,21 +1850,16 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
             }
           });
           
-          // 如果没有过滤变化且布局也没变化，直接返回
           if (!hasChanges && layoutChanges.length === 0) {
             return;
           }
 
-          // 第三步：更新移动端当前图片（只在必要时）
           if (window.innerWidth <= 749 && firstMatchIndex >= 0) {
-            // 检查当前索引的图片是否仍然可见
             const currentStillVisible = currentIndex >= 0 && 
                                        !gridContainers[currentIndex].classList.contains('variant-filtered');
             
-            // 如果当前图片仍可见，保持位置；否则跳转到第一张
             const targetIndex = currentStillVisible ? currentIndex : firstMatchIndex;
             
-            // 只在索引真正改变时更新
             if (window._currentGridImageIndex !== targetIndex) {
               window._currentGridImageIndex = targetIndex;
 
@@ -1829,14 +1882,15 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           const mobileThumbnails = Array.from(document.querySelectorAll('.mobile-thumbnail-nav__item'));
           mobileThumbnails.forEach((thumb, index) => {
             const thumbAlt = thumb.getAttribute('data-media-alt') || '';
-            const thumbAltLower = thumbAlt.trim().toLowerCase();
-            const thumbAltClean = thumbAlt.trim().replace(/\s+/g, '_');
+            const thumbVariantId = extractVariantIdentifier(thumbAlt);
+            const thumbAltLower = thumbVariantId.toLowerCase();
+            const thumbAltClean = thumbVariantId.replace(/\s+/g, '_');
             // 如果是默认标签，始终显示
             if (thumbAltLower === DEFAULT_TAG.toLowerCase()) {
               thumb.classList.remove('thumbnail-hidden');
               return;
             }
-            const matches = matchesVariant(thumbAltClean, selectedVariantString);
+            const matches = matchesVariant(thumbAlt, selectedVariantString);
             thumb.classList.toggle('thumbnail-hidden', !matches && thumbAltClean !== '');
           });
         } else {
@@ -1918,6 +1972,7 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
       if (presentation === 'grid') {
         const gridContainers = Array.from(mediaGallery.querySelectorAll('.media-gallery__grid .product-media-container'));
         const isLargeFirstEnabled = mediaGallery.classList.contains('media-gallery--large-first-image');
+        const isTwoColumn = mediaGallery.classList.contains('media-gallery--two-column');
         let visibleCount = 0;
         let firstVisibleIndex = -1;
         
@@ -1927,8 +1982,9 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
           
           if (!container.classList.contains('variant-filtered')) {
             if (visibleCount === 0) {
-              // 第一张可见图片：只在启用大图模式时添加 gallery-first-large
-              if (isLargeFirstEnabled) {
+              // 第一张可见图片：在两列模式下始终添加 gallery-first-large
+              // 无论是否启用 large-first-image 选项
+              if (isTwoColumn) {
                 container.classList.add('gallery-first-large');
               }
               firstVisibleIndex = index;
@@ -2304,7 +2360,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
             const selectedVariantString = getSelectedVariantValuesFromForm();
             filterZoomDialogImages(selectedVariantString);
 
-            // 检查点击的图片是否可见
             const clickedImageVisible = currentActiveIndex >= 0 && 
                                        currentActiveIndex < mediaContainers.length &&
                                        !mediaContainers[currentActiveIndex].classList.contains('variant-filtered');
@@ -2330,7 +2385,6 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
         };
       }
 
-      // Define getSelectedVariantValuesFromForm if not defined elsewhere
       function getSelectedVariantValuesFromForm() {
         const variantForm = document.querySelector('.variant-picker__form');
         if (!variantForm) return '';
@@ -2392,19 +2446,71 @@ media-gallery.media-gallery--grid .media-gallery__grid .product-media-container{
 
       window.addEventListener('resize', moveControlsToContainer);
 
-      dialog.addEventListener('click', e => {
-        if (e.target === dialog || e.target.classList.contains('dialog-zoomed-gallery')) {
+      // 移动端：点击空白区域关闭 zoom（优化版）
+      function handleMobileBackgroundClose(e) {
+        // 只在移动端生效（屏幕宽度 <= 749px）
+        if (window.innerWidth > 749) return;
+        
+        // 检测是否点击在可交互元素上
+        const clickTarget = e.target;
+        
+        // 不关闭的情况：
+        // 1. 点击在图片上
+        // 2. 点击在按钮上（导航按钮、关闭按钮）
+        // 3. 点击在 drag-zoom-wrapper 上（允许图片缩放拖动）
+        // 4. 点击在 product-media 上（图片容器）
+        if (
+          clickTarget.closest('.product-media__image') ||
+          clickTarget.closest('.product-media__drag-zoom-wrapper') ||
+          clickTarget.closest('.product-media') ||
+          clickTarget.closest('button') ||
+          clickTarget.closest('.zoom-dialog-nav') ||
+          clickTarget.classList.contains('product-media__image') ||
+          clickTarget.classList.contains('product-media')
+        ) {
+          return;
+        }
+        
+        // 点击空白区域（dialog 背景或 product-media-container 的空白部分）
+        if (
+          clickTarget === dialog ||
+          clickTarget.classList.contains('dialog-zoomed-gallery') ||
+          clickTarget.classList.contains('product-media-container')
+        ) {
           isClosing = true;
           e.preventDefault();
           e.stopPropagation();
-          if (typeof zoomDialog.close === 'function') {
-            zoomDialog.close();
-          } else if (dialog.open) {
-            dialog.close();
-          }
+          closeZoomDialog();
           setTimeout(() => isClosing = false, 300);
         }
+      }
+      
+      // 桌面端：原有的点击背景关闭逻辑
+      dialog.addEventListener('click', e => {
+        // 桌面端才使用这个简单逻辑
+        if (window.innerWidth > 749) {
+          if (e.target === dialog || e.target.classList.contains('dialog-zoomed-gallery')) {
+            isClosing = true;
+            e.preventDefault();
+            e.stopPropagation();
+            if (typeof zoomDialog.close === 'function') {
+              zoomDialog.close();
+            } else if (dialog.open) {
+              dialog.close();
+            }
+            setTimeout(() => isClosing = false, 300);
+          }
+        }
       });
+      
+      // 移动端：绑定多种事件确保兼容性
+      // 使用 click 和 touchend 两种事件，确保在所有浏览器都能触发
+      if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+        // 触摸设备：使用 touchend 事件（更灵敏）
+        dialog.addEventListener('touchend', handleMobileBackgroundClose, { passive: false });
+      }
+      // 同时也监听 click 事件作为备用（某些设备可能不支持 touch 事件）
+      dialog.addEventListener('click', handleMobileBackgroundClose, { passive: false });
 
       function preventGalleryScroll(e) {
         if (e.target.closest('.dialog-thumbnails-list-container') || e.target.closest('button') || e.target.closest('.product-media__drag-zoom-wrapper')) return;
