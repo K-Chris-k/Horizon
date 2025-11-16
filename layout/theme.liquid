@@ -4,14 +4,33 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
-    <!-- Google Tag Manager -->
-      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','GTM-MWSFJRN9');</script>
-      <!-- End Google Tag Manager -->
+        <!-- Google tag (gtag.js) for Google Ads -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17164794132"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'AW-17164794132');
+        </script>
 
+        <!-- Google Tag Manager -->
+        <script>
+        (function(w,d,s,l,i){
+          w[l]=w[l]||[];
+          w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+          var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),
+              dl=l!='dataLayer'?'&l='+l:'';
+          j.async=true;
+          j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+          f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-MWSFJRN9');
+        </script>
+
+        <!-- Event snippet for Page view conversion page -->
+      <script>
+        gtag('event', 'conversion', {'send_to': 'AW-17164794132/Jh8nCKyQj5AbEJTy5_g_'});
+      </script>
 
    
    
@@ -93,7 +112,50 @@
             'transaction_id': ''
         });
       </script>
+<script>
 
+document.addEventListener('click', function(e) {
+  // 匹配所有“加入购物车”按钮（Shopify 标准 class）
+  const addToCartButton = e.target.closest('[data-add-to-cart], .add-to-cart, button[name="add"]');
+  if (!addToCartButton) return;
+
+  const productCard = addToCartButton.closest('[data-product-card]') || 
+                       addToCartButton.closest('.product-item') || 
+                       addToCartButton.closest('.grid-product');
+
+  if (!productCard) return;
+
+
+  const variantId = addToCartButton.dataset.productVariantId || 
+                    addToCartButton.closest('form').querySelector('[name="id"]')?.value;
+
+  const priceElement = productCard.querySelector('[data-product-price] .money, .price-item');
+  const price = priceElement ? parseFloat(priceElement.textContent.replace(/[^0-9.]/g, '')) : 0;
+
+  const titleElement = productCard.querySelector('[data-product-title] h3, .product-title, h2');
+  const title = titleElement ? titleElement.textContent.trim() : 'Unknown Product';
+
+  gtag('event', 'add_to_cart', {
+    currency: '{{ shop.currency }}',
+    value: price,
+    items: [{
+      item_id: variantId || 'unknown',
+      item_name: title,
+      price: price,
+      quantity: 1
+    }]
+  });
+
+  
+  gtag('event', 'conversion', {
+    'send_to': 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
+    'value': price,
+    'currency': '{{ shop.currency }}'
+  });
+
+  console.log('GA4 add_to_cart fired:', { title, price, variantId });
+});
+</script>
 
     {%- if settings.favicon != blank -%}
       <link
