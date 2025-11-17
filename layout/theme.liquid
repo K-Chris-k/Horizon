@@ -4,65 +4,20 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
-        <!-- Google tag (gtag.js) for Google Ads -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17164794132"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'AW-17164794132');
-        </script>
-
-        <!-- Google Tag Manager -->
-        <script>
-        (function(w,d,s,l,i){
-          w[l]=w[l]||[];
-          w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
-          var f=d.getElementsByTagName(s)[0],
-              j=d.createElement(s),
-              dl=l!='dataLayer'?'&l='+l:'';
-          j.async=true;
-          j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-          f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-MWSFJRN9');
-        </script>
-
-        <!-- Event snippet for Page view conversion page -->
-      <script>
-        gtag('event', 'conversion', {'send_to': 'AW-17164794132/Jh8nCKyQj5AbEJTy5_g_'});
-      </script>
-
-   
-   
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QODMN042V3"></script>
+    <!-- Google Tag Manager -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-QODMN042V3');
+    (function(w,d,s,l,i){
+      w[l]=w[l]||[];
+      w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+      var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),
+          dl=l!='dataLayer'?'&l='+l:'';
+      j.async=true;
+      j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+      f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-MWSFJRN9');
     </script>
-
-    <!-- Event snippet for Add to cart conversion page
-        In your html page, add the snippet and call gtag_report_conversion when someone clicks on the chosen link or button. -->
-        <script>
-        function gtag_report_conversion(url) {
-          var callback = function () {
-            if (typeof(url) != 'undefined') {
-              window.location = url;
-            }
-          };
-          gtag('event', 'conversion', {
-              'send_to': 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
-              'value': 1.0,
-              'currency': 'GBP',
-              'event_callback': callback
-          });
-          return false;
-        }
-        </script>
-
-
+    <!-- End Google Tag Manager -->
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17164794132"></script>
@@ -70,112 +25,126 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
+      
+      // Google Ads 转化跟踪
       gtag('config', 'AW-17164794132');
+      
+      // Google Analytics
+      gtag('config', 'G-QODMN042V3');
     </script>
 
-
-    <!-- Event snippet for Purchase conversion page -->
+    <!-- 页面浏览转化事件 -->
     <script>
-      gtag('event', 'conversion', {
-          'send_to': 'AW-17164794132/uAMUCJvH6NYaEJTy5_g_',
-          'transaction_id': ''
-      });
+      gtag('event', 'conversion', {'send_to': 'AW-17164794132/Jh8nCKyQj5AbEJTy5_g_'});
     </script>
 
-    <!-- Event snippet for Purchase conversion page -->
+    <!-- Add to Cart 转化跟踪 - 精准监听成功添加到购物车事件 -->
     <script>
-      gtag('event', 'conversion', {
-          'send_to': 'AW-17164794132/uAMUCJvH6NYaEJTy5_g_',
-          'value': 1.0,
-          'currency': 'GBP',
-          'transaction_id': ''
+    // 方案：监听主题的购物车更新事件（只在成功添加时触发）
+    document.addEventListener('cart:update', function(event) {
+      console.log('Cart update event detected:', event);
+      
+      // 从事件中获取产品信息
+      var detail = event.detail || {};
+      var data = detail.data || {};
+      
+      // 严格过滤：只在成功添加到购物车时触发（排除更新、删除、错误情况）
+      if (data.source !== 'product-form-component') {
+        console.log('Skipped: Not from product form');
+        return;
+      }
+      
+      // 排除添加失败的情况
+      if (data.didError) {
+        console.log('Skipped: Add to cart failed');
+        return;
+      }
+      
+      var variantId = detail.id || detail.sourceId || 'unknown';
+      var quantity = data.itemCount || 1;
+      var productId = data.productId;
+      
+      // 尝试从多个来源获取价格和产品信息
+      var price = 0;
+      var productTitle = 'Unknown Product';
+      
+      // 方法1: 从表单或产品页面DOM获取信息
+      if (event.target) {
+        var productContainer = event.target.closest('.product, .product-info, product-form-component');
+        if (productContainer) {
+          // 查找价格元素
+          var priceElement = productContainer.querySelector('[data-product-price] .money, .price .money, .product-price .money, [data-price]');
+          if (priceElement) {
+            var priceText = priceElement.getAttribute('data-price') || priceElement.textContent;
+            price = parseFloat(priceText.replace(/[^0-9.]/g, '')) || 0;
+          }
+          
+          // 查找标题元素
+          var titleElement = productContainer.querySelector('[data-product-title], .product__title, h1');
+          if (titleElement) {
+            productTitle = titleElement.textContent.trim();
+          }
+        }
+      }
+      
+      // 方法2: 如果是产品详情页，从页面元素获取
+      if (price === 0) {
+        var mainProduct = document.querySelector('.product, [data-product-id]');
+        if (mainProduct) {
+          var priceEl = mainProduct.querySelector('.price .money, [data-product-price] .money');
+          if (priceEl) {
+            price = parseFloat(priceEl.textContent.replace(/[^0-9.]/g, '')) || 0;
+          }
+          var titleEl = mainProduct.querySelector('h1, [data-product-title]');
+          if (titleEl) {
+            productTitle = titleEl.textContent.trim();
+          }
+        }
+      }
+      
+      // 方法3: 从产品卡片获取信息（用于快速添加）
+      if (price === 0 && productId) {
+        var productCard = document.querySelector('[data-product-id="' + productId + '"]');
+        if (productCard) {
+          var cardPrice = productCard.querySelector('.price .money, [data-product-price]');
+          if (cardPrice) {
+            price = parseFloat(cardPrice.textContent.replace(/[^0-9.]/g, '')) || 0;
+          }
+          var cardTitle = productCard.querySelector('[data-product-title], .product-title, h3, h2');
+          if (cardTitle) {
+            productTitle = cardTitle.textContent.trim();
+          }
+        }
+      }
+      
+      console.log('Tracking add_to_cart:', {
+        productTitle: productTitle,
+        price: price,
+        variantId: variantId,
+        quantity: quantity,
+        productId: productId
       });
+      
+      // 发送 GA4 add_to_cart 事件
+      gtag('event', 'add_to_cart', {
+        currency: '{{ shop.currency }}',
+        value: price * quantity,
+        items: [{
+          item_id: variantId,
+          item_name: productTitle,
+          price: price,
+          quantity: quantity
+        }]
+      });
+      
+      // 发送 Google Ads 转化事件
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
+        'value': price * quantity,
+        'currency': '{{ shop.currency }}'
+      });
+    });
     </script>
-      <!-- Event snippet for Add to cart conversion page -->
-      <script>
-        gtag('event', 'conversion', {
-            'send_to': 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
-            'value': 1.0,
-            'currency': 'GBP'
-        });
-      </script>
-
-      <!-- Google tag (gtag.js) event -->
-      <script>
-        gtag('event', 'ads_conversion_Checkout_1', {
-          // <event_parameters>
-        });
-      </script>
-
-      <!-- Google tag (gtag.js) event -->
-      <script>
-        gtag('event', 'add_to_cart', {
-          // <event_parameters>
-        });
-      </script>
-      <!-- Event snippet for Begin checkout conversion page -->
-      <script>
-        gtag('event', 'conversion', {
-            'send_to': 'AW-17164794132/yK-nCKmQj5AbEJTy5_g_',
-            'value': 1.0,
-            'currency': 'GBP'
-        });
-      </script>
-
-      <!-- Event snippet for 购买 conversion page -->
-      <script>
-        gtag('event', 'conversion', {
-            'send_to': 'AW-17164794132/IYbVCKr2k7kbEJTy5_g_',
-            'value': 1.0,
-            'currency': 'GBP',
-            'transaction_id': ''
-        });
-      </script>
-<script>
-
-document.addEventListener('click', function(e) {
-  // 匹配所有“加入购物车”按钮（Shopify 标准 class）
-  const addToCartButton = e.target.closest('[data-add-to-cart], .add-to-cart, button[name="add"]');
-  if (!addToCartButton) return;
-
-  const productCard = addToCartButton.closest('[data-product-card]') || 
-                       addToCartButton.closest('.product-item') || 
-                       addToCartButton.closest('.grid-product');
-
-  if (!productCard) return;
-
-
-  const variantId = addToCartButton.dataset.productVariantId || 
-                    addToCartButton.closest('form').querySelector('[name="id"]')?.value;
-
-  const priceElement = productCard.querySelector('[data-product-price] .money, .price-item');
-  const price = priceElement ? parseFloat(priceElement.textContent.replace(/[^0-9.]/g, '')) : 0;
-
-  const titleElement = productCard.querySelector('[data-product-title] h3, .product-title, h2');
-  const title = titleElement ? titleElement.textContent.trim() : 'Unknown Product';
-
-  gtag('event', 'add_to_cart', {
-    currency: '{{ shop.currency }}',
-    value: price,
-    items: [{
-      item_id: variantId || 'unknown',
-      item_name: title,
-      price: price,
-      quantity: 1
-    }]
-  });
-
-  
-  gtag('event', 'conversion', {
-    'send_to': 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
-    'value': price,
-    'currency': '{{ shop.currency }}'
-  });
-
-  console.log('GA4 add_to_cart fired:', { title, price, variantId });
-});
-</script>
 
     {%- if settings.favicon != blank -%}
       <link
@@ -263,36 +232,95 @@ document.addEventListener('click', function(e) {
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
-          <script>
-        gtag('event', 'conversion', {
-            'send_to': 'AW-17164794132/IYbVCKr2k7kbEJTy5_g_',
-            'value': 1.0,
-            'currency': 'GBP',
-            'transaction_id': ''
-        });
-      </script>
-      <!-- Google tag (gtag.js) -->
-      <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17164794132"></script>
-      <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'AW-17164794132');
-      </script>
-         <script async src="https://www.googletagmanager.com/gtag/js?id=GTM-MWSFJRN9"></script>
-       <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'GTM-MWSFJRN9');
-      </script>
 
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MWSFJRN9"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Begin Checkout 转化跟踪 -->
+    <script>
+    // 监听结账按钮点击
+    document.addEventListener('DOMContentLoaded', function() {
+      var checkoutButton = document.querySelector('#checkout, button[name="checkout"], .cart__checkout-button');
+      
+      if (checkoutButton) {
+        checkoutButton.addEventListener('click', function(e) {
+          // 获取购物车总价
+          var cartTotal = 0;
+          var cartTotalElement = document.querySelector('[data-cart-total], .cart__total-price, .totals__total-value');
+          
+          if (cartTotalElement) {
+            cartTotal = parseFloat(cartTotalElement.textContent.replace(/[^0-9.]/g, '')) || 0;
+          }
+          
+          console.log('Begin checkout event fired, cart total:', cartTotal);
+          
+          // 发送 GA4 begin_checkout 事件
+          gtag('event', 'begin_checkout', {
+            currency: '{{ shop.currency }}',
+            value: cartTotal
+          });
+          
+          // 发送 Google Ads 转化事件 - Begin checkout
+          gtag('event', 'conversion', {
+            'send_to': 'AW-17164794132/yK-nCKmQj5AbEJTy5_g_',
+            'value': cartTotal,
+            'currency': '{{ shop.currency }}'
+          });
+        });
+      }
+    });
+    </script>
+
+    <!-- Purchase 转化跟踪 - 仅在订单确认页面 -->
+    {% if template contains 'customers/order' %}
+      <script>
+      // 在订单确认页面触发购买转化
+      {% if order %}
+        var orderTotal = {{ order.total_price | money_without_currency | remove: ',' }};
+        var orderId = '{{ order.order_number }}';
+        
+        console.log('Purchase conversion fired:', {
+          orderId: orderId,
+          total: orderTotal
+        });
+        
+        // 发送 GA4 purchase 事件
+        gtag('event', 'purchase', {
+          transaction_id: orderId,
+          value: orderTotal,
+          currency: '{{ shop.currency }}',
+          items: [
+            {% for line_item in order.line_items %}
+            {
+              item_id: '{{ line_item.variant_id }}',
+              item_name: '{{ line_item.title | escape }}',
+              price: {{ line_item.price | money_without_currency | remove: ',' }},
+              quantity: {{ line_item.quantity }}
+            }{% unless forloop.last %},{% endunless %}
+            {% endfor %}
+          ]
+        });
+        
+        // 发送 Google Ads 转化事件 - Purchase (第一个)
+        gtag('event', 'conversion', {
+          'send_to': 'AW-17164794132/uAMUCJvH6NYaEJTy5_g_',
+          'value': orderTotal,
+          'currency': '{{ shop.currency }}',
+          'transaction_id': orderId
+        });
+        
+        // 发送 Google Ads 转化事件 - Purchase (第二个 - 购买)
+        gtag('event', 'conversion', {
+          'send_to': 'AW-17164794132/IYbVCKr2k7kbEJTy5_g_',
+          'value': orderTotal,
+          'currency': '{{ shop.currency }}',
+          'transaction_id': orderId
+        });
+      {% endif %}
+      </script>
+    {% endif %}
 
   </body>
 </html>
