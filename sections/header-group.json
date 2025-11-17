@@ -26,10 +26,25 @@
             "case": "none"
           },
           "blocks": {}
+        },
+        "announcement_kTKyz6": {
+          "type": "_announcement",
+          "name": "t:names.announcement",
+          "settings": {
+            "text": "Black Friday Deals are live - 15% off now!",
+            "link": "",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
         }
       },
       "block_order": [
-        "announcement_BxgCk9"
+        "announcement_BxgCk9",
+        "announcement_kTKyz6"
       ],
       "name": "t:names.announcement_bar",
       "settings": {
