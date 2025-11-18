@@ -10,7 +10,6 @@
 {
   "current": {
     "logo": "shopify://shop_images/logo_Repeni.png",
-    "logo_inverse": "shopify://shop_images/Repenic_logo2_41ff2bb0-7446-469f-902a-fb88719c4d1b.png",
     "logo_height": 36,
     "logo_height_mobile": 28,
     "favicon": "shopify://shop_images/logo.png",
@@ -399,7 +398,7 @@
       },
       "scheme-4225d0e7-c643-4767-8cbd-a1eb52cfed77": {
         "settings": {
-          "background": "#00000074",
+          "background": "#00000073",
           "foreground_heading": "#ffffff",
           "foreground": "#faf6f6cf",
           "primary": "#ffffffcf",
