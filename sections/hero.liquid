@@ -110,6 +110,17 @@
           muted: true,
           class: 'hero__video'
       }}
+      <button type="button" class="hero__video-sound-toggle" aria-label="Toggle sound">
+        <svg aria-hidden="true" focusable="false" fill="none" width="25" class="icon icon-muted" viewBox="0 0 25 24">
+          <path d="M5.335 16.366H1V8.42h4.335m0 7.947V8.42m0 7.947 1.204.86M5.335 8.42 12.922 3v8M9 18.984l3.921 2.801V15.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M20.287 21.083A11.98 11.98 0 0 0 24 12.393c0-3.422-1.425-6.493-3.713-8.69m-3.582 3.582a6.947 6.947 0 0 1 0 10.215" stroke="currentColor" stroke-width="1"></path>
+          <path d="m22.5 1.5-21 21" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <svg aria-hidden="true" focusable="false" fill="none" width="25" class="icon icon-unmuted" viewBox="0 0 25 24">
+          <path d="M5.335 16.366H1V8.42h4.335m0 7.947V8.42m0 7.947 7.587 5.42V3L5.335 8.419" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M20.287 21.083A11.98 11.98 0 0 0 24 12.393c0-3.422-1.425-6.493-3.713-8.69m-3.582 3.582a6.947 6.947 0 0 1 0 10.215" stroke="currentColor" stroke-width="1"></path>
+        </svg>
+      </button>
     </div>
   {%- endif -%}
 
@@ -155,6 +166,17 @@
           muted: true,
           class: 'hero__video'
       }}
+      <button type="button" class="hero__video-sound-toggle" aria-label="Toggle sound">
+        <svg aria-hidden="true" focusable="false" fill="none" width="25" class="icon icon-muted" viewBox="0 0 25 24">
+          <path d="M5.335 16.366H1V8.42h4.335m0 7.947V8.42m0 7.947 1.204.86M5.335 8.42 12.922 3v8M9 18.984l3.921 2.801V15.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M20.287 21.083A11.98 11.98 0 0 0 24 12.393c0-3.422-1.425-6.493-3.713-8.69m-3.582 3.582a6.947 6.947 0 0 1 0 10.215" stroke="currentColor" stroke-width="1"></path>
+          <path d="m22.5 1.5-21 21" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <svg aria-hidden="true" focusable="false" fill="none" width="25" class="icon icon-unmuted" viewBox="0 0 25 24">
+          <path d="M5.335 16.366H1V8.42h4.335m0 7.947V8.42m0 7.947 7.587 5.42V3L5.335 8.419" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M20.287 21.083A11.98 11.98 0 0 0 24 12.393c0-3.422-1.425-6.493-3.713-8.69m-3.582 3.582a6.947 6.947 0 0 1 0 10.215" stroke="currentColor" stroke-width="1"></path>
+        </svg>
+      </button>
     </div>
   {%- endif -%}
 
@@ -356,8 +378,17 @@
     object-fit: cover;
     object-position: center center;
     overflow: hidden;
+  }
+
+  .hero__image {
     position: relative;
     z-index: var(--layer-base);
+  }
+
+  .hero__video {
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 
   .hero__video-wrapper {
@@ -366,6 +397,41 @@
 
   .hero__video-poster {
     position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .hero__video-sound-toggle {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    z-index: 10;
+    background:transparent;
+    border-radius: 50%;    border: none;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    pointer-events: auto;
+  }
+
+  .hero__video-sound-toggle .icon {
+    color: rgb(var(--color-foreground-rgb));
+  }
+
+  .hero__video-sound-toggle .icon-unmuted {
+    display: none;
+  }
+
+  .hero__video-sound-toggle.unmuted .icon-muted {
+    display: none;
+  }
+
+  .hero__video-sound-toggle.unmuted .icon-unmuted {
+    display: block;
   }
 
   .hero__link {
@@ -440,6 +506,37 @@
     }
   }
 {% endstylesheet %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const heroSection = document.querySelector('#Hero-{{ section.id }}');
+    if (!heroSection) return;
+
+    const videoWrappers = heroSection.querySelectorAll('.hero__video-wrapper');
+    
+    videoWrappers.forEach(wrapper => {
+      const video = wrapper.querySelector('.hero__video');
+      const toggleButton = wrapper.querySelector('.hero__video-sound-toggle');
+      
+      if (!video || !toggleButton) return;
+
+      toggleButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (video.muted) {
+          video.muted = false;
+          toggleButton.classList.add('unmuted');
+          toggleButton.setAttribute('aria-label', 'Mute sound');
+        } else {
+          video.muted = true;
+          toggleButton.classList.remove('unmuted');
+          toggleButton.setAttribute('aria-label', 'Unmute sound');
+        }
+      });
+    });
+  });
+</script>
 
 {% schema %}
 {
