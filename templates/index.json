@@ -1302,7 +1302,7 @@
             "gap": 12,
             "inherit_color_scheme": true,
             "color_scheme": "",
-            "toggle_overlay": false,
+            "toggle_overlay": true,
             "overlay_color": "#00000026",
             "overlay_style": "solid",
             "gradient_direction": "to top",
