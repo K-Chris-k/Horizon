@@ -17,13 +17,6 @@
   %}
 
   {% comment %} Apply slide-specific height styles {% endcomment %}
-  {% liquid
-    assign has_custom_height = false
-    if block_settings.slide_height != blank and block_settings.slide_height != 'inherit'
-      assign has_custom_height = true
-    endif
-  %}
-
   {% if effective_height == 'adapt' and preview_image != blank %}
     {%
       # Adapt to image: Use the exact aspect ratio of the image
@@ -32,9 +25,7 @@
     {%- assign slide_height_vw = 1 | divided_by: preview_image.aspect_ratio | times: 100 -%}
     {% style %}
       .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-        height: {{ slide_height_vw }}vw !important;
         min-height: {{ slide_height_vw }}vw !important;
-        max-height: {{ slide_height_vw }}vw !important;
       }
     {% endstyle %}
   {% elsif effective_height == 'auto' and preview_image != blank %}
@@ -44,15 +35,12 @@
     {%- assign slide_height_vw = 1 | divided_by: preview_image.aspect_ratio | times: 100 -%}
     {% style %}
       .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-        height: {{ slide_height_vw }}vw !important;
         min-height: {{ slide_height_vw }}vw !important;
-        max-height: {{ slide_height_vw }}vw !important;
       }
     {% endstyle %}
   {% elsif effective_height == 'small' %}
     {% style %}
       .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-        height: auto !important;
         min-height: 17.5rem !important;
       }
       
@@ -65,7 +53,6 @@
   {% elsif effective_height == 'medium' %}
     {% style %}
       .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-        height: auto !important;
         min-height: 21.25rem !important;
       }
       
@@ -78,7 +65,6 @@
   {% elsif effective_height == 'large' %}
     {% style %}
       .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-        height: auto !important;
         min-height: 25rem !important;
       }
       
@@ -91,9 +77,7 @@
   {% elsif effective_height == 'full' %}
     {% style %}
       .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-        height: 100vh !important;
         min-height: 100vh !important;
-        max-height: 100vh !important;
       }
     {% endstyle %}
   {% endif %}
