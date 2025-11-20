@@ -63,7 +63,7 @@
     <slideshow-slides
       tabindex="-1"
       ref="scroller"
-      {% if slide_size %}
+      {% if slide_size and slide_size != 'auto' %}
         size="{{ slide_size }}"
       {% endif %}
       {% if slideshow_gutters %}
