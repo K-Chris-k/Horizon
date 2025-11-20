@@ -9,90 +9,18 @@
   endif
   
   # Determine which height setting to use
-  assign effective_height = block_settings.slide_height
-  if effective_height == 'inherit' or effective_height == blank
-    assign effective_height = section.settings.slide_height
+  assign slide_height = block_settings.slide_height
+  if slide_height == 'inherit' or slide_height == blank
+    assign slide_height = section.settings.slide_height
+  endif
+  
+  # Calculate height value for adapt mode
+  if slide_height == 'adapt' or slide_height == 'auto'
+    if preview_image != blank
+      assign slide_height_value = 1 | divided_by: preview_image.aspect_ratio | times: 100 | append: 'vw'
+    endif
   endif
 %}
-
-{% comment %} Apply slide-specific height styles - each slide controls its own height {% endcomment %}
-{% if block_settings.slide_height != blank and block_settings.slide_height != 'inherit' %}
-  {% if block_settings.slide_height == 'adapt' and preview_image != blank %}
-    {%
-      # Adapt to image: This slide uses the exact aspect ratio of its image
-    %}
-    {%- assign slide_height_vw = 1 | divided_by: preview_image.aspect_ratio | times: 100 -%}
-    {% style %}
-      .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-        min-height: {{ slide_height_vw }}vw !important;
-      }
-    {% endstyle %}
-  {% elsif block_settings.slide_height == 'small' %}
-    {% style %}
-      .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-        min-height: 17.5rem !important;
-      }
-      
-      @media screen and (min-width: 750px) {
-        .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-          min-height: 26.25rem !important;
-        }
-      }
-    {% endstyle %}
-  {% elsif block_settings.slide_height == 'medium' %}
-    {% style %}
-      .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-        min-height: 21.25rem !important;
-      }
-      
-      @media screen and (min-width: 750px) {
-        .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-          min-height: 35rem !important;
-        }
-      }
-    {% endstyle %}
-  {% elsif block_settings.slide_height == 'large' %}
-    {% style %}
-      .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-        min-height: 25rem !important;
-      }
-      
-      @media screen and (min-width: 750px) {
-        .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-          min-height: 45rem !important;
-        }
-      }
-    {% endstyle %}
-  {% elsif block_settings.slide_height == 'full' %}
-    {% style %}
-      .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
-        min-height: 100vh !important;
-      }
-    {% endstyle %}
-  {% endif %}
-{% elsif effective_height == 'adapt' and preview_image != blank %}
-  {%
-    # Legacy: when section height is 'auto' or 'adapt', apply to all slides
-  %}
-  {%- assign slide_height_vw = 1 | divided_by: preview_image.aspect_ratio | times: 100 -%}
-  {% style %}
-    .shopify-section-{{ section.id }} slideshow-slides,
-    .shopify-section-{{ section.id }} slideshow-slide {
-      min-height: {{ slide_height_vw }}vw !important;
-    }
-  {% endstyle %}
-{% elsif effective_height == 'auto' and preview_image != blank %}
-  {%
-    # Legacy 'auto' support (same as 'adapt')
-  %}
-  {%- assign slide_height_vw = 1 | divided_by: preview_image.aspect_ratio | times: 100 -%}
-  {% style %}
-    .shopify-section-{{ section.id }} slideshow-slides,
-    .shopify-section-{{ section.id }} slideshow-slide {
-      min-height: {{ slide_height_vw }}vw !important;
-    }
-  {% endstyle %}
-{% endif %}
 
 {% comment %} Apply image fit style {% endcomment %}
 {% if block_settings.image_fit %}
@@ -208,7 +136,9 @@
   index: block_index,
   class: class,
   children: children,
-  attributes: block.shopify_attributes
+  attributes: block.shopify_attributes,
+  slide_height: slide_height,
+  slide_height_value: slide_height_value
 %}
 
 {% stylesheet %}
