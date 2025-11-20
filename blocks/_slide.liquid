@@ -23,6 +23,61 @@
   endif
 %}
 
+{% comment %} Control slideshow-slides container height based on current visible slide {% endcomment %}
+{% if slide_height != blank %}
+  {% if slide_height == 'adapt' or slide_height == 'auto' %}
+    {% if slide_height_value != blank %}
+      {% style %}
+        .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+          min-height: {{ slide_height_value }} !important;
+        }
+      {% endstyle %}
+    {% endif %}
+  {% elsif slide_height == 'small' %}
+    {% style %}
+      .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+        min-height: 17.5rem !important;
+      }
+      
+      @media screen and (min-width: 750px) {
+        .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+          min-height: 26.25rem !important;
+        }
+      }
+    {% endstyle %}
+  {% elsif slide_height == 'medium' %}
+    {% style %}
+      .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+        min-height: 21.25rem !important;
+      }
+      
+      @media screen and (min-width: 750px) {
+        .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+          min-height: 35rem !important;
+        }
+      }
+    {% endstyle %}
+  {% elsif slide_height == 'large' %}
+    {% style %}
+      .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+        min-height: 25rem !important;
+      }
+      
+      @media screen and (min-width: 750px) {
+        .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+          min-height: 45rem !important;
+        }
+      }
+    {% endstyle %}
+  {% elsif slide_height == 'full' %}
+    {% style %}
+      .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+        min-height: 100vh !important;
+      }
+    {% endstyle %}
+  {% endif %}
+{% endif %}
+
 {% comment %} Apply image fit style {% endcomment %}
 {% if block_settings.image_fit %}
   {% style %}
