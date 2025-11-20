@@ -96,7 +96,7 @@
             "letter_spacing": "normal",
             "case": "none",
             "wrap": "pretty",
-            "color": "var(--color-primary)",
+            "color": "var(--color-foreground)",
             "background": false,
             "background_color": "#fafafa",
             "corner_radius": 5,

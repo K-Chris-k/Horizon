@@ -406,7 +406,7 @@
         "settings": {
           "background": "#00000073",
           "foreground_heading": "#ffffff",
-          "foreground": "#faf6f6cf",
+          "foreground": "#faf6f6",
           "primary": "#ffffffcf",
           "primary_hover": "#ffffff",
           "border": "#0000000f",
