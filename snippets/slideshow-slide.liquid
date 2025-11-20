@@ -17,21 +17,18 @@
 {%- liquid
   assign class = class | strip | strip_newlines
   assign style = style | strip | strip_newlines
-  assign base_style = 'view-timeline-name: --slide-' | append: index | append: '; --product-media-fit: ' | append: media_fit | default: 'cover' | append: ';'
-  if style != blank
-    assign combined_style = base_style | append: ' ' | append: style
-  else
-    assign combined_style = base_style
-  endif
 -%}
 
 <slideshow-slide
   ref="slides[]"
-  data-slide-index="{{ index }}"
   aria-hidden="{% if index == 0 %}false{% else %}true{% endif %}"
-  style="{{ combined_style }}"
+  style="view-timeline-name: --slide-{{ index }}; --product-media-fit: {{ media_fit | default: 'cover' }};"
   {% if class != blank %}
     class="{{ class }}"
+  {% endif %}
+  {{ attributes }}
+  {% if style != blank %}
+    style="{{ style }}"
   {% endif %}
   {% if slide_id != blank %}
     slide-id="{{ slide_id }}"
