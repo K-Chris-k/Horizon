@@ -426,7 +426,7 @@
           "input_background": "#ffffffc7",
           "input_text_color": "#333333",
           "input_border_color": "#dfdfdf",
-          "input_hover_background": "#00000003",
+          "input_hover_background": "#fffcfcf7",
           "variant_background_color": "#ffffff",
           "variant_text_color": "#000000",
           "variant_border_color": "#00000021",
