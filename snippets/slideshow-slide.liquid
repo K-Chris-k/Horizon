@@ -9,6 +9,8 @@
   @param {boolean} [hidden] - Hidden slides will not be shown in the slideshow
   @param {string} [slide_id] - The unique id assigned to the slide amongst all slides in the slideshow
   @param {string} [media_fit] - { 'cover', 'contain' } - CSS property for how the media should be fit in the slide
+  @param {string} [slide_height] - Height mode: 'small', 'medium', 'large', 'full', 'adapt'
+  @param {string} [slide_height_value] - Computed height value for 'adapt' mode
 
   @example
   {% render 'slideshow-slide', index: 0, children: imageElement, slide_id: 'slide-1', hidden: false, media_fit: 'cover' %}
@@ -18,12 +20,48 @@
   assign class = class | strip | strip_newlines
   assign style = style | strip | strip_newlines
   assign base_style = 'view-timeline-name: --slide-' | append: index | append: '; --product-media-fit: ' | append: media_fit | default: 'cover' | append: ';'
+  
+  # Add height styles based on slide_height parameter - only if explicitly set
+  if slide_height != blank and slide_height != 'inherit'
+    if slide_height == 'adapt' or slide_height == 'auto'
+      if slide_height_value != blank
+        assign base_style = base_style | append: ' min-height: ' | append: slide_height_value | append: ';'
+      endif
+    elsif slide_height == 'small'
+      assign base_style = base_style | append: ' min-height: 17.5rem;'
+    elsif slide_height == 'medium'
+      assign base_style = base_style | append: ' min-height: 21.25rem;'
+    elsif slide_height == 'large'
+      assign base_style = base_style | append: ' min-height: 25rem;'
+    elsif slide_height == 'full'
+      assign base_style = base_style | append: ' min-height: 100vh;'
+    endif
+  endif
+  
   if style != blank
     assign combined_style = base_style | append: ' ' | append: style
   else
     assign combined_style = base_style
   endif
 -%}
+
+{% if slide_height != blank and slide_height != 'inherit' %}
+  {% if slide_height == 'small' or slide_height == 'medium' or slide_height == 'large' %}
+    {% style %}
+      @media screen and (min-width: 750px) {
+        slideshow-slide[data-slide-index="{{ index }}"] {
+          {% if slide_height == 'small' %}
+            min-height: 26.25rem;
+          {% elsif slide_height == 'medium' %}
+            min-height: 35rem;
+          {% elsif slide_height == 'large' %}
+            min-height: 45rem;
+          {% endif %}
+        }
+      }
+    {% endstyle %}
+  {% endif %}
+{% endif %}
 
 <slideshow-slide
   ref="slides[]"
