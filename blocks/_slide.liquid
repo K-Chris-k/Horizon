@@ -28,51 +28,58 @@
   {% if slide_height == 'adapt' or slide_height == 'auto' %}
     {% if slide_height_value != blank %}
       {% style %}
-        .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+        .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+          height: {{ slide_height_value }} !important;
           min-height: {{ slide_height_value }} !important;
+          max-height: {{ slide_height_value }} !important;
         }
       {% endstyle %}
     {% endif %}
   {% elsif slide_height == 'small' %}
     {% style %}
-      .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+      .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+        height: auto !important;
         min-height: 17.5rem !important;
       }
       
       @media screen and (min-width: 750px) {
-        .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+        .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
           min-height: 26.25rem !important;
         }
       }
     {% endstyle %}
   {% elsif slide_height == 'medium' %}
     {% style %}
-      .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+      .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+        height: auto !important;
         min-height: 21.25rem !important;
       }
       
       @media screen and (min-width: 750px) {
-        .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+        .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
           min-height: 35rem !important;
         }
       }
     {% endstyle %}
   {% elsif slide_height == 'large' %}
     {% style %}
-      .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+      .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+        height: auto !important;
         min-height: 25rem !important;
       }
       
       @media screen and (min-width: 750px) {
-        .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+        .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
           min-height: 45rem !important;
         }
       }
     {% endstyle %}
   {% elsif slide_height == 'full' %}
     {% style %}
-      .shopify-section-{{ section.id }} slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+      .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
+        height: 100vh !important;
         min-height: 100vh !important;
+        max-height: 100vh !important;
       }
     {% endstyle %}
   {% endif %}
@@ -83,6 +90,13 @@
   {% style %}
     .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] .slide__image-container > .slide__image {
       object-fit: {{ block_settings.image_fit }};
+    }
+  {% endstyle %}
+{% elsif slide_height == 'adapt' or slide_height == 'auto' %}
+  {% comment %} When adapting to image, use contain to show full image {% endcomment %}
+  {% style %}
+    .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] .slide__image-container > .slide__image {
+      object-fit: contain;
     }
   {% endstyle %}
 {% endif %}
