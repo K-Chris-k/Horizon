@@ -225,8 +225,8 @@
         "button_text_color_hover": "#ffffff",
         "button_bg_color_hover": "#000000",
         "button_border_color_hover": "#000000",
-        "padding_top": 80,
-        "padding_bottom": 80
+        "padding_top": 40,
+        "padding_bottom": 40
       }
     },
     "partner_showcase_YBjjAG": {
