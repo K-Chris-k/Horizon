@@ -9,15 +9,24 @@
       assign preview_image = block_settings.video_1.preview_image
     endif
   %}
-  {% if section.settings.slide_height == 'adapt_image' and block_index == 0 and preview_image != blank %}
+  {% if section.settings.slide_height == 'auto' and preview_image != blank %}
     {%
-      # Great example of why it can be helpful for a section to be able to read the settings of its direct child blocks.
-      # In this case, we want the section to be able to read the image aspect ratio of the first slide and apply it to the slideshow slides and slides.
+      # Each slide adapts to its own image aspect ratio
+      # This ensures each image is displayed at its natural proportions without stretching
     %}
+    {%- assign slide_height_vw = 1 | divided_by: preview_image.aspect_ratio | times: 100 -%}
     {% style %}
-      .shopify-section-{{ section.id }} slideshow-slides,
-      .shopify-section-{{ section.id }} slideshow-slide {
-        min-height: {{ 1 | divided_by: preview_image.aspect_ratio | times: 100 }}vw;
+      .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] {
+        height: {{ slide_height_vw }}vw;
+        min-height: {{ slide_height_vw }}vw;
+      }
+    {% endstyle %}
+  {% endif %}
+
+  {% if block_settings.image_fit %}
+    {% style %}
+      .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] .slide__image-container > .slide__image {
+        object-fit: {{ block_settings.image_fit }};
       }
     {% endstyle %}
   {% endif %}
@@ -230,6 +239,24 @@
       "id": "image_mobile",
       "label": "Mobile Image",
       "info": "Optional mobile-specific image. If not set, desktop image will be used on mobile.",
+      "visible_if": "{{ block.settings.media_type_1 == 'image' }}"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "info": "Cover: fills the space and may crop. Contain: shows full image and may add empty space.",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Cover (fill space)"
+        },
+        {
+          "value": "contain",
+          "label": "Contain (fit image)"
+        }
+      ],
+      "default": "cover",
       "visible_if": "{{ block.settings.media_type_1 == 'image' }}"
     },
     {
