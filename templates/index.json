@@ -438,7 +438,7 @@
             "media_type_1": "image",
             "image_1": "shopify://shop_images/08_404c4c69-a62d-427a-868a-90c3716cd66a.jpg",
             "image_fit": "contain",
-            "slide_height": "small",
+            "slide_height": "medium",
             "content_direction": "column",
             "vertical_on_mobile": true,
             "horizontal_alignment": "flex-start",
