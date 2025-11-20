@@ -301,6 +301,30 @@
       "visible_if": "{{ section.settings.background_media == 'image' }}"
     },
     {
+      "type": "image_picker",
+      "id": "background_image_mobile",
+      "label": "Mobile Image",
+      "info": "Optional. If not set, desktop image will be used on mobile.",
+      "visible_if": "{{ section.settings.background_media == 'image' }}"
+    },
+    {
+      "type": "select",
+      "id": "background_image_mobile_position",
+      "label": "Mobile Image Position",
+      "options": [
+        {
+          "value": "cover",
+          "label": "t:options.cover"
+        },
+        {
+          "value": "fit",
+          "label": "t:options.fit"
+        }
+      ],
+      "default": "cover",
+      "visible_if": "{{ section.settings.background_media == 'image' and section.settings.background_image_mobile != blank }}"
+    },
+    {
       "type": "select",
       "id": "border",
       "label": "t:settings.borders",
