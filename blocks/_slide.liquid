@@ -1,114 +1,26 @@
-
-<style>
-  .spacing-style.section.section--full-width.color-scheme-1.disable-section-top-offset slideshow-slides[size=medium] {
-    min-height: 100% !important;
-    height: 100% !important;
-}
-  </style>
 {% assign block_settings = block.settings %}
 {%- assign block_index = section.blocks | find_index: 'id', block.id -%}
 {%- assign section_index = section.index -%}
 
-{% liquid
-  assign preview_image = block_settings.image_1
-  if block_settings.media_type_1 == 'video'
-    assign preview_image = block_settings.video_1.preview_image
-  endif
-  
-  # Only pass slide_height if explicitly set (not inherit)
-  assign slide_height = block_settings.slide_height
-  if slide_height != blank and slide_height != 'inherit'
-    # Calculate height value for adapt mode
-    if slide_height == 'adapt' or slide_height == 'auto'
-      if preview_image != blank
-        assign slide_height_value = 1 | divided_by: preview_image.aspect_ratio | times: 100 | append: 'vw'
-      endif
+{% capture children %}
+  {% liquid
+    assign preview_image = block_settings.image_1
+    if block_settings.media_type_1 == 'video'
+      assign preview_image = block_settings.video_1.preview_image
     endif
-  else
-    # Don't pass slide_height - let slideshow-slides control height
-    assign slide_height = blank
-  endif
-%}
-
-{% comment %} Control slideshow-slides container height based on current visible slide {% endcomment %}
-{% if slide_height != blank %}
-  {% if slide_height == 'adapt' or slide_height == 'auto' %}
-    {% if slide_height_value != blank %}
-      {% style %}
-        .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
-          height: {{ slide_height_value }} !important;
-          min-height: {{ slide_height_value }} !important;
-          max-height: {{ slide_height_value }} !important;
-        }
-      {% endstyle %}
-    {% endif %}
-  {% elsif slide_height == 'small' %}
+  %}
+  {% if section.settings.slide_height == 'adapt_image' and block_index == 0 and preview_image != blank %}
+    {%
+      # Great example of why it can be helpful for a section to be able to read the settings of its direct child blocks.
+      # In this case, we want the section to be able to read the image aspect ratio of the first slide and apply it to the slideshow slides and slides.
+    %}
     {% style %}
-      .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
-        height: auto !important;
-        min-height: 17.5rem !important;
-      }
-      
-      @media screen and (min-width: 750px) {
-        .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
-          min-height: 26.25rem !important;
-        }
-      }
-    {% endstyle %}
-  {% elsif slide_height == 'medium' %}
-    {% style %}
-      .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
-        height: auto !important;
-        min-height: 21.25rem !important;
-      }
-      
-      @media screen and (min-width: 750px) {
-        .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
-          min-height: 35rem !important;
-        }
-      }
-    {% endstyle %}
-  {% elsif slide_height == 'large' %}
-    {% style %}
-      .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
-        height: auto !important;
-        min-height: 25rem !important;
-      }
-      
-      @media screen and (min-width: 750px) {
-        .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
-          min-height: 45rem !important;
-        }
-      }
-    {% endstyle %}
-  {% elsif slide_height == 'full' %}
-    {% style %}
-      .shopify-section-{{ section.id }} slideshow-component slideshow-container slideshow-slides:has(slideshow-slide[data-slide-index="{{ block_index }}"][aria-hidden="false"]) {
-        height: 100vh !important;
-        min-height: 100vh !important;
-        max-height: 100vh !important;
+      .shopify-section-{{ section.id }} slideshow-slides,
+      .shopify-section-{{ section.id }} slideshow-slide {
+        min-height: {{ 1 | divided_by: preview_image.aspect_ratio | times: 100 }}vw;
       }
     {% endstyle %}
   {% endif %}
-{% endif %}
-
-{% comment %} Apply image fit style {% endcomment %}
-{% if block_settings.image_fit %}
-  {% style %}
-    .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] .slide__image-container > .slide__image {
-      object-fit: {{ block_settings.image_fit }};
-    }
-  {% endstyle %}
-{% elsif slide_height == 'adapt' or slide_height == 'auto' %}
-  {% comment %} When adapting to image, use contain to show full image {% endcomment %}
-  {% style %}
-    .shopify-section-{{ section.id }} slideshow-slide[data-slide-index="{{ block_index }}"] .slide__image-container > .slide__image {
-      object-fit: contain;
-    }
-  {% endstyle %}
-{% endif %}
-
-{% capture children %}
 
   <div class="slide__image-container">
     {%- if block_settings.toggle_overlay -%}
@@ -213,9 +125,7 @@
   index: block_index,
   class: class,
   children: children,
-  attributes: block.shopify_attributes,
-  slide_height: slide_height,
-  slide_height_value: slide_height_value
+  attributes: block.shopify_attributes
 %}
 
 {% stylesheet %}
@@ -323,65 +233,10 @@
       "visible_if": "{{ block.settings.media_type_1 == 'image' }}"
     },
     {
-      "type": "select",
-      "id": "image_fit",
-      "label": "Image fit",
-      "info": "Cover: fills the space and may crop. Contain: shows full image and may add empty space.",
-      "options": [
-        {
-          "value": "cover",
-          "label": "Cover (fill space)"
-        },
-        {
-          "value": "contain",
-          "label": "Contain (fit image)"
-        }
-      ],
-      "default": "cover",
-      "visible_if": "{{ block.settings.media_type_1 == 'image' }}"
-    },
-    {
       "type": "video",
       "id": "video_1",
       "label": "t:settings.video",
       "visible_if": "{{ block.settings.media_type_1 == 'video' }}"
-    },
-    {
-      "type": "header",
-      "content": "Size"
-    },
-    {
-      "type": "select",
-      "id": "slide_height",
-      "label": "Height",
-      "info": "Set slide height. 'Adapt to image' will use the exact height of the uploaded image.",
-      "options": [
-        {
-          "value": "inherit",
-          "label": "Inherit from slideshow"
-        },
-        {
-          "value": "adapt",
-          "label": "Adapt to image"
-        },
-        {
-          "value": "small",
-          "label": "Small"
-        },
-        {
-          "value": "medium",
-          "label": "Medium"
-        },
-        {
-          "value": "large",
-          "label": "Large"
-        },
-        {
-          "value": "full",
-          "label": "Full screen"
-        }
-      ],
-      "default": "inherit"
     },
     {
       "type": "header",
