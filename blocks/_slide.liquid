@@ -8,17 +8,18 @@
     assign preview_image = block_settings.video_1.preview_image
   endif
   
-  # Determine which height setting to use
+  # Only pass slide_height if explicitly set (not inherit)
   assign slide_height = block_settings.slide_height
-  if slide_height == 'inherit' or slide_height == blank
-    assign slide_height = section.settings.slide_height
-  endif
-  
-  # Calculate height value for adapt mode
-  if slide_height == 'adapt' or slide_height == 'auto'
-    if preview_image != blank
-      assign slide_height_value = 1 | divided_by: preview_image.aspect_ratio | times: 100 | append: 'vw'
+  if slide_height != blank and slide_height != 'inherit'
+    # Calculate height value for adapt mode
+    if slide_height == 'adapt' or slide_height == 'auto'
+      if preview_image != blank
+        assign slide_height_value = 1 | divided_by: preview_image.aspect_ratio | times: 100 | append: 'vw'
+      endif
     endif
+  else
+    # Don't pass slide_height - let slideshow-slides control height
+    assign slide_height = blank
   endif
 %}
 
