@@ -87,6 +87,8 @@
         "video_position": "cover",
         "background_image": "shopify://shop_images/08_404c4c69-a62d-427a-868a-90c3716cd66a.jpg",
         "background_image_position": "cover",
+        "background_image_mobile": "shopify://shop_images/10.1.jpg",
+        "background_image_mobile_position": "cover",
         "border": "none",
         "border_width": 1,
         "border_opacity": 100,
