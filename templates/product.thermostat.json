@@ -1128,6 +1128,7 @@
         "background_media": "none",
         "video_position": "cover",
         "background_image_position": "cover",
+        "background_image_mobile_position": "cover",
         "border": "none",
         "border_width": 1,
         "border_opacity": 100,
@@ -1238,7 +1239,7 @@
           "type": "download",
           "settings": {
             "label": "Installation - receiver",
-            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/Installation_-_receiver.pdf?v=1762506880"
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/Installation_-receiver.pdf?v=1763715750"
           }
         },
         "download_rh6kb7": {
