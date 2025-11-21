@@ -20,7 +20,7 @@
             "text": "<strong>Free delivery</strong> on orders over ￡150",
             "link": "",
             "font": "var(--font-subheading--family)",
-            "font_size": "0.75rem",
+            "font_size": "0.875rem",
             "weight": "",
             "letter_spacing": "normal",
             "case": "none"
@@ -34,7 +34,7 @@
             "text": "Black Friday Deals are live - 15% off now!",
             "link": "",
             "font": "var(--font-body--family)",
-            "font_size": "0.75rem",
+            "font_size": "0.875rem",
             "weight": "",
             "letter_spacing": "normal",
             "case": "none"
