@@ -655,6 +655,287 @@
         "content_box_padding_mobile": 15
       }
     },
+    "technical_specifications_Ek79Ct": {
+      "type": "technical-specifications",
+      "blocks": {
+        "tab_item_pnBHLj": {
+          "type": "tab_item",
+          "settings": {
+            "tab_type": "specification",
+            "tab_label": "Specification",
+            "tab_background_color": "rgba(0,0,0,0)",
+            "tab_text_color": "#333333"
+          }
+        },
+        "tab_item_rR4PQy": {
+          "type": "tab_item",
+          "settings": {
+            "tab_type": "pdf",
+            "tab_label": "PDF",
+            "tab_background_color": "rgba(0,0,0,0)",
+            "tab_text_color": "#333333"
+          }
+        },
+        "tab_item_Q7KVmw": {
+          "type": "tab_item",
+          "settings": {
+            "tab_type": "faq",
+            "tab_label": "FAQ",
+            "tab_background_color": "rgba(0,0,0,0)",
+            "tab_text_color": "#333333"
+          }
+        },
+        "tab_item_bUACR3": {
+          "type": "tab_item",
+          "disabled": true,
+          "settings": {
+            "tab_type": "video",
+            "tab_label": "Installation Video",
+            "tab_background_color": "rgba(0,0,0,0)",
+            "tab_text_color": "#333333"
+          }
+        },
+        "tech_spec_TCX7Q6": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "Power",
+            "label_color": "#333333",
+            "value": "Thermostat: 2xAA (included)<br>Reveiver: 220V ~ 230V ac",
+            "value_color": "#666666"
+          }
+        },
+        "tech_spec_XXq3wt": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "Protocol",
+            "label_color": "#333333",
+            "value": "WiFi + RF 868.35Mhz<br>No hub required",
+            "value_color": "#666666"
+          }
+        },
+        "tech_spec_NefkMB": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "Accessories",
+            "label_color": "#333333",
+            "value": "Table stand (optional)<br>Wall clip (optional)",
+            "value_color": "#666666"
+          }
+        },
+        "tech_spec_PyJdeB": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "Zone",
+            "label_color": "#333333",
+            "value": "4 zones in one receiver<br>1 hot water zone + 3 heating zone",
+            "value_color": "#666666"
+          }
+        },
+        "tech_spec_aacAgC": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "Screen",
+            "label_color": "#333333",
+            "value": "Color LCD",
+            "value_color": "#666666"
+          }
+        },
+        "tech_spec_FAndtX": {
+          "type": "tech_spec",
+          "settings": {
+            "label": "IP rate",
+            "label_color": "#333333",
+            "value": "IP 20",
+            "value_color": "#666666"
+          }
+        },
+        "download_kWHF3k": {
+          "type": "download",
+          "settings": {
+            "label": "Installation - receiver",
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/Installation_-_receiver.pdf?v=1762506880"
+          }
+        },
+        "download_rh6kb7": {
+          "type": "download",
+          "settings": {
+            "label": "User guide - thermostat",
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/user_guide-thermostsat.pdf?v=1763715750"
+          }
+        },
+        "download_8GhpGx": {
+          "type": "download",
+          "settings": {
+            "label": "CE Declaration of Conformity - Thermostat",
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RT-WTRF01-CE.jpg?v=1762858544"
+          }
+        },
+        "download_7zi8BH": {
+          "type": "download",
+          "settings": {
+            "label": "CE Declaration of Conformity - Receiver",
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RT-R4CWF-CE.jpg?v=1762858632"
+          }
+        },
+        "faq_7iYH9n": {
+          "type": "faq",
+          "settings": {
+            "question": "Can this thermostat be used as a replacement for a Nest or Hive thermostat?",
+            "answer": "<p>Yes, this thermostat offers the same system compatibility and broadly similar functionality as Nest or Hive, so it can be used as a replacement for either. You can refer to<a href=\"https://www.repenic.com/blogs/knowledge/google-stopped-supporting-nest-1st-2nd-gen-thermostats-what-should-you-do-now-2025-update\" target=\"_blank\" title=\"https://www.repenic.com/blogs/knowledge/google-stopped-supporting-nest-1st-2nd-gen-thermostats-what-should-you-do-now-2025-update\"> this article</a> for more detailed information.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
+        "faq_aimhEp": {
+          "type": "faq",
+          "settings": {
+            "question": "Does it work with my heating system?",
+            "answer": "<p>√ <a href=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\" target=\"_blank\" title=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\">Y-plan, S-plan, S-plan plus</a></p><p>√ Gas boilers, oil-fired boilers and electric boilers controlled by contactors (if your boiler works with a standard room thermostat and/or programmer, then our thermostat can control it).</p><p>X Storage heaters or individual plug-in electric room heaters.</p><p>X Electric underfloor heating system (heating mat, heating film, etc.).</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
+        "faq_H7iBHG": {
+          "type": "faq",
+          "settings": {
+            "question": "How often should the battery be replaced?",
+            "answer": "<p>Two brand-new alkaline AA batteries can last for at least one year.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
+        "faq_xETUHf": {
+          "type": "faq",
+          "settings": {
+            "question": "Does the product come with batteries?",
+            "answer": "<p>Yes, each thermostat comes with 2 brand-new alkaline AA batteries.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
+        "faq_cPpPJP": {
+          "type": "faq",
+          "settings": {
+            "question": "Do I need a hub to control it?",
+            "answer": "<p>No, just connect the product to WiFi and download the App, and then you can use it directly.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
+        "faq_Lwri4G": {
+          "type": "faq",
+          "settings": {
+            "question": "Will it still work once WiFi loses connection?",
+            "answer": "<p>Yes, it will still work, and all the features will continue to run. </p><p>However, you won’t be able to control your heating using the app until your internet comes back online.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
+        "faq_KB6PEN": {
+          "type": "faq",
+          "settings": {
+            "question": "Does it work with an OpenTherm boiler?",
+            "answer": "<p>Yes, it does.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
+        "faq_G8EmbM": {
+          "type": "faq",
+          "settings": {
+            "question": "Can I control hot water with the thermostat?",
+            "answer": "<p>Yes, if you have a conventional heating system (i.e. a separate hot water tank heated by your boiler), you can control your hot water with the thermostat and/or the app. You can’t control your water temperature with the thermostat, but you can turn your hot water on or off, set a schedule or boost it.</p><p>You can usually set the temperature of the hot water directly on your tank.</p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
+        "faq_zJhfca": {
+          "type": "faq",
+          "settings": {
+            "question": "How should I select the \"Zone\" option from the product options?",
+            "answer": "<p>Our receiver has 4 built-in zones, namely 3 heating zones + 1 hot water zone. Each heating zone requires an independent thermostat control, so 1 receiver can pair with up to 3 thermostats.</p><p>1 heating zone with/without hot water zone → 1~2 zone</p><p>2 heating zone with/without hot water zone → 3 zone</p><p>3 heating zone with/without hot water zone → 4 zone</p><p>Each thermostat can control the hot water, so a separate thermostat is not necessary for the hot water area.</p><p>If your home has more than 4 zones, you can purchase 2 receivers and up to 6 thermostats to control 6 heating zones and one hot water zone. Alternatively, use our wiring center to control up to 8 heating zones. </p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
+        "faq_tqkQfR": {
+          "type": "faq",
+          "settings": {
+            "question": "Can it be installed in a bathroom?",
+            "answer": "<p>Yes, but only if it meets the required safety standards and is placed in the right zone.</p><p><a href=\"https://www.repenic.com/blogs/knowledge/can-a-thermostat-be-installed-in-a-bathroom\" target=\"_blank\" title=\"https://www.repenic.com/blogs/knowledge/can-a-thermostat-be-installed-in-a-bathroom\">Click here to get more details.</a></p>",
+            "question_color": "#000000",
+            "answer_color": "#666666"
+          }
+        },
+        "video_fTTJEG": {
+          "type": "video",
+          "disabled": true,
+          "settings": {
+            "title": "Installation Guide",
+            "video_url": "",
+            "title_color": "#333333",
+            "title_background_color": "#ffffff"
+          }
+        }
+      },
+      "block_order": [
+        "tab_item_pnBHLj",
+        "tab_item_rR4PQy",
+        "tab_item_Q7KVmw",
+        "tab_item_bUACR3",
+        "tech_spec_TCX7Q6",
+        "tech_spec_XXq3wt",
+        "tech_spec_NefkMB",
+        "tech_spec_PyJdeB",
+        "tech_spec_aacAgC",
+        "tech_spec_FAndtX",
+        "download_kWHF3k",
+        "download_rh6kb7",
+        "download_8GhpGx",
+        "download_7zi8BH",
+        "faq_7iYH9n",
+        "faq_aimhEp",
+        "faq_H7iBHG",
+        "faq_xETUHf",
+        "faq_cPpPJP",
+        "faq_Lwri4G",
+        "faq_KB6PEN",
+        "faq_G8EmbM",
+        "faq_zJhfca",
+        "faq_tqkQfR",
+        "video_fTTJEG"
+      ],
+      "name": "Technical Specifications",
+      "settings": {
+        "custom_class": "tech",
+        "background_color": "#e6e6e6",
+        "container_width": 1400,
+        "padding_top_desktop": 60,
+        "padding_bottom_desktop": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "title": "",
+        "subtitle": "",
+        "image": "shopify://shop_images/diagram.png",
+        "faq_title": "",
+        "title_font_size_desktop": 32,
+        "title_line_height_desktop": 1.2,
+        "subtitle_font_size_desktop": 24,
+        "subtitle_line_height_desktop": 1.4,
+        "content_font_size_desktop": 14,
+        "content_line_height_desktop": 1.6,
+        "tab_font_size_desktop": 16,
+        "tab_line_height_desktop": 1.5,
+        "title_font_size_mobile": 24,
+        "title_line_height_mobile": 1.2,
+        "subtitle_font_size_mobile": 18,
+        "subtitle_line_height_mobile": 1.4,
+        "content_font_size_mobile": 12,
+        "content_line_height_mobile": 1.6,
+        "tab_font_size_mobile": 14,
+        "tab_line_height_mobile": 1.5
+      }
+    },
     "feature_accordion_F36Mep": {
       "type": "feature-accordion",
       "blocks": {
@@ -1128,6 +1409,7 @@
         "background_media": "none",
         "video_position": "cover",
         "background_image_position": "cover",
+        "background_image_mobile_position": "cover",
         "border": "none",
         "border_width": 1,
         "border_opacity": 100,
@@ -1138,287 +1420,6 @@
         "gradient_direction": "to top",
         "padding-block-start": 60,
         "padding-block-end": 40
-      }
-    },
-    "technical_specifications_Ek79Ct": {
-      "type": "technical-specifications",
-      "blocks": {
-        "tab_item_pnBHLj": {
-          "type": "tab_item",
-          "settings": {
-            "tab_type": "specification",
-            "tab_label": "Specification",
-            "tab_background_color": "rgba(0,0,0,0)",
-            "tab_text_color": "#333333"
-          }
-        },
-        "tab_item_rR4PQy": {
-          "type": "tab_item",
-          "settings": {
-            "tab_type": "pdf",
-            "tab_label": "PDF",
-            "tab_background_color": "rgba(0,0,0,0)",
-            "tab_text_color": "#333333"
-          }
-        },
-        "tab_item_Q7KVmw": {
-          "type": "tab_item",
-          "settings": {
-            "tab_type": "faq",
-            "tab_label": "FAQ",
-            "tab_background_color": "rgba(0,0,0,0)",
-            "tab_text_color": "#333333"
-          }
-        },
-        "tab_item_bUACR3": {
-          "type": "tab_item",
-          "disabled": true,
-          "settings": {
-            "tab_type": "video",
-            "tab_label": "Installation Video",
-            "tab_background_color": "rgba(0,0,0,0)",
-            "tab_text_color": "#333333"
-          }
-        },
-        "tech_spec_TCX7Q6": {
-          "type": "tech_spec",
-          "settings": {
-            "label": "Power",
-            "label_color": "#333333",
-            "value": "Thermostat: 2xAA (included)<br>Reveiver: 220V ~ 230V ac",
-            "value_color": "#666666"
-          }
-        },
-        "tech_spec_XXq3wt": {
-          "type": "tech_spec",
-          "settings": {
-            "label": "Protocol",
-            "label_color": "#333333",
-            "value": "WiFi + RF 868.35Mhz<br>No hub required",
-            "value_color": "#666666"
-          }
-        },
-        "tech_spec_NefkMB": {
-          "type": "tech_spec",
-          "settings": {
-            "label": "Accessories",
-            "label_color": "#333333",
-            "value": "Table stand (optional)<br>Wall clip (optional)",
-            "value_color": "#666666"
-          }
-        },
-        "tech_spec_PyJdeB": {
-          "type": "tech_spec",
-          "settings": {
-            "label": "Zone",
-            "label_color": "#333333",
-            "value": "4 zones in one receiver<br>1 hot water zone + 3 heating zone",
-            "value_color": "#666666"
-          }
-        },
-        "tech_spec_aacAgC": {
-          "type": "tech_spec",
-          "settings": {
-            "label": "Screen",
-            "label_color": "#333333",
-            "value": "Color LCD",
-            "value_color": "#666666"
-          }
-        },
-        "tech_spec_FAndtX": {
-          "type": "tech_spec",
-          "settings": {
-            "label": "IP rate",
-            "label_color": "#333333",
-            "value": "IP 20",
-            "value_color": "#666666"
-          }
-        },
-        "download_kWHF3k": {
-          "type": "download",
-          "settings": {
-            "label": "Installation - receiver",
-            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/Installation_-_receiver.pdf?v=1762506880"
-          }
-        },
-        "download_rh6kb7": {
-          "type": "download",
-          "settings": {
-            "label": "User guide - thermostat",
-            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/user_guide_-_thermostsat.pdf?v=1762506879"
-          }
-        },
-        "download_8GhpGx": {
-          "type": "download",
-          "settings": {
-            "label": "CE Declaration of Conformity - Thermostat",
-            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RT-WTRF01-CE.jpg?v=1762858544"
-          }
-        },
-        "download_7zi8BH": {
-          "type": "download",
-          "settings": {
-            "label": "CE Declaration of Conformity - Receiver",
-            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RT-R4CWF-CE.jpg?v=1762858632"
-          }
-        },
-        "faq_7iYH9n": {
-          "type": "faq",
-          "settings": {
-            "question": "Can this thermostat be used as a replacement for a Nest or Hive thermostat?",
-            "answer": "<p>Yes, this thermostat offers the same system compatibility and broadly similar functionality as Nest or Hive, so it can be used as a replacement for either. You can refer to<a href=\"https://www.repenic.com/blogs/knowledge/google-stopped-supporting-nest-1st-2nd-gen-thermostats-what-should-you-do-now-2025-update\" target=\"_blank\" title=\"https://www.repenic.com/blogs/knowledge/google-stopped-supporting-nest-1st-2nd-gen-thermostats-what-should-you-do-now-2025-update\"> this article</a> for more detailed information.</p>",
-            "question_color": "#000000",
-            "answer_color": "#666666"
-          }
-        },
-        "faq_aimhEp": {
-          "type": "faq",
-          "settings": {
-            "question": "Does it work with my heating system?",
-            "answer": "<p>√ <a href=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\" target=\"_blank\" title=\"https://www.repenic.com/blogs/news/which-type-of-thermostat-do-i-need\">Y-plan, S-plan, S-plan plus</a></p><p>√ Gas boilers, oil-fired boilers and electric boilers controlled by contactors (if your boiler works with a standard room thermostat and/or programmer, then our thermostat can control it).</p><p>X Storage heaters or individual plug-in electric room heaters.</p><p>X Electric underfloor heating system (heating mat, heating film, etc.).</p>",
-            "question_color": "#000000",
-            "answer_color": "#666666"
-          }
-        },
-        "faq_H7iBHG": {
-          "type": "faq",
-          "settings": {
-            "question": "How often should the battery be replaced?",
-            "answer": "<p>Two brand-new alkaline AA batteries can last for at least one year.</p>",
-            "question_color": "#000000",
-            "answer_color": "#666666"
-          }
-        },
-        "faq_xETUHf": {
-          "type": "faq",
-          "settings": {
-            "question": "Does the product come with batteries?",
-            "answer": "<p>Yes, each thermostat comes with 2 brand-new alkaline AA batteries.</p>",
-            "question_color": "#000000",
-            "answer_color": "#666666"
-          }
-        },
-        "faq_cPpPJP": {
-          "type": "faq",
-          "settings": {
-            "question": "Do I need a hub to control it?",
-            "answer": "<p>No, just connect the product to WiFi and download the App, and then you can use it directly.</p>",
-            "question_color": "#000000",
-            "answer_color": "#666666"
-          }
-        },
-        "faq_Lwri4G": {
-          "type": "faq",
-          "settings": {
-            "question": "Will it still work once WiFi loses connection?",
-            "answer": "<p>Yes, it will still work, and all the features will continue to run. </p><p>However, you won’t be able to control your heating using the app until your internet comes back online.</p>",
-            "question_color": "#000000",
-            "answer_color": "#666666"
-          }
-        },
-        "faq_KB6PEN": {
-          "type": "faq",
-          "settings": {
-            "question": "Does it work with an OpenTherm boiler?",
-            "answer": "<p>Yes, it does.</p>",
-            "question_color": "#000000",
-            "answer_color": "#666666"
-          }
-        },
-        "faq_G8EmbM": {
-          "type": "faq",
-          "settings": {
-            "question": "Can I control hot water with the thermostat?",
-            "answer": "<p>Yes, if you have a conventional heating system (i.e. a separate hot water tank heated by your boiler), you can control your hot water with the thermostat and/or the app. You can’t control your water temperature with the thermostat, but you can turn your hot water on or off, set a schedule or boost it.</p><p>You can usually set the temperature of the hot water directly on your tank.</p>",
-            "question_color": "#000000",
-            "answer_color": "#666666"
-          }
-        },
-        "faq_zJhfca": {
-          "type": "faq",
-          "settings": {
-            "question": "How should I select the \"Zone\" option from the product options?",
-            "answer": "<p>Our receiver has 4 built-in zones, namely 3 heating zones + 1 hot water zone. Each heating zone requires an independent thermostat control, so 1 receiver can pair with up to 3 thermostats.</p><p>1 heating zone with/without hot water zone → 1~2 zone</p><p>2 heating zone with/without hot water zone → 3 zone</p><p>3 heating zone with/without hot water zone → 4 zone</p><p>Each thermostat can control the hot water, so a separate thermostat is not necessary for the hot water area.</p><p>If your home has more than 4 zones, you can purchase 2 receivers and up to 6 thermostats to control 6 heating zones and one hot water zone. Alternatively, use our wiring center to control up to 8 heating zones. </p>",
-            "question_color": "#000000",
-            "answer_color": "#666666"
-          }
-        },
-        "faq_tqkQfR": {
-          "type": "faq",
-          "settings": {
-            "question": "Can it be installed in a bathroom?",
-            "answer": "<p>Yes, but only if it meets the required safety standards and is placed in the right zone.</p><p><a href=\"https://www.repenic.com/blogs/knowledge/can-a-thermostat-be-installed-in-a-bathroom\" target=\"_blank\" title=\"https://www.repenic.com/blogs/knowledge/can-a-thermostat-be-installed-in-a-bathroom\">Click here to get more details.</a></p>",
-            "question_color": "#000000",
-            "answer_color": "#666666"
-          }
-        },
-        "video_fTTJEG": {
-          "type": "video",
-          "disabled": true,
-          "settings": {
-            "title": "Installation Guide",
-            "video_url": "",
-            "title_color": "#333333",
-            "title_background_color": "#ffffff"
-          }
-        }
-      },
-      "block_order": [
-        "tab_item_pnBHLj",
-        "tab_item_rR4PQy",
-        "tab_item_Q7KVmw",
-        "tab_item_bUACR3",
-        "tech_spec_TCX7Q6",
-        "tech_spec_XXq3wt",
-        "tech_spec_NefkMB",
-        "tech_spec_PyJdeB",
-        "tech_spec_aacAgC",
-        "tech_spec_FAndtX",
-        "download_kWHF3k",
-        "download_rh6kb7",
-        "download_8GhpGx",
-        "download_7zi8BH",
-        "faq_7iYH9n",
-        "faq_aimhEp",
-        "faq_H7iBHG",
-        "faq_xETUHf",
-        "faq_cPpPJP",
-        "faq_Lwri4G",
-        "faq_KB6PEN",
-        "faq_G8EmbM",
-        "faq_zJhfca",
-        "faq_tqkQfR",
-        "video_fTTJEG"
-      ],
-      "name": "Technical Specifications",
-      "settings": {
-        "custom_class": "tech",
-        "background_color": "#e6e6e6",
-        "container_width": 1400,
-        "padding_top_desktop": 60,
-        "padding_bottom_desktop": 60,
-        "padding_top_mobile": 40,
-        "padding_bottom_mobile": 40,
-        "title": "",
-        "subtitle": "",
-        "image": "shopify://shop_images/diagram.png",
-        "faq_title": "",
-        "title_font_size_desktop": 32,
-        "title_line_height_desktop": 1.2,
-        "subtitle_font_size_desktop": 24,
-        "subtitle_line_height_desktop": 1.4,
-        "content_font_size_desktop": 14,
-        "content_line_height_desktop": 1.6,
-        "tab_font_size_desktop": 16,
-        "tab_line_height_desktop": 1.5,
-        "title_font_size_mobile": 24,
-        "title_line_height_mobile": 1.2,
-        "subtitle_font_size_mobile": 18,
-        "subtitle_line_height_mobile": 1.4,
-        "content_font_size_mobile": 12,
-        "content_line_height_mobile": 1.6,
-        "tab_font_size_mobile": 14,
-        "tab_line_height_mobile": 1.5
       }
     },
     "featured_blog_posts_rBriXQ": {
