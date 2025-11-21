@@ -16,7 +16,7 @@
           "type": "text",
           "name": "Description",
           "settings": {
-            "text": "<p>Many people just put up with the white plastic from the last century. But we know you haven't, and neither have your walls.</p>",
+            "text": "<p>Many people just put up with the white plastic from the last century. <br/>But we know you haven't, and neither have your walls.</p>",
             "width": "100%",
             "max_width": "normal",
             "alignment": "left",
