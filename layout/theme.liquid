@@ -33,6 +33,54 @@
       gtag('config', 'G-QODMN042V3');
     </script>
 
+    <!-- 价格追踪诊断工具 -->
+    <script>
+    // 在控制台运行这个函数来诊断价格追踪问题
+    window.debugPriceTracking = function() {
+      console.log('=== 价格追踪诊断 ===');
+      
+      // 查找所有可能包含价格的元素
+      console.log('\n1. 所有 .money 元素:');
+      var moneyElements = document.querySelectorAll('.money');
+      moneyElements.forEach(function(el, index) {
+        console.log('  [' + index + ']', el.textContent.trim(), 'Parent:', el.parentElement.className);
+      });
+      
+      console.log('\n2. 所有包含 "price" 的类名元素:');
+      var priceElements = document.querySelectorAll('[class*="price"]');
+      priceElements.forEach(function(el, index) {
+        if (index < 10) { // 只显示前10个
+          console.log('  [' + index + ']', el.className, '值:', el.textContent.trim().substring(0, 50));
+        }
+      });
+      
+      console.log('\n3. 产品标题元素:');
+      var titleElements = document.querySelectorAll('h1, h2, [data-product-title]');
+      titleElements.forEach(function(el, index) {
+        if (index < 5) {
+          console.log('  [' + index + ']', el.tagName, el.textContent.trim().substring(0, 50));
+        }
+      });
+      
+      console.log('\n4. 购物车总价元素:');
+      var totalSelectors = [
+        '[data-cart-total]',
+        '.cart__total-price',
+        '.totals__total-value',
+        '.cart-total'
+      ];
+      totalSelectors.forEach(function(selector) {
+        var el = document.querySelector(selector);
+        if (el) {
+          console.log('  ✅ 找到:', selector, '值:', el.textContent.trim());
+        } else {
+          console.log('  ❌ 未找到:', selector);
+        }
+      });
+      
+    };
+    </script>
+
     <!-- Add to Cart 转化跟踪 - 精准监听成功添加到购物车事件 -->
     <script>
     // 方案：监听主题的购物车更新事件（只在成功添加时触发）
@@ -59,86 +107,94 @@
       var quantity = data.itemCount || 1;
       var productId = data.productId;
       
-      // 尝试从多个来源获取价格和产品信息
-      var price = 0;
-      var productTitle = 'Unknown Product';
-      
-      // 方法1: 从表单或产品页面DOM获取信息
-      if (event.target) {
-        var productContainer = event.target.closest('.product, .product-info, product-form-component');
-        if (productContainer) {
-          // 查找价格元素
-          var priceElement = productContainer.querySelector('[data-product-price] .money, .price .money, .product-price .money, [data-price]');
-          if (priceElement) {
-            var priceText = priceElement.getAttribute('data-price') || priceElement.textContent;
-            price = parseFloat(priceText.replace(/[^0-9.]/g, '')) || 0;
+      fetch('/cart.js')
+        .then(function(response) { return response.json(); })
+        .then(function(cart) {
+          console.log('Cart data from API:', cart);
+          
+          // 找到刚添加的商品
+          var addedItem = null;
+          for (var i = 0; i < cart.items.length; i++) {
+            if (cart.items[i].variant_id == variantId) {
+              addedItem = cart.items[i];
+              break;
+            }
           }
           
-          // 查找标题元素
-          var titleElement = productContainer.querySelector('[data-product-title], .product__title, h1');
-          if (titleElement) {
-            productTitle = titleElement.textContent.trim();
+          if (!addedItem) {
+            console.error('Could not find added item in cart');
+            return;
           }
-        }
+          
+          // 从购物车API获取准确的价格和产品信息
+          var price = addedItem.price / 100; // Shopify 价格单位是分
+          var productTitle = addedItem.product_title;
+          
+          console.log('Tracking add_to_cart with API data:', {
+            productTitle: productTitle,
+            price: price,
+            variantId: variantId,
+            quantity: quantity,
+            productId: productId
+          });
+          
+          // 发送 GA4 add_to_cart 事件
+          gtag('event', 'add_to_cart', {
+            currency: '{{ shop.currency }}',
+            value: price * quantity,
+            items: [{
+              item_id: variantId,
+              item_name: productTitle,
+              price: price,
+              quantity: quantity
+            }]
+          });
+          
+          // 发送 Google Ads 转化事件
+          gtag('event', 'conversion', {
+            'send_to': 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
+            'value': price * quantity,
+            'currency': '{{ shop.currency }}'
+          });
+        })
+        .catch(function(error) {
+          console.error('Error fetching cart data:', error);
+          // 如果 API 调用失败，使用备用方法
+          sendAddToCartWithFallback(variantId, quantity, productId);
+        });
+    });
+    
+    // 备用方法：当 API 失败时（不发送价格值）
+    function sendAddToCartWithFallback(variantId, quantity, productId) {
+      console.warn('⚠️ Cart API failed. Sending conversion without price value.');
+      
+      var productTitle = 'Product';
+      
+      // 尝试从页面标题获取产品名
+      var h1 = document.querySelector('h1');
+      if (h1) {
+        productTitle = h1.textContent.trim();
       }
       
-      // 方法2: 如果是产品详情页，从页面元素获取
-      if (price === 0) {
-        var mainProduct = document.querySelector('.product, [data-product-id]');
-        if (mainProduct) {
-          var priceEl = mainProduct.querySelector('.price .money, [data-product-price] .money');
-          if (priceEl) {
-            price = parseFloat(priceEl.textContent.replace(/[^0-9.]/g, '')) || 0;
-          }
-          var titleEl = mainProduct.querySelector('h1, [data-product-title]');
-          if (titleEl) {
-            productTitle = titleEl.textContent.trim();
-          }
-        }
-      }
+      console.log('Fallback tracking - variant:', variantId, 'title:', productTitle);
       
-      // 方法3: 从产品卡片获取信息（用于快速添加）
-      if (price === 0 && productId) {
-        var productCard = document.querySelector('[data-product-id="' + productId + '"]');
-        if (productCard) {
-          var cardPrice = productCard.querySelector('.price .money, [data-product-price]');
-          if (cardPrice) {
-            price = parseFloat(cardPrice.textContent.replace(/[^0-9.]/g, '')) || 0;
-          }
-          var cardTitle = productCard.querySelector('[data-product-title], .product-title, h3, h2');
-          if (cardTitle) {
-            productTitle = cardTitle.textContent.trim();
-          }
-        }
-      }
-      
-      console.log('Tracking add_to_cart:', {
-        productTitle: productTitle,
-        price: price,
-        variantId: variantId,
-        quantity: quantity,
-        productId: productId
-      });
-      
-      // 发送 GA4 add_to_cart 事件
+      // 发送 GA4 事件（不包含价格）
       gtag('event', 'add_to_cart', {
         currency: '{{ shop.currency }}',
-        value: price * quantity,
         items: [{
           item_id: variantId,
           item_name: productTitle,
-          price: price,
           quantity: quantity
         }]
       });
       
-      // 发送 Google Ads 转化事件
+      // 发送 Google Ads 转化（不包含价格值）
       gtag('event', 'conversion', {
         'send_to': 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
-        'value': price * quantity,
         'currency': '{{ shop.currency }}'
+        // 注意：不包含 value，因为无法获取准确价格
       });
-    });
+    }
     </script>
 
     {%- if settings.favicon != blank -%}
@@ -241,12 +297,48 @@
       
       if (checkoutButton) {
         checkoutButton.addEventListener('click', function(e) {
-          // 获取购物车总价
+          // 获取购物车总价 - 使用多种选择器
           var cartTotal = 0;
-          var cartTotalElement = document.querySelector('[data-cart-total], .cart__total-price, .totals__total-value');
           
-          if (cartTotalElement) {
-            cartTotal = parseFloat(cartTotalElement.textContent.replace(/[^0-9.]/g, '')) || 0;
+          // 尝试多种可能的总价选择器
+          var totalSelectors = [
+            '[data-cart-total]',
+            '.cart__total-price',
+            '.totals__total-value',
+            '.cart-total',
+            '[class*="total"] .money',
+            '.total-price .money',
+            'cart-summary .money',
+            '[data-total-price]'
+          ];
+          
+          for (var i = 0; i < totalSelectors.length; i++) {
+            var cartTotalElement = document.querySelector(totalSelectors[i]);
+            if (cartTotalElement) {
+              var totalText = cartTotalElement.getAttribute('data-cart-total') ||
+                            cartTotalElement.getAttribute('data-total-price') ||
+                            cartTotalElement.textContent;
+              cartTotal = parseFloat(totalText.replace(/[^0-9.]/g, '')) || 0;
+              
+              if (cartTotal > 0) {
+                console.log('Cart total found using selector:', totalSelectors[i], 'Value:', cartTotal);
+                break;
+              }
+            }
+          }
+          
+          // 如果还是找不到，尝试从所有商品价格累加
+          if (cartTotal === 0) {
+            console.warn('Could not find cart total. Trying to calculate from line items...');
+            var lineItems = document.querySelectorAll('[data-cart-item], .cart-item, [class*="cart-item"]');
+            lineItems.forEach(function(item) {
+              var itemPrice = item.querySelector('.money, [class*="price"]');
+              if (itemPrice) {
+                var itemTotal = parseFloat(itemPrice.textContent.replace(/[^0-9.]/g, '')) || 0;
+                cartTotal += itemTotal;
+              }
+            });
+            console.log('Calculated cart total from items:', cartTotal);
           }
           
           console.log('Begin checkout event fired, cart total:', cartTotal);
