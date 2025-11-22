@@ -81,121 +81,75 @@
     };
     </script>
 
-    <!-- Add to Cart 转化跟踪 - 精准监听成功添加到购物车事件 -->
-    <script>
-    // 方案：监听主题的购物车更新事件（只在成功添加时触发）
-    document.addEventListener('cart:update', function(event) {
-      console.log('Cart update event detected:', event);
-      
-      // 从事件中获取产品信息
-      var detail = event.detail || {};
-      var data = detail.data || {};
-      
-      // 严格过滤：只在成功添加到购物车时触发（排除更新、删除、错误情况）
-      if (data.source !== 'product-form-component') {
-        console.log('Skipped: Not from product form');
+   <!-- Add to Cart 转化跟踪 ） -->
+<script>
+document.addEventListener('cart:update', function(event) {
+  console.log('Cart update event detected:', event);
+
+  fetch('/cart.js')
+    .then(response => response.json())
+    .then(cart => {
+      let latestItem = null;
+      let maxKeyId = 0;
+
+      cart.items.forEach(item => {
+        if (item.key) {
+          const keyId = parseInt(item.key.split(':')[1] || 0);
+          if (keyId > maxKeyId) {
+            maxKeyId = keyId;
+            latestItem = item;
+          }
+        }
+      });
+
+      if (!latestItem && cart.items.length > 0) {
+        latestItem = cart.items[cart.items.length - 1];
+      }
+
+      if (!latestItem) {
+        console.warn('Add to Cart: No item found in cart');
         return;
       }
-      
-      // 排除添加失败的情况
-      if (data.didError) {
-        console.log('Skipped: Add to cart failed');
-        return;
-      }
-      
-      var variantId = detail.id || detail.sourceId || 'unknown';
-      var quantity = data.itemCount || 1;
-      var productId = data.productId;
-      
-      fetch('/cart.js')
-        .then(function(response) { return response.json(); })
-        .then(function(cart) {
-          console.log('Cart data from API:', cart);
-          
-          // 找到刚添加的商品
-          var addedItem = null;
-          for (var i = 0; i < cart.items.length; i++) {
-            if (cart.items[i].variant_id == variantId) {
-              addedItem = cart.items[i];
-              break;
-            }
-          }
-          
-          if (!addedItem) {
-            console.error('Could not find added item in cart');
-            return;
-          }
-          
-          // 从购物车API获取准确的价格和产品信息
-          var price = addedItem.price / 100; // Shopify 价格单位是分
-          var productTitle = addedItem.product_title;
-          
-          console.log('Tracking add_to_cart with API data:', {
-            productTitle: productTitle,
-            price: price,
-            variantId: variantId,
-            quantity: quantity,
-            productId: productId
-          });
-          
-          // 发送 GA4 add_to_cart 事件
-          gtag('event', 'add_to_cart', {
-            currency: '{{ shop.currency }}',
-            value: price * quantity,
-            items: [{
-              item_id: variantId,
-              item_name: productTitle,
-              price: price,
-              quantity: quantity
-            }]
-          });
-          
-          // 发送 Google Ads 转化事件
-          gtag('event', 'conversion', {
-            'send_to': 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
-            'value': price * quantity,
-            'currency': '{{ shop.currency }}'
-          });
-        })
-        .catch(function(error) {
-          console.error('Error fetching cart data:', error);
-          // 如果 API 调用失败，使用备用方法
-          sendAddToCartWithFallback(variantId, quantity, productId);
-        });
-    });
-    
-    // 备用方法：当 API 失败时（不发送价格值）
-    function sendAddToCartWithFallback(variantId, quantity, productId) {
-      console.warn('⚠️ Cart API failed. Sending conversion without price value.');
-      
-      var productTitle = 'Product';
-      
-      // 尝试从页面标题获取产品名
-      var h1 = document.querySelector('h1');
-      if (h1) {
-        productTitle = h1.textContent.trim();
-      }
-      
-      console.log('Fallback tracking - variant:', variantId, 'title:', productTitle);
-      
-      // 发送 GA4 事件（不包含价格）
+
+      const price = (latestItem.final_price || latestItem.price) / 100;
+      const quantity = latestItem.quantify || latestItem.quantity || 1;
+      const title = latestItem.product_title || latestItem.title || 'Unknown Product';
+
+      console.log('成功追踪 Add to Cart:', {
+        title: title,
+        price: price,
+        quantity: quantity,
+        variantId: latestItem.variant_id,
+        currency: '{{ shop.currency }}'
+      });
+
       gtag('event', 'add_to_cart', {
         currency: '{{ shop.currency }}',
+        value: price * quantity,
         items: [{
-          item_id: variantId,
-          item_name: productTitle,
+          item_id: latestItem.variant_id || latestItem.id,
+          item_name: title,
+          price: price,
           quantity: quantity
         }]
       });
-      
-      // 发送 Google Ads 转化（不包含价格值）
+
       gtag('event', 'conversion', {
-        'send_to': 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
-        'currency': '{{ shop.currency }}'
-        // 注意：不包含 value，因为无法获取准确价格
+        send_to: 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
+        value: price * quantity,
+        currency: '{{ shop.currency }}'
       });
-    }
-    </script>
+
+    })
+    .catch(err => {
+      console.error('Add to Cart fetch /cart.js failed:', err);
+      gtag('event', 'conversion', {
+        send_to: 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
+        currency: '{{ shop.currency }}'
+      });
+    });
+});
+</script>
 
     {%- if settings.favicon != blank -%}
       <link
