@@ -920,4 +920,7 @@
     width: 12px;
     height: 12px;
   }
+  .border-style.custom-section-content .spacing-style.layout-panel-flex.layout-panel-flex--row.section-content-wrapper.mobile-column {
+    padding-bottom: 0;
+}
 }

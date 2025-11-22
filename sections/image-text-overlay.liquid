@@ -5,6 +5,10 @@
     position: relative;
     width: 100%;
     overflow: hidden;
+    {% if section.settings.max_width_enable %}
+      max-width: {{ section.settings.max_width }}px;
+      margin: 0 auto;
+    {% endif %}
   }
 
   .image-text-overlay_background-wrapper-{{ section.id }} {
@@ -13,7 +17,16 @@
   }
   .image-text-overlay_background-image-{{ section.id }} {
     width: 100%;
-    height: auto;
+    {% if section.settings.image_display_mode == 'cover' %}
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+    {% else %}
+      height: auto;
+    {% endif %}
     display: block;
   }
 
@@ -29,6 +42,12 @@
   }
 
   @media screen and (min-width: 750px) {
+    {% if section.settings.image_display_mode == 'cover' %}
+      .image-text-overlay_background-wrapper-{{ section.id }} {
+        height: {{ section.settings.desktop_section_height }}px;
+      }
+    {% endif %}
+
     .image-text-overlay_content-wrapper-{{ section.id }} {
       {% if section.settings.desktop_content_alignment == 'left' %}
         justify-content: flex-start;
@@ -83,6 +102,12 @@
   }
 
   @media screen and (max-width: 749px) {
+    {% if section.settings.image_display_mode == 'cover' %}
+      .image-text-overlay_background-wrapper-{{ section.id }} {
+        height: {{ section.settings.mobile_section_height }}px;
+      }
+    {% endif %}
+
     .image-text-overlay_content-wrapper-{{ section.id }} {
       {% if section.settings.mobile_content_alignment == 'left' %}
         justify-content: flex-start;
@@ -274,6 +299,16 @@
     {
       "type": "header",
       "content": "Desktop Settings"
+    },
+    {
+      "type": "range",
+      "id": "desktop_section_height",
+      "min": 300,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "label": "Section Height",
+      "default": 600
     },
     {
       "type": "select",
@@ -500,6 +535,16 @@
     {
       "type": "header",
       "content": "Mobile Settings"
+    },
+    {
+      "type": "range",
+      "id": "mobile_section_height",
+      "min": 200,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "label": "Section Height",
+      "default": 400
     },
     {
       "type": "select",

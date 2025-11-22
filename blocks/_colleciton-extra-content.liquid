@@ -32,6 +32,11 @@
     border: 1px solid {{ block.settings.button_hover_border_color | default: 'transparent' }};
 
   }
+  @media screen and (max-width: 750px) {
+    ._collection-extra-content-container._section-{{ section.id }} ._collection-extra-content-text {
+    text-align: left;
+  }
+  }
 {%- endstyle -%}
 
 <div id="block-{{ block.id }}" class="_collection-extra-content-container _section-{{ section.id }}">
