@@ -789,210 +789,111 @@
 <script>
 (function() {
   'use strict';
-  
-  // 防止重复初始化
+
   if (window.technicalSpecsInitialized) {
-    console.log('Technical Specifications 已经初始化过，跳过');
+    console.warn('Technical Specifications already initialized, skipping');
     return;
   }
-  
-  console.log('=== 开始初始化 Technical Specifications ===');
   window.technicalSpecsInitialized = true;
-  
+
   function initTechnicalSpecs() {
-    console.log('初始化函数被调用');
-    
     /* -------------------- Tab switching -------------------- */
     const specsTabs = document.querySelectorAll('.specs-tab');
-    console.log('找到标签:', specsTabs.length);
-    
-    specsTabs.forEach(function(tab) {
-      // 防止重复绑定
-      if (tab.dataset.tabInitialized) return;
-      tab.dataset.tabInitialized = 'true';
-      
-      tab.addEventListener('click', function() {
-        const tabName = this.getAttribute('data-tab');
-        console.log('切换到标签:', tabName);
-        
-        document.querySelectorAll('.specs-tab').forEach(function(t) {
-          t.classList.remove('active');
-        });
-        document.querySelectorAll('.specs-tab-content').forEach(function(c) {
-          c.classList.remove('active');
-        });
-        
-        this.classList.add('active');
-        const targetContent = document.querySelector('[data-content="' + tabName + '"]');
-        if (targetContent) {
-          targetContent.classList.add('active');
-        }
-      });
-    });
+    const tabsContainer = document.querySelector('.specs-tabs-container') || document.body;
+
+    tabsContainer.addEventListener('click', e => {
+      const tab = e.target.closest('.specs-tab');
+      if (!tab) return;
+
+      const tabName = tab.dataset.tab;
+      specsTabs.forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.specs-tab-content').forEach(c => c.classList.remove('active'));
+
+      tab.classList.add('active');
+      const targetContent = document.querySelector(`[data-content="${tabName}"]`);
+      targetContent?.classList.add('active');
+    }, { passive: true });
 
     /* -------------------- FAQ accordion -------------------- */
-    const faqItems = document.querySelectorAll('.faq-item');
-    console.log('找到 FAQ 项目:', faqItems.length);
-    
-    faqItems.forEach(function(faqItem, index) {
-      const question = faqItem.querySelector('.faq-question');
-      
-      if (question) {
-        // 防止重复绑定
-        if (question.dataset.faqInitialized) {
-          console.log('FAQ #' + index + ' 已经绑定过，跳过');
-          return;
+    const faqContainer = document.querySelector('.faq-container') || document.body;
+    faqContainer.addEventListener('click', e => {
+      const question = e.target.closest('.faq-question');
+      if (!question) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+      const faqItem = question.closest('.faq-item');
+      const isActive = faqItem.classList.contains('active');
+
+      document.querySelectorAll('.faq-item').forEach(item => {
+        if (item !== faqItem) item.classList.remove('active');
+      });
+
+      faqItem.classList.toggle('active');
+
+      // Verify final state (preserved for debugging)
+      setTimeout(() => {
+        const answer = faqItem.querySelector('.faq-answer');
+        if (answer) {
+          const computedStyle = window.getComputedStyle(answer);
         }
-        question.dataset.faqInitialized = 'true';
-        console.log('为 FAQ #' + index + ' 绑定点击事件');
-        
-        question.addEventListener('click', function(e) {
-          console.log('=== FAQ #' + index + ' 被点击 ===');
-          e.preventDefault();
-          e.stopPropagation();
-          
-          const isActive = faqItem.classList.contains('active');
-          console.log('点击前状态:', isActive ? '已展开' : '已收起');
-          
-          // 关闭所有其他 FAQ
-          document.querySelectorAll('.faq-item').forEach(function(item) {
-            if (item !== faqItem) {
-              item.classList.remove('active');
-            }
-          });
-          
-          // 切换当前 FAQ
-          if (!isActive) {
-            faqItem.classList.add('active');
-            console.log('✅ FAQ #' + index + ' 已展开');
-          } else {
-            faqItem.classList.remove('active');
-            console.log('❌ FAQ #' + index + ' 已收起');
-          }
-          
-          // 验证最终状态
-          setTimeout(function() {
-            const answer = faqItem.querySelector('.faq-answer');
-            if (answer) {
-              const computedStyle = window.getComputedStyle(answer);
-              console.log('最终状态 - max-height:', computedStyle.maxHeight, '实际高度:', answer.scrollHeight + 'px');
-            }
-          }, 50);
-        }, false); // 使用 false 确保在冒泡阶段处理
-      }
-    });
+      }, 50);
+    }, { passive: false }); // Set to false due to preventDefault
 
     /* -------------------- Video modal -------------------- */
     const videoModal = document.getElementById('videoModal');
     const closeVideoModal = document.getElementById('closeVideoModal');
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
-    
-    console.log('视频模态框元素:', {
-      modal: !!videoModal,
-      closeBtn: !!closeVideoModal,
-      container: !!videoPlayerContainer
-    });
 
     if (videoModal && videoPlayerContainer) {
-      const videoItems = document.querySelectorAll('.video-item');
-      console.log('找到视频项:', videoItems.length);
-      
-      videoItems.forEach(function(item) {
-        const videoUrl = item.getAttribute('data-video-url');
-        console.log('处理视频 URL:', videoUrl);
-        
-        // 检查是否为直接视频文件
-        const isDirectVideo = videoUrl && videoUrl.match(/\.(mp4|webm|ogg|mov)(\?|$)/i);
-        console.log('是否为直接视频:', isDirectVideo);
-        
-        if (videoUrl && !isDirectVideo) {
-          const thumbnailWrapper = item.querySelector('.video-thumbnail-wrapper');
-          console.log('找到缩略图容器:', !!thumbnailWrapper);
-          
-          if (thumbnailWrapper) {
-            thumbnailWrapper.style.cursor = 'pointer';
-            
-            thumbnailWrapper.addEventListener('click', function(e) {
-              console.log('=== 视频被点击 ===');
-              console.log('URL:', videoUrl);
-              e.preventDefault();
-              e.stopPropagation();
+      const videosContainer = document.querySelector('.video-items-container') || document.body;
+      videosContainer.addEventListener('click', e => {
+        const thumbnailWrapper = e.target.closest('.video-thumbnail-wrapper');
+        if (!thumbnailWrapper) return;
 
-              let embedUrl = videoUrl;
-              
-              // YouTube / Shorts 支持
-              if (videoUrl.indexOf('youtube.com') !== -1 || videoUrl.indexOf('youtu.be') !== -1) {
-                console.log('检测到 YouTube 视频');
-                const match = videoUrl.match(/(?:v=|\/(?:shorts|embed|v)\/)([a-zA-Z0-9_-]{11})/);
-                console.log('YouTube 匹配:', match);
-                
-                if (match && match[1]) {
-                  // 添加必要的参数以确保自动播放
-                  embedUrl = 'https://www.youtube.com/embed/' + match[1] + 
-                    '?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1';
-                  console.log('YouTube 嵌入 URL:', embedUrl);
-                }
-              }
-              // Vimeo 支持
-              else if (videoUrl.indexOf('vimeo.com') !== -1) {
-                console.log('检测到 Vimeo 视频');
-                const match = videoUrl.match(/vimeo\.com\/(\d+)/);
-                console.log('Vimeo 匹配:', match);
-                
-                if (match && match[1]) {
-                  // 添加必要的参数以确保自动播放
-                  embedUrl = 'https://player.vimeo.com/video/' + match[1] + 
-                    '?autoplay=1&muted=1&playsinline=1';
-                  console.log('Vimeo 嵌入 URL:', embedUrl);
-                }
-              }
+        e.preventDefault();
+        e.stopPropagation();
+        const item = thumbnailWrapper.closest('.video-item');
+        const videoUrl = item.dataset.videoUrl;
+        let embedUrl = videoUrl;
 
-              // 创建并插入 iframe
-              videoPlayerContainer.innerHTML = '<iframe class="video-player" src="' + embedUrl + '" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';
-              
-              // 显示模态框
-              videoModal.classList.add('active');
-              console.log('模态框已打开');
-            });
-            
-            console.log('点击事件已绑定到缩略图');
+        // YouTube support
+        if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+          const match = videoUrl.match(/(?:v=|\/(?:shorts|embed|v)\/)([a-zA-Z0-9_-]{11})/);
+          if (match?.[1]) {
+            embedUrl = `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1`;
           }
         }
-      });
+        // Vimeo support
+        else if (videoUrl.includes('vimeo.com')) {
+          const match = videoUrl.match(/vimeo\.com\/(\d+)/);
+          if (match?.[1]) {
+            embedUrl = `https://player.vimeo.com/video/${match[1]}?autoplay=1&muted=1&playsinline=1`;
+          }
+        }
 
-      // 关闭视频
-      function closeVideo() {
-        console.log('关闭视频');
+        videoPlayerContainer.innerHTML = `<iframe class="video-player" src="${embedUrl}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+        videoModal.classList.add('active');
+      }, { passive: false }); // Set to false due to preventDefault
+
+      const closeVideo = () => {
         videoModal.classList.remove('active');
         videoPlayerContainer.innerHTML = '';
-      }
+      };
 
-      // 点击关闭按钮
-      if (closeVideoModal) {
-        closeVideoModal.addEventListener('click', closeVideo);
-      }
+      closeVideoModal?.addEventListener('click', closeVideo, { passive: true });
+      videoModal.addEventListener('click', e => {
+        if (e.target === videoModal) closeVideo();
+      }, { passive: true });
 
-      // 点击背景关闭
-      videoModal.addEventListener('click', function(e) {
-        if (e.target === videoModal) {
-          closeVideo();
-        }
-      });
-
-      // ESC 键关闭
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && videoModal.classList.contains('active')) {
-          closeVideo();
-        }
-      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && videoModal.classList.contains('active')) closeVideo();
+      }, { passive: true });
     }
-    
-    console.log('Technical Specifications 初始化完成');
   }
 
-  // 初始化
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initTechnicalSpecs);
+    document.addEventListener('DOMContentLoaded', initTechnicalSpecs, { once: true });
   } else {
     initTechnicalSpecs();
   }
