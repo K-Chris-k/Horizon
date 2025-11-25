@@ -720,10 +720,9 @@
         },
         "video_3AQDTi": {
           "type": "video",
-          "disabled": true,
           "settings": {
             "title": "Installation Guide",
-            "video_url": "https://youtu.be/ZKHg3xCPcik?si=oQVKU5O9gylB5Qd7",
+            "video_url": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/1.1_1_af5313a1-6336-41f6-955f-f58ed1fca101.png?v=1764064925",
             "title_color": "#333333",
             "title_background_color": "#ffffff"
           }
