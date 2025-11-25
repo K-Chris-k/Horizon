@@ -161,14 +161,54 @@ document.addEventListener('cart:update', function(event) {
 
     {% comment %} Force scroll to top before any other scripts run {% endcomment %}
     <script>
-      // Immediately scroll to top on page load, before any view transitions
-      if (window.scrollY !== 0) {
-        window.scrollTo(0, 0);
-      }
-      // Ensure manual scroll restoration
-      if ('scrollRestoration' in history) {
-        history.scrollRestoration = 'manual';
-      }
+      (function() {
+        // Track if user has interacted with the page
+        var userHasScrolled = false;
+        var userHasInteracted = false;
+        
+        // Detect user interaction
+        function markUserInteraction() {
+          userHasInteracted = true;
+        }
+        
+        function markUserScrolled() {
+          userHasScrolled = true;
+          userHasInteracted = true;
+        }
+        
+        // Listen for user interactions early
+        ['scroll', 'wheel', 'touchmove'].forEach(function(event) {
+          window.addEventListener(event, markUserScrolled, { once: true, passive: true });
+        });
+        
+        ['mousedown', 'touchstart', 'keydown'].forEach(function(event) {
+          window.addEventListener(event, markUserInteraction, { once: true, passive: true });
+        });
+        
+        // Immediately scroll to top on page load, before any view transitions
+        if (window.scrollY !== 0) {
+          window.scrollTo(0, 0);
+        }
+        
+        // Ensure manual scroll restoration
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual';
+        }
+        
+        // Check if we came from a product card click
+        var shouldScrollToTop = sessionStorage.getItem('scrollToTopOnLoad');
+        if (shouldScrollToTop === 'true') {
+          // Force scroll to top immediately (only if user hasn't scrolled yet)
+          if (!userHasScrolled) {
+            window.scrollTo(0, 0);
+          }
+          
+          // Clean up the flag after a short delay (only if not already interacted)
+          setTimeout(function() {
+            sessionStorage.removeItem('scrollToTopOnLoad');
+          }, 100);
+        }
+      })();
     </script>
 
     {% comment %} This a way to wait for main content to load when navigating to a new page so that the view transitions can work consistently {% endcomment %}

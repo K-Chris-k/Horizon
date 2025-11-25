@@ -7,9 +7,16 @@
 
   const idleCallback = typeof requestIdleCallback === 'function' ? requestIdleCallback : setTimeout;
 
+  // Track user interaction to avoid interrupting user scrolling
+  let userHasInteracted = false;
+  ['scroll', 'wheel', 'touchmove', 'touchstart', 'mousedown', 'keydown'].forEach(eventName => {
+    window.addEventListener(eventName, () => { userHasInteracted = true; }, { once: true, passive: true });
+  });
+
   // Force scroll to top on every page load (before any view transition)
   // This is critical for view transitions which may try to preserve scroll position
-  if (window.scrollY !== 0) {
+  // But only if user hasn't started interacting
+  if (!userHasInteracted && window.scrollY !== 0) {
     window.scrollTo(0, 0);
   }
 
@@ -28,8 +35,18 @@
   // Handle scroll to top for page navigation without view transitions
   window.addEventListener('pagereveal', (event) => {
     if (hasViewTransition(event)) return;
-    // No view transition, scroll to top immediately
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    // No view transition, scroll to top immediately (but respect user interaction)
+    if (!userHasInteracted) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    
+    // Clean up sessionStorage flag
+    const shouldScrollToTop = sessionStorage.getItem('scrollToTopOnLoad');
+    if (shouldScrollToTop === 'true') {
+      setTimeout(() => {
+        sessionStorage.removeItem('scrollToTopOnLoad');
+      }, 100);
+    }
   });
 
   /**
@@ -76,9 +93,12 @@
 
     const { viewTransition } = event;
     const customTransitionType = sessionStorage.getItem('custom-transition-type');
+    const shouldScrollToTop = sessionStorage.getItem('scrollToTopOnLoad');
 
-    // Immediately scroll to top before the transition starts rendering
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    // Immediately scroll to top before the transition starts rendering (but respect user interaction)
+    if (!userHasInteracted) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
 
     if (customTransitionType) {
       viewTransition.types.clear();
@@ -100,14 +120,24 @@
       viewTransition.types.add('page-navigation');
     }
 
-    // Scroll to top after view transition completes (double insurance)
+    // Scroll to top after view transition completes (double insurance, but respect user interaction)
     await viewTransition.finished;
     
+    // Clean up the scrollToTop flag
+    if (shouldScrollToTop === 'true') {
+      setTimeout(() => {
+        sessionStorage.removeItem('scrollToTopOnLoad');
+      }, 100);
+    }
+    
     // Use requestAnimationFrame to ensure it happens after any other scroll restoration
-    requestAnimationFrame(() => {
+    // But only if user hasn't interacted
+    if (!userHasInteracted) {
       requestAnimationFrame(() => {
-        window.scrollTo({ top: 0, behavior: 'instant' });
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        });
       });
-    });
+    }
   });
 })();

@@ -42,6 +42,44 @@
   {{ closest.product | structured_data }}
 </script>
 
+{% javascript %}
+  // Force scroll to top when landing on product page
+  // But respect user interaction - don't interrupt user scrolling
+  (function() {
+    var userHasInteracted = false;
+    
+    // Mark user interaction
+    function markInteraction() {
+      userHasInteracted = true;
+    }
+    
+    // Listen for any user interaction
+    ['scroll', 'wheel', 'touchmove', 'touchstart', 'mousedown', 'keydown'].forEach(function(event) {
+      window.addEventListener(event, markInteraction, { once: true, passive: true });
+    });
+    
+    // Check if we should force scroll to top
+    const shouldScrollToTop = sessionStorage.getItem('scrollToTopOnLoad');
+    
+    // Remove hash from URL if present (prevents scrolling to anchors)
+    if (window.location.hash) {
+      history.replaceState(null, null, window.location.pathname + window.location.search);
+    }
+    
+    // Force scroll to top immediately (before any user interaction)
+    if (!userHasInteracted && window.scrollY !== 0) {
+      window.scrollTo(0, 0);
+    }
+    
+    // Clean up sessionStorage flag
+    if (shouldScrollToTop === 'true') {
+      setTimeout(function() {
+        sessionStorage.removeItem('scrollToTopOnLoad');
+      }, 100);
+    }
+  })();
+{% endjavascript %}
+
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div
   class="product-information section section--{{ content_width }} spacing-style color-{{ section.settings.color_scheme }} relative"
