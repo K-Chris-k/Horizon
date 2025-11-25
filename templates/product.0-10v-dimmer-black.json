@@ -720,6 +720,7 @@
         },
         "video_3AQDTi": {
           "type": "video",
+          "disabled": true,
           "settings": {
             "title": "Installation Guide",
             "video_url": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/1.1_1_af5313a1-6336-41f6-955f-f58ed1fca101.png?v=1764064925",
@@ -756,6 +757,7 @@
         },
         "tab_item_HNyLCJ": {
           "type": "tab_item",
+          "disabled": true,
           "settings": {
             "tab_type": "video",
             "tab_label": "Installation video",
