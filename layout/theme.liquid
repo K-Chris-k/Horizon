@@ -162,80 +162,29 @@ document.addEventListener('cart:update', function(event) {
     {% comment %} Force scroll to top before any other scripts run {% endcomment %}
     <script>
       (function() {
-        // Track if user has actively scrolled on the new page
-        var userHasActivelyScrolled = false;
-        var allowAutoScroll = true;
-        var autoScrollStopTime = Date.now() + 300; // Stop auto-scrolling after 300ms
-        
-        // Detect REAL user scrolling (not programmatic)
-        var lastScrollTop = 0;
-        var scrollEventCount = 0;
-        
-        window.addEventListener('scroll', function() {
-          scrollEventCount++;
-          var currentScrollTop = window.scrollY || document.documentElement.scrollTop;
-          
-          // If user scrolls away from top after we've tried to set it to 0, they're actively scrolling
-          if (scrollEventCount > 3 && currentScrollTop > 50 && Date.now() > autoScrollStopTime) {
-            userHasActivelyScrolled = true;
-            allowAutoScroll = false;
-          }
-          lastScrollTop = currentScrollTop;
-        }, { passive: true });
-        
-        // Also detect touch movement as active scrolling
-        var touchStartY = 0;
-        window.addEventListener('touchstart', function(e) {
-          if (e.touches && e.touches[0]) {
-            touchStartY = e.touches[0].clientY;
-          }
-        }, { passive: true });
-        
-        window.addEventListener('touchmove', function(e) {
-          if (e.touches && e.touches[0]) {
-            var touchMoveY = e.touches[0].clientY;
-            var touchDiff = Math.abs(touchMoveY - touchStartY);
-            // If user moves finger more than 30px, they're actively scrolling
-            if (touchDiff > 30 && Date.now() > autoScrollStopTime) {
-              userHasActivelyScrolled = true;
-              allowAutoScroll = false;
-            }
-          }
-        }, { passive: true });
-        
         // Ensure manual scroll restoration
         if ('scrollRestoration' in history) {
           history.scrollRestoration = 'manual';
         }
         
-        // Smart scroll to top function - only works if user hasn't actively scrolled
-        var smartScrollToTop = function() {
-          if (allowAutoScroll && !userHasActivelyScrolled && Date.now() <= autoScrollStopTime) {
+        // Force scroll to top immediately
+        if (window.scrollY !== 0) {
+          window.scrollTo(0, 0);
+        }
+        
+        // One more attempt after tiny delay
+        setTimeout(function() {
+          if (window.scrollY !== 0) {
             window.scrollTo(0, 0);
-            document.documentElement.scrollTop = 0;
-            document.body.scrollTop = 0;
           }
-        };
-        
-        // Initial scroll to top
-        smartScrollToTop();
-        
-        // Short burst of attempts (only within 300ms window)
-        setTimeout(smartScrollToTop, 0);
-        setTimeout(smartScrollToTop, 10);
-        setTimeout(smartScrollToTop, 50);
-        setTimeout(smartScrollToTop, 100);
-        setTimeout(smartScrollToTop, 150);
-        
-        // On DOMContentLoaded
-        document.addEventListener('DOMContentLoaded', smartScrollToTop);
+        }, 50);
         
         // Clean up sessionStorage flag
         var shouldScrollToTop = sessionStorage.getItem('scrollToTopOnLoad');
         if (shouldScrollToTop === 'true') {
           setTimeout(function() {
             sessionStorage.removeItem('scrollToTopOnLoad');
-          }, 500);
+          }, 200);
         }
       })();
     </script>
