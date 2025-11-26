@@ -162,30 +162,25 @@ document.addEventListener('cart:update', function(event) {
     {% comment %} Force scroll to top before any other scripts run {% endcomment %}
     <script>
       (function() {
-        // Track if user has interacted with the page
-        var userHasScrolled = false;
-        var userHasInteracted = false;
+        // Track if user has scrolled on the NEW page (after loading)
+        // We use a delay to allow initial scroll-to-top to complete before tracking
+        var userHasScrolledOnNewPage = false;
+        var startTrackingTimeout = null;
         
-        // Detect user interaction
-        function markUserInteraction() {
-          userHasInteracted = true;
+        // Start tracking user scrolls after a delay
+        function startTrackingScrolls() {
+          if (startTrackingTimeout) clearTimeout(startTrackingTimeout);
+          startTrackingTimeout = setTimeout(function() {
+            ['scroll', 'wheel', 'touchmove'].forEach(function(event) {
+              window.addEventListener(event, function() {
+                userHasScrolledOnNewPage = true;
+              }, { once: true, passive: true });
+            });
+          }, 500); // Delay to allow scroll-to-top to complete
         }
         
-        function markUserScrolled() {
-          userHasScrolled = true;
-          userHasInteracted = true;
-        }
-        
-        // Listen for user interactions early
-        ['scroll', 'wheel', 'touchmove'].forEach(function(event) {
-          window.addEventListener(event, markUserScrolled, { once: true, passive: true });
-        });
-        
-        ['mousedown', 'touchstart', 'keydown'].forEach(function(event) {
-          window.addEventListener(event, markUserInteraction, { once: true, passive: true });
-        });
-        
-        // Immediately scroll to top on page load, before any view transitions
+        // Immediately scroll to top on page load
+        // This happens BEFORE user interaction tracking starts
         if (window.scrollY !== 0) {
           window.scrollTo(0, 0);
         }
@@ -198,16 +193,17 @@ document.addEventListener('cart:update', function(event) {
         // Check if we came from a product card click
         var shouldScrollToTop = sessionStorage.getItem('scrollToTopOnLoad');
         if (shouldScrollToTop === 'true') {
-          // Force scroll to top immediately (only if user hasn't scrolled yet)
-          if (!userHasScrolled) {
-            window.scrollTo(0, 0);
-          }
+          // Force scroll to top immediately on page load
+          window.scrollTo(0, 0);
           
-          // Clean up the flag after a short delay (only if not already interacted)
+          // Clean up the flag after a short delay
           setTimeout(function() {
             sessionStorage.removeItem('scrollToTopOnLoad');
           }, 100);
         }
+        
+        // Start tracking scrolls after initial setup
+        startTrackingScrolls();
       })();
     </script>
 
