@@ -691,20 +691,13 @@
             "answer_color": "#666666"
           }
         },
-        "video_3AQDTi": {
+        "video_JM77in": {
           "type": "video",
           "settings": {
             "title": "Installation Guide",
-            "video_url": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RD-250-wiring_diagram.png?v=1764154210",
+            "video_url": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/112.png?v=1764155385",
             "title_color": "#333333",
             "title_background_color": "#ffffff"
-          }
-        },
-        "download_ihjKyU": {
-          "type": "download",
-          "settings": {
-            "label": "Product datasheets",
-            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RD-250-wiring_diagram.png?v=1764154210"
           }
         },
         "tab_item_pmPGa8": {
@@ -760,8 +753,7 @@
         "faq_R7Lcdx",
         "faq_ycKbAe",
         "faq_3JwUE9",
-        "video_3AQDTi",
-        "download_ihjKyU",
+        "video_JM77in",
         "tab_item_pmPGa8",
         "tab_item_GKbMg4",
         "tab_item_NR3Xpy",
