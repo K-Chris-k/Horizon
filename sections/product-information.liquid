@@ -43,19 +43,48 @@
 </script>
 
 {% javascript %}
-  // Force scroll to top when landing on product page
-  // But respect user interaction - don't interrupt user scrolling
+  // Force scroll to top when landing on product page from navigation
+  // But respect if user actively scrolls - don't interrupt them
   (function() {
-    var userHasInteracted = false;
+    var userHasScrolled = false;
+    var allowAutoScroll = true;
+    var autoScrollStopTime = Date.now() + 300; // Allow auto-scroll for first 300ms
     
-    // Mark user interaction
-    function markInteraction() {
-      userHasInteracted = true;
+    // Mark real user scrolling (not navigation clicks)
+    var scrollEventCount = 0;
+    function markUserScrolling() {
+      scrollEventCount++;
+      var currentScrollTop = window.scrollY || document.documentElement.scrollTop;
+      // Only mark as user scrolling if they scroll away from top after initial load
+      if (scrollEventCount > 3 && currentScrollTop > 50 && Date.now() > autoScrollStopTime) {
+        userHasScrolled = true;
+        allowAutoScroll = false;
+      }
     }
     
-    // Listen for any user interaction
-    ['scroll', 'wheel', 'touchmove', 'touchstart', 'mousedown', 'keydown'].forEach(function(event) {
-      window.addEventListener(event, markInteraction, { once: true, passive: true });
+    // Detect touch scrolling
+    var touchStartY = 0;
+    window.addEventListener('touchstart', function(e) {
+      if (e.touches && e.touches[0]) {
+        touchStartY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+    
+    window.addEventListener('touchmove', function(e) {
+      if (e.touches && e.touches[0]) {
+        var touchMoveY = e.touches[0].clientY;
+        var touchDiff = Math.abs(touchMoveY - touchStartY);
+        // If user drags more than 30px, they're actively scrolling
+        if (touchDiff > 30 && Date.now() > autoScrollStopTime) {
+          userHasScrolled = true;
+          allowAutoScroll = false;
+        }
+      }
+    }, { passive: true });
+    
+    // Listen for scroll events
+    ['scroll', 'wheel'].forEach(function(event) {
+      window.addEventListener(event, markUserScrolling, { passive: true });
     });
     
     // Check if we should force scroll to top
@@ -66,16 +95,29 @@
       history.replaceState(null, null, window.location.pathname + window.location.search);
     }
     
-    // Force scroll to top immediately (before any user interaction)
-    if (!userHasInteracted && window.scrollY !== 0) {
-      window.scrollTo(0, 0);
+    // Smart scroll to top - only if user hasn't actively scrolled
+    function smartScrollToTop() {
+      if (allowAutoScroll && !userHasScrolled && Date.now() <= autoScrollStopTime) {
+        window.scrollTo(0, 0);
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+      }
     }
+    
+    // Immediate scroll to top
+    smartScrollToTop();
+    
+    // A few more attempts within the time window
+    setTimeout(smartScrollToTop, 0);
+    setTimeout(smartScrollToTop, 10);
+    setTimeout(smartScrollToTop, 50);
+    setTimeout(smartScrollToTop, 100);
     
     // Clean up sessionStorage flag
     if (shouldScrollToTop === 'true') {
       setTimeout(function() {
         sessionStorage.removeItem('scrollToTopOnLoad');
-      }, 100);
+      }, 500);
     }
   })();
 {% endjavascript %}
