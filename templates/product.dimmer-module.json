@@ -700,6 +700,13 @@
             "title_background_color": "#ffffff"
           }
         },
+        "download_ihjKyU": {
+          "type": "download",
+          "settings": {
+            "label": "Product datasheets",
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RD-250-wiring_diagram.png?v=1764154210"
+          }
+        },
         "tab_item_pmPGa8": {
           "type": "tab_item",
           "settings": {
@@ -754,6 +761,7 @@
         "faq_ycKbAe",
         "faq_3JwUE9",
         "video_3AQDTi",
+        "download_ihjKyU",
         "tab_item_pmPGa8",
         "tab_item_GKbMg4",
         "tab_item_NR3Xpy",
