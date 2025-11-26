@@ -693,10 +693,9 @@
         },
         "video_3AQDTi": {
           "type": "video",
-          "disabled": true,
           "settings": {
             "title": "Installation Guide",
-            "video_url": "",
+            "video_url": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/RD-250-wiring_diagram.png?v=1764154210",
             "title_color": "#333333",
             "title_background_color": "#ffffff"
           }
@@ -730,7 +729,6 @@
         },
         "tab_item_HNyLCJ": {
           "type": "tab_item",
-          "disabled": true,
           "settings": {
             "tab_type": "video",
             "tab_label": "Installation video",
