@@ -7,20 +7,46 @@
 
   const idleCallback = typeof requestIdleCallback === 'function' ? requestIdleCallback : setTimeout;
 
-  // Track user scrolling on the NEW page (not during navigation)
-  // We start tracking after a small delay to allow page load scroll-to-top to complete
-  let userHasScrolled = false;
-  let trackingTimeout = setTimeout(() => {
-    ['scroll', 'wheel', 'touchmove'].forEach(eventName => {
-      window.addEventListener(eventName, () => { userHasScrolled = true; }, { once: true, passive: true });
-    });
-  }, 500); // Delay tracking to allow initial scroll-to-top
+  // Track if user is actively scrolling
+  let userIsActivelyScrolling = false;
+  let allowAutoScroll = true;
+  const autoScrollStopTime = Date.now() + 300; // Stop after 300ms
+  
+  // Detect real user scrolling
+  let scrollEventCount = 0;
+  window.addEventListener('scroll', () => {
+    scrollEventCount++;
+    const currentScrollTop = window.scrollY || document.documentElement.scrollTop;
+    // If user scrolls away from top after initial load
+    if (scrollEventCount > 3 && currentScrollTop > 50 && Date.now() > autoScrollStopTime) {
+      userIsActivelyScrolling = true;
+      allowAutoScroll = false;
+    }
+  }, { passive: true });
+  
+  // Detect touch scrolling
+  let touchStartY = 0;
+  window.addEventListener('touchstart', (e) => {
+    if (e.touches && e.touches[0]) {
+      touchStartY = e.touches[0].clientY;
+    }
+  }, { passive: true });
+  
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches && e.touches[0]) {
+      const touchMoveY = e.touches[0].clientY;
+      const touchDiff = Math.abs(touchMoveY - touchStartY);
+      if (touchDiff > 30 && Date.now() > autoScrollStopTime) {
+        userIsActivelyScrolling = true;
+        allowAutoScroll = false;
+      }
+    }
+  }, { passive: true });
 
-  // Force scroll to top on every page load (before any view transition)
-  // Always scroll to top on page load, regardless of user interaction during navigation
-  if (window.scrollY !== 0) {
-    window.scrollTo(0, 0);
-  }
+  // Initial scroll to top
+  window.scrollTo(0, 0);
+  if (document.documentElement) document.documentElement.scrollTop = 0;
+  if (document.body) document.body.scrollTop = 0;
 
   /**
    * Checks whether an Event object is carrying a `viewTransition` property
@@ -37,17 +63,32 @@
   // Handle scroll to top for page navigation without view transitions
   window.addEventListener('pagereveal', (event) => {
     if (hasViewTransition(event)) return;
-    // No view transition, always scroll to top on page reveal
-    if (!userHasScrolled) {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }
+    
+    // Smart scroll to top - only if user hasn't actively scrolled
+    const smartScrollToTop = () => {
+      if (allowAutoScroll && !userIsActivelyScrolling && Date.now() <= autoScrollStopTime) {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+      }
+    };
+    
+    smartScrollToTop();
+    
+    // A few quick attempts within the time window
+    requestAnimationFrame(() => {
+      smartScrollToTop();
+      requestAnimationFrame(() => {
+        smartScrollToTop();
+      });
+    });
     
     // Clean up sessionStorage flag
     const shouldScrollToTop = sessionStorage.getItem('scrollToTopOnLoad');
     if (shouldScrollToTop === 'true') {
       setTimeout(() => {
         sessionStorage.removeItem('scrollToTopOnLoad');
-      }, 100);
+      }, 500);
     }
   });
 
@@ -80,6 +121,8 @@
       viewTransition.types.clear();
       viewTransition.types.add(transitionType);
       sessionStorage.setItem('custom-transition-type', transitionType);
+      // Mark that we're navigating to a product page
+      sessionStorage.setItem('scrollToTopOnLoad', 'true');
     } else {
       viewTransition.types.clear();
       viewTransition.types.add('page-navigation');
@@ -97,11 +140,16 @@
     const customTransitionType = sessionStorage.getItem('custom-transition-type');
     const shouldScrollToTop = sessionStorage.getItem('scrollToTopOnLoad');
 
-    // Immediately scroll to top before the transition starts rendering
-    // Always do this on page navigation, regardless of interaction during navigation
-    if (!userHasScrolled) {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }
+    // Smart scroll to top - respects user interaction
+    const smartScrollToTop = () => {
+      if (allowAutoScroll && !userIsActivelyScrolling && Date.now() <= autoScrollStopTime) {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+      }
+    };
+    
+    smartScrollToTop();
 
     if (customTransitionType) {
       viewTransition.types.clear();
@@ -130,17 +178,16 @@
     if (shouldScrollToTop === 'true') {
       setTimeout(() => {
         sessionStorage.removeItem('scrollToTopOnLoad');
-      }, 100);
+      }, 500);
     }
     
-    // Use requestAnimationFrame to ensure it happens after any other scroll restoration
-    // Always scroll to top for new page navigations
-    if (!userHasScrolled) {
+    // A few smart scroll attempts within the time window
+    smartScrollToTop();
+    requestAnimationFrame(() => {
+      smartScrollToTop();
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          window.scrollTo({ top: 0, behavior: 'instant' });
-        });
+        smartScrollToTop();
       });
-    }
+    });
   });
 })();
