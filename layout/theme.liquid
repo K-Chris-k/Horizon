@@ -162,48 +162,77 @@ document.addEventListener('cart:update', function(event) {
     {% comment %} Force scroll to top before any other scripts run {% endcomment %}
     <script>
       (function() {
-        // Track if user has scrolled on the NEW page (after loading)
-        // We use a delay to allow initial scroll-to-top to complete before tracking
-        var userHasScrolledOnNewPage = false;
-        var startTrackingTimeout = null;
+        // Track if user has actively scrolled on the new page
+        var userHasActivelyScrolled = false;
+        var allowAutoScroll = true;
+        var autoScrollStopTime = Date.now() + 300; // Stop auto-scrolling after 300ms
         
-        // Start tracking user scrolls after a delay
-        function startTrackingScrolls() {
-          if (startTrackingTimeout) clearTimeout(startTrackingTimeout);
-          startTrackingTimeout = setTimeout(function() {
-            ['scroll', 'wheel', 'touchmove'].forEach(function(event) {
-              window.addEventListener(event, function() {
-                userHasScrolledOnNewPage = true;
-              }, { once: true, passive: true });
-            });
-          }, 500); // Delay to allow scroll-to-top to complete
-        }
+        // Detect REAL user scrolling (not programmatic)
+        var lastScrollTop = 0;
+        var scrollEventCount = 0;
         
-        // Immediately scroll to top on page load
-        // This happens BEFORE user interaction tracking starts
-        if (window.scrollY !== 0) {
-          window.scrollTo(0, 0);
-        }
+        window.addEventListener('scroll', function() {
+          scrollEventCount++;
+          var currentScrollTop = window.scrollY || document.documentElement.scrollTop;
+          
+          // If user scrolls away from top after we've tried to set it to 0, they're actively scrolling
+          if (scrollEventCount > 3 && currentScrollTop > 50 && Date.now() > autoScrollStopTime) {
+            userHasActivelyScrolled = true;
+            allowAutoScroll = false;
+          }
+          lastScrollTop = currentScrollTop;
+        }, { passive: true });
+        
+        // Also detect touch movement as active scrolling
+        var touchStartY = 0;
+        window.addEventListener('touchstart', function(e) {
+          touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+        
+        window.addEventListener('touchmove', function(e) {
+          var touchMoveY = e.touches[0].clientY;
+          var touchDiff = Math.abs(touchMoveY - touchStartY);
+          // If user moves finger more than 30px, they're actively scrolling
+          if (touchDiff > 30 && Date.now() > autoScrollStopTime) {
+            userHasActivelyScrolled = true;
+            allowAutoScroll = false;
+          }
+        }, { passive: true });
         
         // Ensure manual scroll restoration
         if ('scrollRestoration' in history) {
           history.scrollRestoration = 'manual';
         }
         
-        // Check if we came from a product card click
+        // Smart scroll to top function - only works if user hasn't actively scrolled
+        var smartScrollToTop = function() {
+          if (allowAutoScroll && !userHasActivelyScrolled && Date.now() <= autoScrollStopTime) {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+          }
+        };
+        
+        // Initial scroll to top
+        smartScrollToTop();
+        
+        // Short burst of attempts (only within 300ms window)
+        setTimeout(smartScrollToTop, 0);
+        setTimeout(smartScrollToTop, 10);
+        setTimeout(smartScrollToTop, 50);
+        setTimeout(smartScrollToTop, 100);
+        setTimeout(smartScrollToTop, 150);
+        
+        // On DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', smartScrollToTop);
+        
+        // Clean up sessionStorage flag
         var shouldScrollToTop = sessionStorage.getItem('scrollToTopOnLoad');
         if (shouldScrollToTop === 'true') {
-          // Force scroll to top immediately on page load
-          window.scrollTo(0, 0);
-          
-          // Clean up the flag after a short delay
           setTimeout(function() {
             sessionStorage.removeItem('scrollToTopOnLoad');
-          }, 100);
+          }, 500);
         }
-        
-        // Start tracking scrolls after initial setup
-        startTrackingScrolls();
       })();
     </script>
 
