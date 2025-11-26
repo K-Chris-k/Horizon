@@ -186,16 +186,20 @@ document.addEventListener('cart:update', function(event) {
         // Also detect touch movement as active scrolling
         var touchStartY = 0;
         window.addEventListener('touchstart', function(e) {
-          touchStartY = e.touches[0].clientY;
+          if (e.touches && e.touches[0]) {
+            touchStartY = e.touches[0].clientY;
+          }
         }, { passive: true });
         
         window.addEventListener('touchmove', function(e) {
-          var touchMoveY = e.touches[0].clientY;
-          var touchDiff = Math.abs(touchMoveY - touchStartY);
-          // If user moves finger more than 30px, they're actively scrolling
-          if (touchDiff > 30 && Date.now() > autoScrollStopTime) {
-            userHasActivelyScrolled = true;
-            allowAutoScroll = false;
+          if (e.touches && e.touches[0]) {
+            var touchMoveY = e.touches[0].clientY;
+            var touchDiff = Math.abs(touchMoveY - touchStartY);
+            // If user moves finger more than 30px, they're actively scrolling
+            if (touchDiff > 30 && Date.now() > autoScrollStopTime) {
+              userHasActivelyScrolled = true;
+              allowAutoScroll = false;
+            }
           }
         }, { passive: true });
         
