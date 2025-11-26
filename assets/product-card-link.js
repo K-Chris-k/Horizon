@@ -30,6 +30,10 @@ class ProductCardLink extends HTMLElement {
       if (interactiveElement) return;
     }
 
+    // Set a flag to ensure the next page scrolls to top
+    // This is especially important for mobile navigation
+    sessionStorage.setItem('scrollToTopOnLoad', 'true');
+
     const gallery = this.querySelector('[data-view-transition-to-main-product]');
     if (!this.productTransitionEnabled || !(gallery instanceof HTMLElement)) return;
 
