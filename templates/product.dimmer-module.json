@@ -693,6 +693,7 @@
         },
         "video_JM77in": {
           "type": "video",
+          "disabled": true,
           "settings": {
             "title": "Installation Guide",
             "video_url": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/112.png?v=1764155385",
@@ -729,6 +730,7 @@
         },
         "tab_item_HNyLCJ": {
           "type": "tab_item",
+          "disabled": true,
           "settings": {
             "tab_type": "video",
             "tab_label": "Installation video",
