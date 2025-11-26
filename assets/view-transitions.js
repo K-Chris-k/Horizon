@@ -7,46 +7,10 @@
 
   const idleCallback = typeof requestIdleCallback === 'function' ? requestIdleCallback : setTimeout;
 
-  // Track if user is actively scrolling
-  let userIsActivelyScrolling = false;
-  let allowAutoScroll = true;
-  const autoScrollStopTime = Date.now() + 300; // Stop after 300ms
-  
-  // Detect real user scrolling
-  let scrollEventCount = 0;
-  window.addEventListener('scroll', () => {
-    scrollEventCount++;
-    const currentScrollTop = window.scrollY || document.documentElement.scrollTop;
-    // If user scrolls away from top after initial load
-    if (scrollEventCount > 3 && currentScrollTop > 50 && Date.now() > autoScrollStopTime) {
-      userIsActivelyScrolling = true;
-      allowAutoScroll = false;
-    }
-  }, { passive: true });
-  
-  // Detect touch scrolling
-  let touchStartY = 0;
-  window.addEventListener('touchstart', (e) => {
-    if (e.touches && e.touches[0]) {
-      touchStartY = e.touches[0].clientY;
-    }
-  }, { passive: true });
-  
-  window.addEventListener('touchmove', (e) => {
-    if (e.touches && e.touches[0]) {
-      const touchMoveY = e.touches[0].clientY;
-      const touchDiff = Math.abs(touchMoveY - touchStartY);
-      if (touchDiff > 30 && Date.now() > autoScrollStopTime) {
-        userIsActivelyScrolling = true;
-        allowAutoScroll = false;
-      }
-    }
-  }, { passive: true });
-
-  // Initial scroll to top
-  window.scrollTo(0, 0);
-  if (document.documentElement) document.documentElement.scrollTop = 0;
-  if (document.body) document.body.scrollTop = 0;
+  // Simple initial scroll to top
+  if (window.scrollY !== 0) {
+    window.scrollTo(0, 0);
+  }
 
   /**
    * Checks whether an Event object is carrying a `viewTransition` property
@@ -64,23 +28,16 @@
   window.addEventListener('pagereveal', (event) => {
     if (hasViewTransition(event)) return;
     
-    // Smart scroll to top - only if user hasn't actively scrolled
-    const smartScrollToTop = () => {
-      if (allowAutoScroll && !userIsActivelyScrolling && Date.now() <= autoScrollStopTime) {
-        window.scrollTo({ top: 0, behavior: 'instant' });
-        if (document.documentElement) document.documentElement.scrollTop = 0;
-        if (document.body) document.body.scrollTop = 0;
-      }
-    };
+    // Simple scroll to top
+    if (window.scrollY !== 0) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
     
-    smartScrollToTop();
-    
-    // A few quick attempts within the time window
+    // One more attempt
     requestAnimationFrame(() => {
-      smartScrollToTop();
-      requestAnimationFrame(() => {
-        smartScrollToTop();
-      });
+      if (window.scrollY !== 0) {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
     });
     
     // Clean up sessionStorage flag
@@ -88,7 +45,7 @@
     if (shouldScrollToTop === 'true') {
       setTimeout(() => {
         sessionStorage.removeItem('scrollToTopOnLoad');
-      }, 500);
+      }, 200);
     }
   });
 
@@ -140,16 +97,10 @@
     const customTransitionType = sessionStorage.getItem('custom-transition-type');
     const shouldScrollToTop = sessionStorage.getItem('scrollToTopOnLoad');
 
-    // Smart scroll to top - respects user interaction
-    const smartScrollToTop = () => {
-      if (allowAutoScroll && !userIsActivelyScrolling && Date.now() <= autoScrollStopTime) {
-        window.scrollTo({ top: 0, behavior: 'instant' });
-        if (document.documentElement) document.documentElement.scrollTop = 0;
-        if (document.body) document.body.scrollTop = 0;
-      }
-    };
-    
-    smartScrollToTop();
+    // Simple scroll to top
+    if (window.scrollY !== 0) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
 
     if (customTransitionType) {
       viewTransition.types.clear();
@@ -178,16 +129,17 @@
     if (shouldScrollToTop === 'true') {
       setTimeout(() => {
         sessionStorage.removeItem('scrollToTopOnLoad');
-      }, 500);
+      }, 200);
     }
     
-    // A few smart scroll attempts within the time window
-    smartScrollToTop();
+    // One more scroll attempt
+    if (window.scrollY !== 0) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
     requestAnimationFrame(() => {
-      smartScrollToTop();
-      requestAnimationFrame(() => {
-        smartScrollToTop();
-      });
+      if (window.scrollY !== 0) {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
     });
   });
 })();
