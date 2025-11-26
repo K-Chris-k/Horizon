@@ -7,16 +7,18 @@
 
   const idleCallback = typeof requestIdleCallback === 'function' ? requestIdleCallback : setTimeout;
 
-  // Track user interaction to avoid interrupting user scrolling
-  let userHasInteracted = false;
-  ['scroll', 'wheel', 'touchmove', 'touchstart', 'mousedown', 'keydown'].forEach(eventName => {
-    window.addEventListener(eventName, () => { userHasInteracted = true; }, { once: true, passive: true });
-  });
+  // Track user scrolling on the NEW page (not during navigation)
+  // We start tracking after a small delay to allow page load scroll-to-top to complete
+  let userHasScrolled = false;
+  let trackingTimeout = setTimeout(() => {
+    ['scroll', 'wheel', 'touchmove'].forEach(eventName => {
+      window.addEventListener(eventName, () => { userHasScrolled = true; }, { once: true, passive: true });
+    });
+  }, 500); // Delay tracking to allow initial scroll-to-top
 
   // Force scroll to top on every page load (before any view transition)
-  // This is critical for view transitions which may try to preserve scroll position
-  // But only if user hasn't started interacting
-  if (!userHasInteracted && window.scrollY !== 0) {
+  // Always scroll to top on page load, regardless of user interaction during navigation
+  if (window.scrollY !== 0) {
     window.scrollTo(0, 0);
   }
 
@@ -35,8 +37,8 @@
   // Handle scroll to top for page navigation without view transitions
   window.addEventListener('pagereveal', (event) => {
     if (hasViewTransition(event)) return;
-    // No view transition, scroll to top immediately (but respect user interaction)
-    if (!userHasInteracted) {
+    // No view transition, always scroll to top on page reveal
+    if (!userHasScrolled) {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
     
@@ -95,8 +97,9 @@
     const customTransitionType = sessionStorage.getItem('custom-transition-type');
     const shouldScrollToTop = sessionStorage.getItem('scrollToTopOnLoad');
 
-    // Immediately scroll to top before the transition starts rendering (but respect user interaction)
-    if (!userHasInteracted) {
+    // Immediately scroll to top before the transition starts rendering
+    // Always do this on page navigation, regardless of interaction during navigation
+    if (!userHasScrolled) {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
@@ -120,7 +123,7 @@
       viewTransition.types.add('page-navigation');
     }
 
-    // Scroll to top after view transition completes (double insurance, but respect user interaction)
+    // Scroll to top after view transition completes
     await viewTransition.finished;
     
     // Clean up the scrollToTop flag
@@ -131,8 +134,8 @@
     }
     
     // Use requestAnimationFrame to ensure it happens after any other scroll restoration
-    // But only if user hasn't interacted
-    if (!userHasInteracted) {
+    // Always scroll to top for new page navigations
+    if (!userHasScrolled) {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           window.scrollTo({ top: 0, behavior: 'instant' });
