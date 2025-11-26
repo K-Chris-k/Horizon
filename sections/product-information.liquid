@@ -44,48 +44,26 @@
 
 {% javascript %}
   // Force scroll to top when landing on product page from navigation
-  // But respect if user actively scrolls - don't interrupt them
   (function() {
     var userHasScrolled = false;
-    var allowAutoScroll = true;
-    var autoScrollStopTime = Date.now() + 300; // Allow auto-scroll for first 300ms
+    var cleanupDone = false;
     
-    // Mark real user scrolling (not navigation clicks)
-    var scrollEventCount = 0;
-    function markUserScrolling() {
-      scrollEventCount++;
-      var currentScrollTop = window.scrollY || document.documentElement.scrollTop;
-      // Only mark as user scrolling if they scroll away from top after initial load
-      if (scrollEventCount > 3 && currentScrollTop > 50 && Date.now() > autoScrollStopTime) {
+    // Simple one-time scroll detection
+    function detectUserScroll() {
+      if (!cleanupDone && window.scrollY > 100) {
         userHasScrolled = true;
-        allowAutoScroll = false;
+        cleanup();
       }
     }
     
-    // Detect touch scrolling
-    var touchStartY = 0;
-    window.addEventListener('touchstart', function(e) {
-      if (e.touches && e.touches[0]) {
-        touchStartY = e.touches[0].clientY;
-      }
-    }, { passive: true });
-    
-    window.addEventListener('touchmove', function(e) {
-      if (e.touches && e.touches[0]) {
-        var touchMoveY = e.touches[0].clientY;
-        var touchDiff = Math.abs(touchMoveY - touchStartY);
-        // If user drags more than 30px, they're actively scrolling
-        if (touchDiff > 30 && Date.now() > autoScrollStopTime) {
-          userHasScrolled = true;
-          allowAutoScroll = false;
-        }
-      }
-    }, { passive: true });
-    
-    // Listen for scroll events
-    ['scroll', 'wheel'].forEach(function(event) {
-      window.addEventListener(event, markUserScrolling, { passive: true });
-    });
+    // Cleanup function to remove event listeners
+    function cleanup() {
+      if (cleanupDone) return;
+      cleanupDone = true;
+      window.removeEventListener('scroll', detectUserScroll);
+      window.removeEventListener('wheel', detectUserScroll);
+      window.removeEventListener('touchmove', detectUserScroll);
+    }
     
     // Check if we should force scroll to top
     const shouldScrollToTop = sessionStorage.getItem('scrollToTopOnLoad');
@@ -95,29 +73,31 @@
       history.replaceState(null, null, window.location.pathname + window.location.search);
     }
     
-    // Smart scroll to top - only if user hasn't actively scrolled
-    function smartScrollToTop() {
-      if (allowAutoScroll && !userHasScrolled && Date.now() <= autoScrollStopTime) {
-        window.scrollTo(0, 0);
-        if (document.documentElement) document.documentElement.scrollTop = 0;
-        if (document.body) document.body.scrollTop = 0;
-      }
+    // Force scroll to top immediately
+    if (window.scrollY !== 0) {
+      window.scrollTo(0, 0);
     }
     
-    // Immediate scroll to top
-    smartScrollToTop();
+    // Listen for user scrolling with cleanup after 200ms
+    window.addEventListener('scroll', detectUserScroll, { passive: true, once: false });
+    window.addEventListener('wheel', detectUserScroll, { passive: true, once: false });
+    window.addEventListener('touchmove', detectUserScroll, { passive: true, once: false });
     
-    // A few more attempts within the time window
-    setTimeout(smartScrollToTop, 0);
-    setTimeout(smartScrollToTop, 10);
-    setTimeout(smartScrollToTop, 50);
-    setTimeout(smartScrollToTop, 100);
+    // One more scroll attempt after a tiny delay
+    setTimeout(function() {
+      if (!userHasScrolled && window.scrollY !== 0) {
+        window.scrollTo(0, 0);
+      }
+    }, 50);
+    
+    // Cleanup after 200ms
+    setTimeout(cleanup, 200);
     
     // Clean up sessionStorage flag
     if (shouldScrollToTop === 'true') {
       setTimeout(function() {
         sessionStorage.removeItem('scrollToTopOnLoad');
-      }, 500);
+      }, 300);
     }
   })();
 {% endjavascript %}
