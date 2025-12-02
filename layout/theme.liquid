@@ -4,6 +4,16 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
+
+    {%- if settings.favicon != blank -%}
+      <link
+        rel="icon"
+        type="image/png"
+        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
+      >
+    {%- endif -%}
+    {%- render 'meta-tags' -%}
+    
     <!-- Google Tag Manager -->
     <script>
     (function(w,d,s,l,i){
@@ -150,15 +160,6 @@ document.addEventListener('cart:update', function(event) {
     });
 });
 </script>
-
-    {%- if settings.favicon != blank -%}
-      <link
-        rel="icon"
-        type="image/png"
-        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
-      >
-    {%- endif -%}
-
     {% comment %} Force scroll to top before any other scripts run {% endcomment %}
     <script>
       (function() {
@@ -197,7 +198,7 @@ document.addEventListener('cart:update', function(event) {
       id="view-transition-render-blocker"
     >
 
-    {%- render 'meta-tags' -%}
+
     {%- render 'stylesheets' -%}
     {%- render 'fonts' -%}
     {%- render 'scripts' -%}
