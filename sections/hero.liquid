@@ -100,6 +100,7 @@
             fetchpriority: fetch_priority_poster
         }}
       {%- endif -%}
+      {% capture layoutvideo %}
       {{
         section.settings.video_1
         | video_tag:
@@ -108,8 +109,9 @@
           loop: true,
           controls: false,
           muted: true,
-          class: 'hero__video'
+          class: 'hero__video lazy'
       }}
+    {% endcapture %}{{ layoutvideo  | replace: "<source src","<source data-src"}}
       <button type="button" class="hero__video-sound-toggle" aria-label="Toggle sound">
         <svg aria-hidden="true" focusable="false" fill="none" width="25" class="icon icon-muted" viewBox="0 0 25 24">
           <path d="M5.335 16.366H1V8.42h4.335m0 7.947V8.42m0 7.947 1.204.86M5.335 8.42 12.922 3v8M9 18.984l3.921 2.801V15.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -537,7 +539,34 @@
     });
   });
 </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+  var lazyVideos = [].slice.call(document.querySelectorAll("video.lazy"));
 
+  if ("IntersectionObserver" in window) {
+    var lazyVideoObserver = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(function(video) {
+        if (video.isIntersecting) {
+          for (var source in video.target.children) {
+            var videoSource = video.target.children[source];
+            if (typeof videoSource.tagName === "string" && videoSource.tagName === "SOURCE") {
+              videoSource.src = videoSource.dataset.src;
+            }
+          }
+
+          video.target.load();
+          video.target.classList.remove("lazy");
+          lazyVideoObserver.unobserve(video.target);
+        }
+      });
+    });
+
+    lazyVideos.forEach(function(lazyVideo) {
+      lazyVideoObserver.observe(lazyVideo);
+    });
+  }
+});
+</script>
 {% schema %}
 {
   "name": "t:names.hero",
