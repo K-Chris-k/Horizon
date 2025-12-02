@@ -90,7 +90,7 @@
         endif
       -%}
 
-      <fieldset class="variant-option variant-option--buttons variant-option--swatches {{ display_style_class }}">
+      <fieldset class="lazy-item variant-option variant-option--buttons variant-option--swatches {{ display_style_class }}">
         {% capture children %}
           {%- for product_option_value in product_option.values -%}
             {% liquid
