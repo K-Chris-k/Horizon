@@ -11,7 +11,7 @@
 {%- enddoc -%}
 
 <sorting-filter-component
-  class="sorting-filter{% if filter_style == 'horizontal' %} sorting-filter__horizontal{% endif %}"
+  class="lazy-item sorting-filter{% if filter_style == 'horizontal' %} sorting-filter__horizontal{% endif %}"
   on:change="/updateFilterAndSorting"
   on:keydown="/handleKeyDown"
   {% if sort_position != blank %}
