@@ -66,7 +66,7 @@
   {% endif %}
 >
   {% if show_arrows_separately == false and show_arrows and pagination_position != 'left' %}
-    <div class="slideshow-controls__arrows">
+    <div class="lazy-item slideshow-controls__arrows">
       {%- render 'slideshow-arrow', action: 'previous', icon_style: icon_style, icon_shape: shape -%}
 
       {% if pagination_position == 'right' %}
