@@ -208,7 +208,7 @@
       {%- if section.settings.subtitle_1 != blank or section.settings.subtitle_2 != blank or section.settings.subtitle_3 != blank or section.settings.subtitle_4 != blank -%}
         <div class="brand-belief-{{ section_id }}__subtitles">
           {%- if section.settings.subtitle_1 != blank -%}
-            <p class="brand-belief-{{ section_id }}__subtitle">{{ section.settings.subtitle_1 }}</p>
+            <p class="lazy-item brand-belief-{{ section_id }}__subtitle">{{ section.settings.subtitle_1 }}</p>
           {%- endif -%}
           {%- if section.settings.subtitle_2 != blank -%}
             <p class="brand-belief-{{ section_id }}__subtitle">{{ section.settings.subtitle_2 }}</p>

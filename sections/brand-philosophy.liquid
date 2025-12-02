@@ -22,7 +22,7 @@
 <div
   class="brand-philosophy-container-{{ section.id }} section section--{{ section.settings.content_width }}"
 >
-  <div class="brand-philosophy-blocks">
+  <div class="lazy-item brand-philosophy-blocks">
     {% for block in section.blocks %}
       {% case block.type %}
         {% when 'text_overlay' %}
