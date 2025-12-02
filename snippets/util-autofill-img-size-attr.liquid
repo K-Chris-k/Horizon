@@ -13,7 +13,6 @@
   {% assign size_attribute = size_attribute | strip %}
   {{ image_url | image_tag: sizes: size_attribute }}
 {%- enddoc -%}
-
 {% liquid
   # Defense: ensure card_size and card_gap are numbers
   assign card_size = card_size | strip | replace: 'px', '' | plus: 0
