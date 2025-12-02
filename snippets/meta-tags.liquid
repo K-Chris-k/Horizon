@@ -36,7 +36,7 @@
     content="{{ page_description | escape }}"
   >
 {% endif %}
-
+{% render "vital" %}
 <meta
   property="og:site_name"
   content="{{ shop.name }}"
@@ -76,7 +76,7 @@
     content="{{ page_image.height }}"
   >
 {%- endif -%}
-
+{% render "essential" %}
 {%- if request.page_type == 'product' -%}
   <meta
     property="og:price:amount"
@@ -113,7 +113,7 @@
   {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
   {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
 </title>
-
+{% render "network" %}
 <link
   rel="canonical"
   href="{{ canonical_url }}"
