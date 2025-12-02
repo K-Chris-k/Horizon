@@ -30,6 +30,12 @@
     assign og_url = request.origin
   endif
 %}
+{% if page_description %}
+  <meta
+    name="description"
+    content="{{ page_description | escape }}"
+  >
+{% endif %}
 
 <meta
   property="og:site_name"
@@ -113,9 +119,3 @@
   href="{{ canonical_url }}"
 >
 
-{% if page_description %}
-  <meta
-    name="description"
-    content="{{ page_description | escape }}"
-  >
-{% endif %}
