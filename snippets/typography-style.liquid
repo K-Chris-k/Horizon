@@ -6,9 +6,7 @@
    Accepts:
       settings: {settings || section.settings}
 {%- endcomment -%}
-
 {% assign preset = preset | default: settings.type_preset %}
-
 {%- capture variables -%}
   {%- if preset != 'rte' and settings.color != "" -%}
     --color: {{ settings.color }};
