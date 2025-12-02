@@ -15,7 +15,7 @@
     {%- render 'meta-tags' -%}
     
     <!-- Google Tag Manager -->
-    <script>
+    <script type="text/lazyload">
     (function(w,d,s,l,i){
       w[l]=w[l]||[];
       w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
@@ -30,8 +30,8 @@
     <!-- End Google Tag Manager -->
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17164794132"></script>
-    <script>
+    <script async data-src="https://www.googletagmanager.com/gtag/js?id=AW-17164794132"></script>
+    <script type="text/lazyload">
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
