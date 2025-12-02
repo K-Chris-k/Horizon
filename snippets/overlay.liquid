@@ -9,7 +9,7 @@
 {%- enddoc -%}
 
 <div
-  class="overlay overlay--{{ settings.overlay_style | default: 'gradient' }}"
+  class="lazy-item overlay overlay--{{ settings.overlay_style | default: 'gradient' }}"
   style="
     --overlay-layer: {{ layer | default: 'var(--layer-flat)' }};
     --overlay-color: {{ settings.overlay_color | default: 'rgb(0 0 0 / var(--opacity-25))' }};
