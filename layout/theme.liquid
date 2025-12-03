@@ -4,191 +4,7 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
-
-    {%- if settings.favicon != blank -%}
-      <link
-        rel="icon"
-        type="image/png"
-        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
-      >
-    {%- endif -%}
-    {%- render 'meta-tags' -%}
-    <link rel="preload" as="style" media="screen" href="https://www.repenic.com/cdn/shopifycloud/portable-wallets/latest/accelerated-checkout-backwards-compat.css" crossorigin="anonymous">    
-    <!-- Google Tag Manager -->
-    <script type="text/lazyload">
-    (function(w,d,s,l,i){
-      w[l]=w[l]||[];
-      w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
-      var f=d.getElementsByTagName(s)[0],
-          j=d.createElement(s),
-          dl=l!='dataLayer'?'&l='+l:'';
-      j.async=true;
-      j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-      f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-MWSFJRN9');
-    </script>
-    <!-- End Google Tag Manager -->
-
-    <!-- Google tag (gtag.js) -->
-    <script async data-src="https://www.googletagmanager.com/gtag/js?id=AW-17164794132"></script>
-    <script type="text/lazyload">
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      
-      // Google Ads 转化跟踪
-      gtag('config', 'AW-17164794132');
-      
-      // Google Analytics
-      gtag('config', 'G-QODMN042V3');
-    </script>
-
-    <!-- 价格追踪诊断工具 -->
-    <script>
-    // 在控制台运行这个函数来诊断价格追踪问题
-    window.debugPriceTracking = function() {
-      console.log('=== 价格追踪诊断 ===');
-      
-      // 查找所有可能包含价格的元素
-      console.log('\n1. 所有 .money 元素:');
-      var moneyElements = document.querySelectorAll('.money');
-      moneyElements.forEach(function(el, index) {
-        console.log('  [' + index + ']', el.textContent.trim(), 'Parent:', el.parentElement.className);
-      });
-      
-      console.log('\n2. 所有包含 "price" 的类名元素:');
-      var priceElements = document.querySelectorAll('[class*="price"]');
-      priceElements.forEach(function(el, index) {
-        if (index < 10) { // 只显示前10个
-          console.log('  [' + index + ']', el.className, '值:', el.textContent.trim().substring(0, 50));
-        }
-      });
-      
-      console.log('\n3. 产品标题元素:');
-      var titleElements = document.querySelectorAll('h1, h2, [data-product-title]');
-      titleElements.forEach(function(el, index) {
-        if (index < 5) {
-          console.log('  [' + index + ']', el.tagName, el.textContent.trim().substring(0, 50));
-        }
-      });
-      
-      console.log('\n4. 购物车总价元素:');
-      var totalSelectors = [
-        '[data-cart-total]',
-        '.cart__total-price',
-        '.totals__total-value',
-        '.cart-total'
-      ];
-      totalSelectors.forEach(function(selector) {
-        var el = document.querySelector(selector);
-        if (el) {
-          console.log('  ✅ 找到:', selector, '值:', el.textContent.trim());
-        } else {
-          console.log('  ❌ 未找到:', selector);
-        }
-      });
-      
-    };
-    </script>
-
-   <!-- Add to Cart 转化跟踪 ） -->
-<script>
-document.addEventListener('cart:update', function(event) {
-  console.log('Cart update event detected:', event);
-
-  fetch('/cart.js')
-    .then(response => response.json())
-    .then(cart => {
-      let latestItem = null;
-      let maxKeyId = 0;
-
-      cart.items.forEach(item => {
-        if (item.key) {
-          const keyId = parseInt(item.key.split(':')[1] || 0);
-          if (keyId > maxKeyId) {
-            maxKeyId = keyId;
-            latestItem = item;
-          }
-        }
-      });
-
-      if (!latestItem && cart.items.length > 0) {
-        latestItem = cart.items[cart.items.length - 1];
-      }
-
-      if (!latestItem) {
-        console.warn('Add to Cart: No item found in cart');
-        return;
-      }
-
-      const price = (latestItem.final_price || latestItem.price) / 100;
-      const quantity = latestItem.quantify || latestItem.quantity || 1;
-      const title = latestItem.product_title || latestItem.title || 'Unknown Product';
-
-      console.log('成功追踪 Add to Cart:', {
-        title: title,
-        price: price,
-        quantity: quantity,
-        variantId: latestItem.variant_id,
-        currency: '{{ shop.currency }}'
-      });
-
-      gtag('event', 'add_to_cart', {
-        currency: '{{ shop.currency }}',
-        value: price * quantity,
-        items: [{
-          item_id: latestItem.variant_id || latestItem.id,
-          item_name: title,
-          price: price,
-          quantity: quantity
-        }]
-      });
-
-      gtag('event', 'conversion', {
-        send_to: 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
-        value: price * quantity,
-        currency: '{{ shop.currency }}'
-      });
-
-    })
-    .catch(err => {
-      console.error('Add to Cart fetch /cart.js failed:', err);
-      gtag('event', 'conversion', {
-        send_to: 'AW-17164794132/WzBKCKjK6-YaEJTy5_g_',
-        currency: '{{ shop.currency }}'
-      });
-    });
-});
-</script>
-    {% comment %} Force scroll to top before any other scripts run {% endcomment %}
-    <script>
-      (function() {
-        // Ensure manual scroll restoration
-        if ('scrollRestoration' in history) {
-          history.scrollRestoration = 'manual';
-        }
-        
-        // Force scroll to top immediately
-        if (window.scrollY !== 0) {
-          window.scrollTo(0, 0);
-        }
-        
-        // One more attempt after tiny delay
-        setTimeout(function() {
-          if (window.scrollY !== 0) {
-            window.scrollTo(0, 0);
-          }
-        }, 50);
-        
-        // Clean up sessionStorage flag
-        var shouldScrollToTop = sessionStorage.getItem('scrollToTopOnLoad');
-        if (shouldScrollToTop === 'true') {
-          setTimeout(function() {
-            sessionStorage.removeItem('scrollToTopOnLoad');
-          }, 200);
-        }
-      })();
-    </script>
+    
 
     {% comment %} This a way to wait for main content to load when navigating to a new page so that the view transitions can work consistently {% endcomment %}
     <link
@@ -198,7 +14,7 @@ document.addEventListener('cart:update', function(event) {
       id="view-transition-render-blocker"
     >
 
-
+    {%- render 'meta-tags' -%}
     {%- render 'stylesheets' -%}
     {%- render 'fonts' -%}
     {%- render 'scripts' -%}
@@ -211,7 +27,7 @@ document.addEventListener('cart:update', function(event) {
 
     {{ content_for_header }}
     <!-- Hotjar Tracking Code for New website -->
-<script type="text/lazyload">
+<script>
     (function(h,o,t,j,a,r){
         h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
         h._hjSettings={hjid:6564428,hjsv:6};
@@ -246,7 +62,7 @@ document.addEventListener('cart:update', function(event) {
       data-product-transition="{{ settings.transition_to_main_product }}"
       data-template="{{ template }}"
     >
-     {% capture layout %} {{ content_for_layout }} {% endcapture %} {{ layout | replace: "<img","<img loading='lazy' "  | replace: "<video","<video loading='lazy' " }}
+      {{ content_for_layout }}
     </main>
 
     {% sections 'footer-group' %}
@@ -256,131 +72,6 @@ document.addEventListener('cart:update', function(event) {
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
-
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MWSFJRN9"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
-    <!-- Begin Checkout 转化跟踪 -->
-    <script>
-    // 监听结账按钮点击
-    document.addEventListener('DOMContentLoaded', function() {
-      var checkoutButton = document.querySelector('#checkout, button[name="checkout"], .cart__checkout-button');
-      
-      if (checkoutButton) {
-        checkoutButton.addEventListener('click', function(e) {
-          // 获取购物车总价 - 使用多种选择器
-          var cartTotal = 0;
-          
-          // 尝试多种可能的总价选择器
-          var totalSelectors = [
-            '[data-cart-total]',
-            '.cart__total-price',
-            '.totals__total-value',
-            '.cart-total',
-            '[class*="total"] .money',
-            '.total-price .money',
-            'cart-summary .money',
-            '[data-total-price]'
-          ];
-          
-          for (var i = 0; i < totalSelectors.length; i++) {
-            var cartTotalElement = document.querySelector(totalSelectors[i]);
-            if (cartTotalElement) {
-              var totalText = cartTotalElement.getAttribute('data-cart-total') ||
-                            cartTotalElement.getAttribute('data-total-price') ||
-                            cartTotalElement.textContent;
-              cartTotal = parseFloat(totalText.replace(/[^0-9.]/g, '')) || 0;
-              
-              if (cartTotal > 0) {
-                console.log('Cart total found using selector:', totalSelectors[i], 'Value:', cartTotal);
-                break;
-              }
-            }
-          }
-          
-          // 如果还是找不到，尝试从所有商品价格累加
-          if (cartTotal === 0) {
-            console.warn('Could not find cart total. Trying to calculate from line items...');
-            var lineItems = document.querySelectorAll('[data-cart-item], .cart-item, [class*="cart-item"]');
-            lineItems.forEach(function(item) {
-              var itemPrice = item.querySelector('.money, [class*="price"]');
-              if (itemPrice) {
-                var itemTotal = parseFloat(itemPrice.textContent.replace(/[^0-9.]/g, '')) || 0;
-                cartTotal += itemTotal;
-              }
-            });
-            console.log('Calculated cart total from items:', cartTotal);
-          }
-          
-          console.log('Begin checkout event fired, cart total:', cartTotal);
-          
-          // 发送 GA4 begin_checkout 事件
-          gtag('event', 'begin_checkout', {
-            currency: '{{ shop.currency }}',
-            value: cartTotal
-          });
-          
-          // 发送 Google Ads 转化事件 - Begin checkout
-          gtag('event', 'conversion', {
-            'send_to': 'AW-17164794132/yK-nCKmQj5AbEJTy5_g_',
-            'value': cartTotal,
-            'currency': '{{ shop.currency }}'
-          });
-        });
-      }
-    });
-    </script>
-
-    <!-- Purchase 转化跟踪 - 仅在订单确认页面 -->
-    {% if template contains 'customers/order' %}
-      <script>
-      // 在订单确认页面触发购买转化
-      {% if order %}
-        var orderTotal = {{ order.total_price | money_without_currency | remove: ',' }};
-        var orderId = '{{ order.order_number }}';
-        
-        console.log('Purchase conversion fired:', {
-          orderId: orderId,
-          total: orderTotal
-        });
-        
-        // 发送 GA4 purchase 事件
-        gtag('event', 'purchase', {
-          transaction_id: orderId,
-          value: orderTotal,
-          currency: '{{ shop.currency }}',
-          items: [
-            {% for line_item in order.line_items %}
-            {
-              item_id: '{{ line_item.variant_id }}',
-              item_name: '{{ line_item.title | escape }}',
-              price: {{ line_item.price | money_without_currency | remove: ',' }},
-              quantity: {{ line_item.quantity }}
-            }{% unless forloop.last %},{% endunless %}
-            {% endfor %}
-          ]
-        });
-        
-        // 发送 Google Ads 转化事件 - Purchase (第一个)
-        gtag('event', 'conversion', {
-          'send_to': 'AW-17164794132/uAMUCJvH6NYaEJTy5_g_',
-          'value': orderTotal,
-          'currency': '{{ shop.currency }}',
-          'transaction_id': orderId
-        });
-        
-        // 发送 Google Ads 转化事件 - Purchase (第二个 - 购买)
-        gtag('event', 'conversion', {
-          'send_to': 'AW-17164794132/IYbVCKr2k7kbEJTy5_g_',
-          'value': orderTotal,
-          'currency': '{{ shop.currency }}',
-          'transaction_id': orderId
-        });
-      {% endif %}
-      </script>
-    {% endif %}
-    <link rel="preload" href="{{ 'splide.min.js' | asset_url }}" as="script"><script src="{{ 'splide.min.js' | asset_url }}"></script>
+    
   </body>
 </html>
