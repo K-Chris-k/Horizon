@@ -42,7 +42,7 @@
           "type": "text",
           "name": "Description",
           "settings": {
-            "text": "<p>Looking for dimmer switches that actually work with LED lights? You’re in the right place.</p><p>At Repenic, we make good-looking, well-built dimmable modules that feel just as nice as they look.<br/>Whether you’re renovating a period home or just upgrading a tired old white switch, we’ve got something for you.</p>",
+            "text": "<p>Repenic dimmer modules are engineered to bring professional-grade lighting control into everyday homes. Built around solid-state MOSFET technology and precision-tuned circuitry, our modules deliver buttery-smooth dimming, zero buzzing, and excellent LED compatibility—even with challenging low-load fixtures.</p>",
             "width": "100%",
             "max_width": "normal",
             "alignment": "left",
