@@ -16,7 +16,7 @@
           "type": "text",
           "name": "Title",
           "settings": {
-            "text": "<p>{{ closest.collection.title }}</p>",
+            "text": "<p>Dimmer module</p>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
@@ -42,7 +42,7 @@
           "type": "text",
           "name": "Description",
           "settings": {
-            "text": "<p>Looking for dimmer switches that actually work with LED lights? You’re in the right place.</p><p>At Repenic, we make good-looking, well-built dimmable switches that feel just as nice as they look.<br/>Whether you’re renovating a period home or just upgrading a tired old white switch, we’ve got something for you.</p>",
+            "text": "<p>Looking for dimmer switches that actually work with LED lights? You’re in the right place.</p><p>At Repenic, we make good-looking, well-built dimmable modules that feel just as nice as they look.<br/>Whether you’re renovating a period home or just upgrading a tired old white switch, we’ve got something for you.</p>",
             "width": "100%",
             "max_width": "normal",
             "alignment": "left",
@@ -94,7 +94,7 @@
         "border_opacity": 100,
         "border_radius": 0,
         "toggle_overlay": true,
-        "overlay_color": "#0000002f",
+        "overlay_color": "#0000002e",
         "overlay_style": "solid",
         "gradient_direction": "to top",
         "padding-block-start": 48,
@@ -108,7 +108,7 @@
           "type": "filters",
           "static": true,
           "settings": {
-            "enable_filtering": true,
+            "enable_filtering": false,
             "filter_style": "horizontal",
             "filter_width": "centered",
             "text_label_case": "default",
