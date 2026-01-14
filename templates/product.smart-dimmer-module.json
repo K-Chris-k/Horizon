@@ -686,10 +686,9 @@
         },
         "video_3AQDTi": {
           "type": "video",
-          "disabled": true,
           "settings": {
             "title": "Installation Guide",
-            "video_url": "",
+            "video_url": "https://www.youtube.com/watch?v=g_Dzxr8cAdo",
             "title_color": "#333333",
             "title_background_color": "#ffffff"
           }
@@ -723,7 +722,6 @@
         },
         "tab_item_HNyLCJ": {
           "type": "tab_item",
-          "disabled": true,
           "settings": {
             "tab_type": "video",
             "tab_label": "Installation video",
