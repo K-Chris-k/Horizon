@@ -785,7 +785,6 @@
         },
         "tab_item_HNyLCJ": {
           "type": "tab_item",
-          "disabled": true,
           "settings": {
             "tab_type": "video",
             "tab_label": "Installation video",
