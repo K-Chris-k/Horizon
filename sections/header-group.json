@@ -29,7 +29,6 @@
         },
         "announcement_nBNYq7": {
           "type": "_announcement",
-          "disabled": true,
           "settings": {
             "text": "Warehouse Move Notice: Shipping paused <strong>13-27 Feb</strong>.",
             "link": "",
