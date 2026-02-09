@@ -26,10 +26,25 @@
             "case": "none"
           },
           "blocks": {}
+        },
+        "announcement_nBNYq7": {
+          "type": "_announcement",
+          "disabled": true,
+          "settings": {
+            "text": "Shipping paused 13-17 Feb. All orders will resume from 2 March.",
+            "link": "",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.875rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
         }
       },
       "block_order": [
-        "announcement_BxgCk9"
+        "announcement_BxgCk9",
+        "announcement_nBNYq7"
       ],
       "name": "t:names.announcement_bar",
       "settings": {
