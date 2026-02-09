@@ -31,7 +31,7 @@
           "type": "_announcement",
           "disabled": true,
           "settings": {
-            "text": "Shipping paused 13-17 Feb. All orders will resume from 2 March.",
+            "text": "Warehouse move: Shipping paused <strong>13-17 Feb</strong>. All orders will resume from <strong>2 March</strong>.",
             "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.875rem",
