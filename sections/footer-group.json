@@ -345,7 +345,7 @@
               "type": "text",
               "name": "t:names.text",
               "settings": {
-                "text": "<p><a href=\"https://www.repenic.com/apps/massy/pages/registration-form/dealers\" title=\"https://www.repenic.com/apps/massy/pages/registration-form/dealers\">Dealer application</a></p>",
+                "text": "<p><a href=\"https://www.repenic.com/apps/massy/pages/registration-form/trade-application\" title=\"repenic trade application\">Trade application</a></p>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
