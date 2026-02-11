@@ -344,6 +344,7 @@
             "text_Y8pqqf": {
               "type": "text",
               "name": "t:names.text",
+              "disabled": true,
               "settings": {
                 "text": "<p><a href=\"https://www.repenic.com/apps/wholesale-pro/wholesale-section\" title=\"https://www.repenic.com/apps/wholesale-pro/wholesale-section\">Dealer application</a></p>",
                 "width": "fit-content",
