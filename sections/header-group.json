@@ -123,10 +123,52 @@
         "enable_transparent_header_collection": false,
         "collection_color_scheme": "default"
       }
+    },
+    "177079264671ab6503": {
+      "type": "_blocks",
+      "blocks": {
+        "massy_massy_registration_form_wM6Fp4": {
+          "type": "shopify://apps/massy/blocks/massy-registration-form/755249cf-b2d3-401e-a5e9-91307113bce4",
+          "settings": {
+            "form_url_handle": "https://www.repenic.com/apps/massy/pages/registration-form/dealers"
+          }
+        }
+      },
+      "block_order": [
+        "massy_massy_registration_form_wM6Fp4"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
     }
   },
   "order": [
     "header_announcements_9jGBFp",
-    "header_section"
+    "header_section",
+    "177079264671ab6503"
   ]
 }
