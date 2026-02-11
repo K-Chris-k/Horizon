@@ -127,7 +127,7 @@
     "177079264671ab6503": {
       "type": "_blocks",
       "blocks": {
-        "massy_massy_registration_form_wM6Fp4": {
+        "massy_massy_registration_form_CQdJUH": {
           "type": "shopify://apps/massy/blocks/massy-registration-form/755249cf-b2d3-401e-a5e9-91307113bce4",
           "settings": {
             "form_url_handle": "https://www.repenic.com/apps/massy/pages/registration-form/dealers"
@@ -135,7 +135,7 @@
         }
       },
       "block_order": [
-        "massy_massy_registration_form_wM6Fp4"
+        "massy_massy_registration_form_CQdJUH"
       ],
       "settings": {
         "content_direction": "column",
