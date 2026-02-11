@@ -129,7 +129,7 @@
       },
       "15106866019075792560": {
         "type": "shopify://apps/massy/blocks/massy-app-embed/755249cf-b2d3-401e-a5e9-91307113bce4",
-        "disabled": false,
+        "disabled": true,
         "settings": {}
       }
     },
