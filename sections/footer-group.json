@@ -344,9 +344,8 @@
             "text_Y8pqqf": {
               "type": "text",
               "name": "t:names.text",
-              "disabled": true,
               "settings": {
-                "text": "<p><a href=\"https://www.repenic.com/apps/wholesale-pro/wholesale-section\" title=\"https://www.repenic.com/apps/wholesale-pro/wholesale-section\">Dealer application</a></p>",
+                "text": "<p><a href=\"https://www.repenic.com/apps/massy/pages/registration-form/dealers\" title=\"https://www.repenic.com/apps/massy/pages/registration-form/dealers\">Dealer application</a></p>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
