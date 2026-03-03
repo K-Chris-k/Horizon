@@ -127,13 +127,13 @@
         "disabled": false,
         "settings": {}
       },
-      "15786547694540827628": {
-        "type": "shopify://apps/wholesale-discount-pro/blocks/star_rating/81fd4d00-2674-4a0e-8fee-a1a772120620",
-        "disabled": true,
-        "settings": {}
-      },
       "15106866019075792560": {
         "type": "shopify://apps/massy/blocks/massy-app-embed/755249cf-b2d3-401e-a5e9-91307113bce4",
+        "disabled": false,
+        "settings": {}
+      },
+      "18408366429334172745": {
+        "type": "shopify://apps/pop-convert-pop-ups-banners/blocks/app-embed/ed587aec-4936-43ae-a1b3-1c9e0d08f185",
         "disabled": false,
         "settings": {}
       }
