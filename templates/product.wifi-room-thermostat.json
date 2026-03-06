@@ -1192,6 +1192,13 @@
             "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/Water_underfloor_heating_manual.pdf?v=1772793366"
           }
         },
+        "download_rdjPhE": {
+          "type": "download",
+          "settings": {
+            "label": "User guide - Electric underfloor heating",
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/Electric_underfloor_heating_manual.pdf?v=1772793366"
+          }
+        },
         "download_BAD9yP": {
           "type": "download",
           "settings": {
@@ -1286,6 +1293,7 @@
         "tech_spec_FAndtX",
         "download_kWHF3k",
         "download_rh6kb7",
+        "download_rdjPhE",
         "download_BAD9yP",
         "faq_rx69EJ",
         "faq_H7iBHG",
