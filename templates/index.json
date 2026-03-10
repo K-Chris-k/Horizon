@@ -378,6 +378,7 @@
             "swatches_PQqRcT": {
               "type": "swatches",
               "name": "t:names.swatches",
+              "disabled": true,
               "settings": {
                 "swatch_display_style": "color",
                 "product_swatches_alignment": "flex-start",
@@ -437,8 +438,6 @@
           "settings": {
             "media_type_1": "image",
             "image_1": "shopify://shop_images/08.png",
-            "image_fit": "contain",
-            "slide_height": "medium",
             "content_direction": "column",
             "vertical_on_mobile": true,
             "horizontal_alignment": "flex-start",
@@ -1021,6 +1020,7 @@
         "background_media": "none",
         "video_position": "cover",
         "background_image_position": "cover",
+        "background_image_mobile_position": "cover",
         "border": "none",
         "border_width": 1,
         "border_opacity": 100,
@@ -1294,8 +1294,6 @@
           "settings": {
             "media_type_1": "image",
             "image_1": "shopify://shop_images/b84516798c9285da62983ddb1353d129b7a3536f.png",
-            "image_fit": "cover",
-            "slide_height": "inherit",
             "content_direction": "column",
             "vertical_on_mobile": true,
             "horizontal_alignment": "flex-start",
