@@ -178,6 +178,7 @@
           "block_order": []
         }
       },
+      "disabled": true,
       "name": "t:names.blog_posts_editorial",
       "settings": {
         "blog": "",
@@ -322,7 +323,7 @@
       },
       "name": "t:names.blog_posts_grid",
       "settings": {
-        "blog": "2026news",
+        "blog": "test",
         "layout_type": "grid",
         "carousel_on_mobile": false,
         "post_limit": 3,
@@ -464,7 +465,7 @@
       },
       "name": "t:names.blog_posts_carousel",
       "settings": {
-        "blog": "",
+        "blog": "test",
         "layout_type": "carousel",
         "carousel_on_mobile": true,
         "post_limit": 5,
