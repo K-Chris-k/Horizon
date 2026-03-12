@@ -315,6 +315,7 @@
             "swatches_Lpa9WL": {
               "type": "swatches",
               "name": "t:names.swatches",
+              "disabled": true,
               "settings": {
                 "swatch_display_style": "color",
                 "product_swatches_alignment": "center",
