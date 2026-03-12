@@ -370,6 +370,7 @@
             "text_BMkfMM": {
               "type": "text",
               "name": "t:names.text",
+              "disabled": true,
               "settings": {
                 "text": "<p><a href=\"/pages/blog\" title=\"Repenic Blog: Smart Switches, Dimmers & Thermostats Guide\">Blog</a></p>",
                 "width": "fit-content",
