@@ -321,7 +321,7 @@
                     "text_G3RzKP": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>We aim to dispatch all orders within<span style=\"text-decoration:underline\"> 24 hours </span>for orders placed between<span style=\"text-decoration:underline\"> Monday and Friday</span>. All orders placed over the weekend (Saturday and Sunday) will be handed over to the courier on Monday. Deliveries typically take<span style=\"text-decoration:underline\">1-2 working days </span>within the UK using a next-day delivery service.</p>",
+                        "text": "<p>We aim to dispatch all orders within<span style=\"text-decoration:underline\"> 24 hours </span>for orders placed between<span style=\"text-decoration:underline\"> Monday and Friday</span>. All orders placed over the weekend (Saturday and Sunday) will be handed over to the courier on Monday. Deliveries typically take <span style=\"text-decoration:underline\">1-2 working days </span>within the UK using a next-day delivery service.</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
