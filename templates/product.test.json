@@ -227,7 +227,7 @@
               "name": "Product description",
               "disabled": true,
               "settings": {
-                "text": "{{ closest.product.description }}",
+                "text": "<p>1. 100% Solid brushed Brass: Heavy-duty, genuine metal faceplates and knurled knobs.</p><p>2. Flicker-Free Perfection: High-speed chipset and tuned MOSFETs ensure silent, real-time stability. No flickering, no humming.</p><p>3. UK Homes Friendly: Fits standard UK 25mm back boxes with No Neutral required. Full smart power without digging deep wall holes.</p><p>4. 6-Layer Safety: Exceeds UKCA standards. Built with V0 fire-rated recycled plastic and full protection against surges and overloads.</p><p>5. Wide Load Compatibility: Supports 5-250W loads. Compatible with Dimmable LED, Halogen, Incandescent, and Dimmable CFL bulbs.</p><p>*The smart dimmer can work with our <a href=\"https://www.repenic.com/collections/dimmer-switch?filter.p.tag=Multiway+dimmer&sort_by=manual&grid=default\" target=\"_blank\" title=\"https://www.repenic.com/collections/dimmer-switch?filter.p.tag=Multiway+dimmer&sort_by=manual&grid=default\"><strong>multiway dimmer</strong></a> to achieve a 2-way or 3-way control.</p>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
