@@ -263,6 +263,7 @@
         "static-blog-title": {
           "type": "_featured-blog-posts-title",
           "name": "t:names.title",
+          "disabled": true,
           "static": true,
           "settings": {
             "text": "<h2><strong>Repenic Blog</strong></h2>",
