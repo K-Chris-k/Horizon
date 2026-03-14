@@ -204,8 +204,8 @@
       "type": "image-text-overlay",
       "name": "Image Text Overlay",
       "settings": {
-        "desktop_background_image": "shopify://shop_images/Rectangle_23.png",
-        "mobile_background_image": "shopify://shop_images/Rectangle_23_1.png",
+        "desktop_background_image": "shopify://shop_images/blog-banner-_-png.webp",
+        "mobile_background_image": "shopify://shop_images/blog-mobile.webp",
         "enable_overlay": false,
         "overlay_opacity": 30,
         "heading": "Repenic Blog",
