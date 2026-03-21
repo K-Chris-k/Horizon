@@ -98,20 +98,6 @@
           "air_reviews_json_ld_v2": "{\n\"@context\": \"http://schema.org\",\n\"@type\": \"Product\",\n\"name\": {{ product.title | json }},\n\"description\": {{ product.description | escape | truncate: 150 | json }},\n\"image\": {{ product.featured_image | json }},\n\"aggregateRating\": {\n  \"@type\": \"AggregateRating\",\n  \"ratingValue\": {{ product.metafields.reviews.rating.value.rating | default: product.metafields.air_reviews_product.review_avg | json }},\n  \"bestRating\": {{ product.metafields.reviews.rating.value.scale_max | json }},\n  \"reviewCount\": {{ product.metafields.air_reviews_product.review_count | json }}\n }{% if shop.metafields.air_reviews_has_ugc_content.data.value == true %}, \n  \"review\":[{% assign reviewsData = product.metafields.air_reviews_product.data.value.reviews %}\n  {% for review in reviewsData limit: 10 %}\n    {\n      \"@type\": \"Review\",\n      \"author\": {\n        \"@type\": \"Person\",\n        \"name\": {{ review.firstName | json }}\n      },\n      \"reviewRating\": {\n          \"@type\": \"Rating\",\n          \"bestRating\": {{ product.metafields.reviews.rating.value.scale_max | json }},\n          \"ratingValue\": {{ review.rate | json }},\n          \"worstRating\": {{ product.metafields.reviews.rating.value.scale_min | json }}\n      },\n      \"reviewBody\": {{ review.content | json }},\n      \"datePublished\": {{ review.createdAt | date: \"%Y-%m-%d %H:%M:%S\" | json }}\n    }{% unless forloop.last %},{% endunless %} \n  {% endfor %}]{% endif %}\n}"
         }
       },
-      "15683396631634586217": {
-        "type": "shopify://apps/inbox/blocks/chat/841fc607-4181-4ad1-842d-e24d7f8bad6b",
-        "disabled": false,
-        "settings": {
-          "button_color": "#000000",
-          "secondary_color": "#ffffff",
-          "ternary_color": "#6a6a6a",
-          "button_icon": "chat_bubble",
-          "button_text": "chat_with_us",
-          "button_horizontal_position": "bottom_right",
-          "button_vertical_position": "lowest",
-          "greeting_message": ""
-        }
-      },
       "14327677521557774844": {
         "type": "shopify://apps/simprosys-google-shopping-feed/blocks/core_settings_block/1f0b859e-9fa6-4007-97e8-4513aff5ff3b",
         "disabled": false,
@@ -136,6 +122,20 @@
         "type": "shopify://apps/sendwill-email-popups/blocks/app/a5670cf8-5705-4b01-ad9e-447033feae26",
         "disabled": true,
         "settings": {}
+      },
+      "15683396631634586217": {
+        "type": "shopify://apps/inbox/blocks/chat/841fc607-4181-4ad1-842d-e24d7f8bad6b",
+        "disabled": false,
+        "settings": {
+          "button_color": "#000000",
+          "secondary_color": "#ffffff",
+          "ternary_color": "#6a6a6a",
+          "button_icon": "chat_bubble",
+          "button_text": "chat_with_us",
+          "button_horizontal_position": "bottom_right",
+          "button_vertical_position": "higher",
+          "greeting_message": ""
+        }
       }
     },
     "color_schemes": {
