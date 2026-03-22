@@ -1345,6 +1345,7 @@
         "ai_gen_block_c2ad69f_MxL9Wq": {
           "type": "ai_gen_block_c2ad69f",
           "name": "1.0",
+          "disabled": true,
           "settings": {
             "trigger_selector": "",
             "scroll_threshold": 50,
