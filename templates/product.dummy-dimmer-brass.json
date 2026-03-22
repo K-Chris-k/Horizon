@@ -1308,23 +1308,12 @@
         "padding-block-end": 48
       }
     },
-    "custom_liquid_6dYXDG": {
-      "type": "custom-liquid",
-      "disabled": true,
-      "name": "t:names.custom_liquid",
-      "settings": {
-        "custom_liquid": "<style>\n  #StickyATC {\n    position: fixed !important; bottom: 0 !important; left: 0 !important; width: 100% !important; z-index: 2147483647;\n    background: rgba(255, 255, 255, 0.2) !important; backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important;\n    border-top: 1px solid rgba(255,255,255,0.4) !important; padding: 12px 20px !important;\n    box-shadow: 0 -10px 30px rgba(0,0,0,0.1) !important;\n    display: flex !important; align-items: center !important; justify-content: space-between !important;\n    box-sizing: border-box !important;\n    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);\n    transform: translateY(110%); opacity: 0;\n  }\n  #StickyATC.is-visible { transform: translateY(0); opacity: 1; }\n  .sticky-submit-btn {\n    background: #000 !important; color: #fff !important; border: none !important;\n    padding: 12px 25px !important; border-radius: 8px !important; font-weight: 600 !important;\n    cursor: pointer !important; transition: all 0.3s ease;\n  }\n  .sticky-submit-btn.is-adding { transform: scale(1.3); opacity: 0; pointer-events: none; }\n  .sticky-info { display: flex; align-items: center; gap: 10px; }\n  .sticky-info img { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(255,255,255,0.4); }\n  .sticky-price { color: #666; font-size: 13px; margin: 0; }\n</style>\n\n<div id=\"StickyATC\">\n  <div class=\"sticky-info\">\n    <img src=\"{{ product.featured_image | img_url: '100x100' }}\" alt=\"\">\n    <div>\n      <p style=\"margin:0; font-size:14px; font-weight:bold; color:#000;\">{{ product.title | truncate: 25 }}</p>\n      <p class=\"sticky-price\">{{ product.price | money }}</p>\n    </div>\n  </div>\n  <button type=\"button\" class=\"sticky-submit-btn\" id=\"ProxyAddBtn\">ADD TO CART</button>\n</div>\n\n<script>\n(function() {\n  const bar = document.getElementById('StickyATC');\n  const proxyBtn = document.getElementById('ProxyAddBtn');\n\n  window.addEventListener('scroll', () => {\n    window.scrollY > 450 ? bar.classList.add('is-visible') : bar.classList.remove('is-visible');\n  });\n\n  proxyBtn.addEventListener('click', function(e) {\n    e.preventDefault();\n    this.classList.add('is-adding');\n\n    // 1. 定义可能的主加购按钮选择器（涵盖 95% 的 Shopify 主题）\n    const selectors = [\n      '.product-form__submit',           // Dawn & 官方主题\n      'button[name=\"add\"]',              // 标准 Shopify 按钮\n      '#AddToCart',                      // 旧版主题\n      '.add-to-cart',                    // 第三方主题\n      '[data-testid=\"add-to-cart-button\"]' \n    ];\n\n    let mainBtn = null;\n\n    // 2. 寻找页面上最合适的按钮（排除掉我们这个按钮本身）\n    for (let selector of selectors) {\n      const elements = document.querySelectorAll(selector);\n      for (let el of elements) {\n        // 确保按钮是主页面的按钮，且可见，且不是我们生成的这个按钮\n        if (el !== proxyBtn && el.offsetParent !== null && !el.disabled) {\n          mainBtn = el;\n          break;\n        }\n      }\n      if (mainBtn) break;\n    }\n\n    // 3. 执行动作\n    if (mainBtn) {\n      // 触发原生按钮点击，这样会自动触发主题自带的 AJAX 动画和侧边栏\n      mainBtn.click();\n    } else {\n      // 备选方案：如果找不到按钮，尝试直接提交表单\n      const mainForm = document.querySelector('form[action*=\"/cart/add\"]');\n      if (mainForm) mainForm.submit();\n    }\n\n    // 4. 800ms 后恢复动画状态\n    setTimeout(() => {\n      this.classList.remove('is-adding');\n    }, 800);\n  });\n})();\n</script>",
-        "color_scheme": "",
-        "section_width": "page-width",
-        "padding-block-start": 0,
-        "padding-block-end": 0
-      }
-    },
     "1774143591fe39e782": {
       "type": "_blocks",
       "blocks": {
         "ai_gen_block_5b2cdcc_wrJ9wX": {
           "type": "ai_gen_block_5b2cdcc",
+          "disabled": true,
           "settings": {
             "button_bg_color": "#000000",
             "button_hover_bg_color": "#333333",
@@ -1400,7 +1389,6 @@
     "176216231114e927a1",
     "technical_specifications_TMdKhT",
     "product_recommendations_qggXJq",
-    "custom_liquid_6dYXDG",
     "1774143591fe39e782"
   ]
 }
