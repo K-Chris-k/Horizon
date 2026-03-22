@@ -1332,13 +1332,59 @@
         "padding-block-end": 0
       }
     },
-    "custom_liquid_t6e6AW": {
-      "type": "custom-liquid",
-      "name": "t:names.custom_liquid",
+    "1774143591fe39e782": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_c2ad69f_MxL9Wq": {
+          "type": "ai_gen_block_c2ad69f",
+          "settings": {
+            "trigger_selector": "",
+            "scroll_threshold": 50,
+            "button_text": "Add to cart",
+            "button_color": "#000000",
+            "button_hover_color": "#333333",
+            "button_text_color": "#ffffff",
+            "button_font_size": 16,
+            "button_padding": 12,
+            "button_border_radius": 4,
+            "image_size": 60,
+            "image_border_radius": 4,
+            "title_size": 16,
+            "variant_size": 14,
+            "background_color": "#ffffff",
+            "text_color": "#000000",
+            "padding": 16
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_c2ad69f_MxL9Wq"
+      ],
       "settings": {
-        "custom_liquid": "<style>\n  #StickyATC {\n    position: fixed !important; bottom: 0 !important; left: 0 !important; width: 100% !important; z-index: 2147483647;\n    background: rgba(255, 255, 255, 0.2) !important; backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important;\n    border-top: 1px solid rgba(255,255,255,0.4) !important; padding: 12px 20px !important;\n    box-shadow: 0 -10px 30px rgba(0,0,0,0.1) !important;\n    display: flex !important; align-items: center !important; justify-content: space-between !important;\n    box-sizing: border-box !important;\n    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);\n    transform: translateY(110%); opacity: 0;\n  }\n  #StickyATC.is-visible { transform: translateY(0); opacity: 1; }\n  .sticky-submit-btn {\n    background: #000 !important; color: #fff !important; border: none !important;\n    padding: 12px 25px !important; border-radius: 8px !important; font-weight: 600 !important;\n    cursor: pointer !important; transition: all 0.3s ease;\n  }\n  .sticky-submit-btn.is-adding { transform: scale(1.3); opacity: 0; pointer-events: none; }\n  .sticky-info { display: flex; align-items: center; gap: 10px; }\n  .sticky-info img { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(255,255,255,0.4); }\n  .sticky-price { color: #666; font-size: 13px; margin: 0; transition: color 0.3s ease; }\n</style>\n\n<div id=\"StickyATC\">\n  <div class=\"sticky-info\">\n    <img id=\"StickyImage\" src=\"{{ product.featured_image | img_url: '100x100' }}\" alt=\"\">\n    <div>\n      <p style=\"margin:0; font-size:14px; font-weight:bold; color:#000;\">{{ product.title | truncate: 25 }}</p>\n      <p class=\"sticky-price\" id=\"StickyPriceDisplay\">{{ product.selected_or_first_available_variant.price | money }}</p>\n    </div>\n  </div>\n  <button type=\"button\" class=\"sticky-submit-btn\" id=\"ProxyAddBtn\">ADD TO CART</button>\n</div>\n\n<script>\n(function() {\n  const bar = document.getElementById('StickyATC');\n  const proxyBtn = document.getElementById('ProxyAddBtn');\n  const priceDisplay = document.getElementById('StickyPriceDisplay');\n\n  // 1. 滚动显示隐藏\n  window.addEventListener('scroll', () => {\n    window.scrollY > 450 ? bar.classList.add('is-visible') : bar.classList.remove('is-visible');\n  });\n\n  // 2. 核心逻辑：监听变体变化 (针对价格同步)\n  // 我们通过监听 URL 变化和 MutationObserver 监听原生价格标签的变化\n  function updateStickyData() {\n    // 获取页面上原生的价格文本（通常在 .price__container 或 .price-item 里）\n    // 这里的选择器涵盖了 Dawn 和主流主题\n    const nativePrice = document.querySelector('.price-item--regular, .product__price .money, #ProductPrice');\n    if (nativePrice && priceDisplay) {\n      priceDisplay.innerText = nativePrice.innerText;\n    }\n  }\n\n  // 创建观察者监听原生价格标签的变动\n  const targetPriceNode = document.querySelector('.price, .product__price');\n  if (targetPriceNode) {\n    const observer = new MutationObserver(updateStickyData);\n    observer.observe(targetPriceNode, { childList: true, characterData: true, subtree: true });\n  }\n\n  // 3. 点击加购逻辑 (复用稳定的模拟点击)\n  proxyBtn.addEventListener('click', function(e) {\n    e.preventDefault();\n    this.classList.add('is-adding');\n\n    const selectors = ['.product-form__submit', 'button[name=\"add\"]', '#AddToCart', '.add-to-cart'];\n    let mainBtn = null;\n\n    for (let selector of selectors) {\n      const elements = document.querySelectorAll(selector);\n      for (let el of elements) {\n        if (el !== proxyBtn && el.offsetParent !== null && !el.disabled) {\n          mainBtn = el;\n          break;\n        }\n      }\n      if (mainBtn) break;\n    }\n\n    if (mainBtn) {\n      mainBtn.click();\n    } else {\n      const mainForm = document.querySelector('form[action*=\"/cart/add\"]');\n      if (mainForm) mainForm.submit();\n    }\n\n    setTimeout(() => { this.classList.remove('is-adding'); }, 800);\n  });\n})();\n</script>",
-        "color_scheme": "",
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
         "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
         "padding-block-start": 0,
         "padding-block-end": 0
       }
@@ -1355,6 +1401,6 @@
     "product_recommendations_qggXJq",
     "custom_liquid_QffLqX",
     "custom_liquid_6dYXDG",
-    "custom_liquid_t6e6AW"
+    "1774143591fe39e782"
   ]
 }
