@@ -1319,6 +1319,17 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "custom_liquid_bbzxfn": {
+      "type": "custom-liquid",
+      "name": "吸底加购按钮",
+      "settings": {
+        "custom_liquid": "<style>\n  /* 确保吸底容器强制显示 */\n  #StickyATC {\n    position: fixed !important; \n    bottom: 0 !important; \n    left: 0 !important; \n    width: 100% !important; \n    z-index: 2147483647; /* 设为最大层级，防止被遮挡 */\n    \n    /* 你要求的磨砂玻璃样式 */\n    background: rgba(255, 255, 255, 0.2) !important; \n    backdrop-filter: blur(10px) !important; \n    -webkit-backdrop-filter: blur(10px) !important;\n    \n    border-top: 1px solid rgba(255,255,255,0.4) !important;\n    padding: 12px 20px !important;\n    box-shadow: 0 -10px 30px rgba(0,0,0,0.1) !important;\n    \n    display: flex !important; /* 强制布局 */\n    align-items: center !important;\n    justify-content: space-between !important;\n    box-sizing: border-box !important;\n    \n    /* 默认设为可见，如果还是看不见，那就是 CSS 冲突 */\n    transition: transform 0.3s ease-in-out;\n    transform: translateY(0); \n  }\n\n  /* 移动端优化：为了不遮挡底部导航栏，可以稍微调高一点 */\n  @media screen and (max-width: 768px) {\n    #StickyATC { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }\n  }\n\n  .sticky-submit-btn {\n    background: #000 !important; \n    color: #fff !important; \n    border: none !important; \n    padding: 10px 20px !important;\n    border-radius: 8px !important; \n    font-weight: 600 !important; \n    cursor: pointer !important;\n    min-width: 120px;\n    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n  }\n\n  /* 点击时的缩放淡出动画 */\n  .sticky-submit-btn.is-adding {\n    transform: scale(1.3);\n    opacity: 0;\n  }\n\n  .sticky-info { display: flex; align-items: center; gap: 10px; }\n  .sticky-info img { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; }\n  .sticky-price { color: #666; font-size: 13px; margin: 0; }\n</style>\n\n<div id=\"StickyATC\">\n  <div class=\"sticky-info\">\n    <img src=\"{{ product.featured_image | img_url: '100x100' }}\" alt=\"\">\n    <div>\n      <p style=\"margin:0; font-size:14px; font-weight:bold; color:#000;\">{{ product.title | truncate: 20 }}</p>\n      <p class=\"sticky-price\">{{ product.price | money }}</p>\n    </div>\n  </div>\n  <button type=\"button\" class=\"sticky-submit-btn\" id=\"ProxyAddBtn\">\n    ADD TO CART\n  </button>\n</div>\n\n<script>\n(function() {\n  function initSticky() {\n    const proxyBtn = document.getElementById('ProxyAddBtn');\n    const bar = document.getElementById('StickyATC');\n    if (!proxyBtn || !bar) return;\n\n    // 1. 简化的显示/隐藏逻辑：如果滚动超过200px则显示\n    window.addEventListener('scroll', function() {\n      if (window.scrollY > 200) {\n        bar.style.transform = 'translateY(0)';\n        bar.style.opacity = '1';\n      } else {\n        bar.style.transform = 'translateY(100%)';\n        bar.style.opacity = '0';\n      }\n    });\n\n    // 2. 增强的点击逻辑\n    proxyBtn.addEventListener('click', function(e) {\n      e.preventDefault();\n      \n      // 按钮动画\n      proxyBtn.classList.add('is-adding');\n      \n      // 查找页面上真正的加购按钮\n      // 兼容 Dawn, Ella, Wokiee 等主流主题的选择器\n      const selectors = [\n        'form[action*=\"/cart/add\"] button[name=\"add\"]',\n        '.product-form__submit',\n        '#AddToCart',\n        '[data-testid=\"add-to-cart-button\"]',\n        '.add-to-cart'\n      ];\n      \n      let nativeBtn = null;\n      for (let s of selectors) {\n        let el = document.querySelector(s);\n        if (el && el.offsetWidth > 0) { // 确保按钮是可见的\n          nativeBtn = el;\n          break;\n        }\n      }\n\n      if (nativeBtn) {\n        nativeBtn.click();\n      } else {\n        // 如果找不到按钮，直接提交包含 id 的表单\n        const form = document.querySelector('form[action*=\"/cart/add\"]');\n        if (form) form.submit();\n      }\n\n      // 800ms 后恢复按钮状态\n      setTimeout(() => {\n        proxyBtn.classList.remove('is-adding');\n      }, 800);\n    });\n  }\n\n  // 确保在页面加载后运行\n  if (document.readyState === 'loading') {\n    document.addEventListener('DOMContentLoaded', initSticky);\n  } else {\n    initSticky();\n  }\n})();\n</script>",
+        "color_scheme": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
     }
   },
   "order": [
@@ -1330,6 +1341,7 @@
     "176216231114e927a1",
     "technical_specifications_TMdKhT",
     "product_recommendations_qggXJq",
-    "custom_liquid_QffLqX"
+    "custom_liquid_QffLqX",
+    "custom_liquid_bbzxfn"
   ]
 }
