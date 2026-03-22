@@ -1,6 +1,431 @@
+{% doc %}
+  @prompt
+    指令： 请为产品详情页创建一个 Sticky Add to Cart（吸底加购栏） 静态版块（Section）。
+    
+    触发逻辑： 初始隐藏，仅当用户向下滚动并超过原有的“加入购物车”按钮后，该版块才以 position: fixed 固定在页面底部显示。
+    
+    布局结构： 使用 Flex 布局。左侧显示产品主图（保持比例，高度限制在 50px 左右）和当前选中的变体名称；价格（在变体名称下面）右侧显示“加入购物车”按钮。
+    
+    样式同步： 加购按钮的文字必须自动抓取 products.product.add_to_cart 的翻译文案。
+    
+    选择不同变体时 图片和变体 还有价格也会自动切换
+    
+    可自定义设置（Schema Settings）： 在后台编辑器中提供设置项，允许调节：
+    
+    按钮的背景颜色和文字颜色。
+    
+    按钮的字体大小和圆角半径（Border-radius）。
+    
+    边框的背景颜色和文字颜色。
+    
+    边框内的字体大小和圆角半径（Border-radius）。
+    
+    版块背景使用 Frosted Glass（毛玻璃） 效果：backdrop-filter: blur(10px)，背景色为 rgba(255, 255, 255, 0.2)。
+    
+    边框使用 1px solid rgba(255,255,255,0.4)，并带有轻微阴影。
+    
+    交互： 按钮点击时增加 scale(1.3) 的缩放动画。
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-sticky-atc-{{ ai_gen_id }} {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(100%);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    display: block;
+  }
+
+  .ai-sticky-atc-{{ ai_gen_id }}.ai-sticky-atc-visible-{{ ai_gen_id }} {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .ai-sticky-atc-container-{{ ai_gen_id }} {
+    background: {{ block.settings.bar_background_color }};
+    backdrop-filter: blur(10px);
+    border-top: 1px solid {{ block.settings.bar_border_color }};
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    padding: 12px 20px;
+  }
+
+  .ai-sticky-atc-content-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-sticky-atc-product-info-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ai-sticky-atc-image-{{ ai_gen_id }} {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    border-radius: {{ block.settings.bar_border_radius }}px;
+    overflow: hidden;
+  }
+
+  .ai-sticky-atc-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-sticky-atc-details-{{ ai_gen_id }} {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ai-sticky-atc-variant-{{ ai_gen_id }} {
+    font-size: {{ block.settings.bar_text_size }}px;
+    color: {{ block.settings.bar_text_color }};
+    margin: 0 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ai-sticky-atc-price-{{ ai_gen_id }} {
+    font-size: {{ block.settings.bar_text_size }}px;
+    color: {{ block.settings.bar_text_color }};
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .ai-sticky-atc-button-{{ ai_gen_id }} {
+    background-color: {{ block.settings.button_background_color }};
+    color: {{ block.settings.button_text_color }};
+    border: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    padding: 12px 24px;
+    font-size: {{ block.settings.button_text_size }}px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    font-weight: 600;
+  }
+
+  .ai-sticky-atc-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+  }
+
+  .ai-sticky-atc-button-{{ ai_gen_id }}:active {
+    transform: scale(1.3);
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-sticky-atc-container-{{ ai_gen_id }} {
+      padding: 10px 16px;
+    }
+
+    .ai-sticky-atc-content-{{ ai_gen_id }} {
+      gap: 12px;
+    }
+
+    .ai-sticky-atc-image-{{ ai_gen_id }} {
+      width: 40px;
+      height: 40px;
+    }
+
+    .ai-sticky-atc-variant-{{ ai_gen_id }},
+    .ai-sticky-atc-price-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.bar_text_size }}px * 0.9);
+    }
+
+    .ai-sticky-atc-button-{{ ai_gen_id }} {
+      padding: 10px 20px;
+      font-size: calc({{ block.settings.button_text_size }}px * 0.9);
+    }
+  }
+{% endstyle %}
+
+<sticky-add-to-cart-{{ ai_gen_id }}
+  class="ai-sticky-atc-{{ ai_gen_id }}"
+  data-product-id="{{ product.id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-sticky-atc-container-{{ ai_gen_id }}">
+    <div class="ai-sticky-atc-content-{{ ai_gen_id }}">
+      <div class="ai-sticky-atc-product-info-{{ ai_gen_id }}">
+        <div class="ai-sticky-atc-image-{{ ai_gen_id }}">
+          {% if product.selected_or_first_available_variant.featured_image %}
+            <img
+              src="{{ product.selected_or_first_available_variant.featured_image | image_url: width: 100 }}"
+              alt="{{ product.selected_or_first_available_variant.featured_image.alt | escape }}"
+              width="100"
+              height="100"
+              loading="lazy"
+              class="ai-sticky-atc-variant-image-{{ ai_gen_id }}"
+            >
+          {% elsif product.featured_image %}
+            <img
+              src="{{ product.featured_image | image_url: width: 100 }}"
+              alt="{{ product.featured_image.alt | escape }}"
+              width="100"
+              height="100"
+              loading="lazy"
+              class="ai-sticky-atc-variant-image-{{ ai_gen_id }}"
+            >
+          {% endif %}
+        </div>
+        <div class="ai-sticky-atc-details-{{ ai_gen_id }}">
+          <p class="ai-sticky-atc-variant-{{ ai_gen_id }} ai-sticky-atc-variant-name-{{ ai_gen_id }}">
+            {{ product.selected_or_first_available_variant.title }}
+          </p>
+          <p class="ai-sticky-atc-price-{{ ai_gen_id }} ai-sticky-atc-variant-price-{{ ai_gen_id }}">
+            {{ product.selected_or_first_available_variant.price | money }}
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="ai-sticky-atc-button-{{ ai_gen_id }}"
+        data-add-to-cart
+      >
+        {{ 'products.product.add_to_cart' | t }}
+      </button>
+    </div>
+  </div>
+</sticky-add-to-cart-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class StickyAddToCart{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.originalAddToCartButton = null;
+        this.stickyButton = null;
+        this.variantImageEl = null;
+        this.variantNameEl = null;
+        this.variantPriceEl = null;
+      }
+
+      connectedCallback() {
+        this.originalAddToCartButton = document.querySelector('form[action*="/cart/add"] button[type="submit"], form[action*="/cart/add"] button[name="add"]');
+        this.stickyButton = this.querySelector('[data-add-to-cart]');
+        this.variantImageEl = this.querySelector('.ai-sticky-atc-variant-image-{{ ai_gen_id }}');
+        this.variantNameEl = this.querySelector('.ai-sticky-atc-variant-name-{{ ai_gen_id }}');
+        this.variantPriceEl = this.querySelector('.ai-sticky-atc-variant-price-{{ ai_gen_id }}');
+
+        if (this.originalAddToCartButton) {
+          this.setupScrollListener();
+          this.setupClickListener();
+          this.setupVariantChangeListener();
+        }
+      }
+
+      setupScrollListener() {
+        let ticking = false;
+
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              this.handleScroll();
+              ticking = false;
+            });
+            ticking = true;
+          }
+        });
+
+        this.handleScroll();
+      }
+
+      handleScroll() {
+        if (!this.originalAddToCartButton) return;
+
+        const buttonRect = this.originalAddToCartButton.getBoundingClientRect();
+        const isButtonAboveViewport = buttonRect.bottom < 0;
+
+        if (isButtonAboveViewport) {
+          this.classList.add('ai-sticky-atc-visible-{{ ai_gen_id }}');
+        } else {
+          this.classList.remove('ai-sticky-atc-visible-{{ ai_gen_id }}');
+        }
+      }
+
+      setupClickListener() {
+        this.stickyButton.addEventListener('click', () => {
+          if (this.originalAddToCartButton) {
+            this.originalAddToCartButton.click();
+          }
+        });
+      }
+
+      setupVariantChangeListener() {
+        const productForm = document.querySelector('form[action*="/cart/add"]');
+        if (!productForm) return;
+
+        const variantInput = productForm.querySelector('input[name="id"]');
+        if (!variantInput) return;
+
+        const observer = new MutationObserver(() => {
+          this.updateVariantInfo();
+        });
+
+        observer.observe(variantInput, {
+          attributes: true,
+          attributeFilter: ['value']
+        });
+
+        productForm.addEventListener('change', () => {
+          setTimeout(() => {
+            this.updateVariantInfo();
+          }, 100);
+        });
+      }
+
+      updateVariantInfo() {
+        const productForm = document.querySelector('form[action*="/cart/add"]');
+        if (!productForm) return;
+
+        const variantInput = productForm.querySelector('input[name="id"]');
+        if (!variantInput) return;
+
+        const variantId = variantInput.value;
+        const productId = this.dataset.productId;
+
+        fetch(`/products/${window.location.pathname.split('/').pop()}.js`)
+          .then(response => response.json())
+          .then(product => {
+            const variant = product.variants.find(v => v.id == variantId);
+            if (!variant) return;
+
+            if (this.variantNameEl) {
+              this.variantNameEl.textContent = variant.title;
+            }
+
+            if (this.variantPriceEl) {
+              const price = (variant.price / 100).toFixed(2);
+              const currencySymbol = '£';
+              this.variantPriceEl.textContent = `${currencySymbol}${price}`;
+            }
+
+            if (this.variantImageEl && variant.featured_image) {
+              const imageUrl = variant.featured_image.src.replace(/\.(jpg|jpeg|png|gif|webp)/, '_100x.$1');
+              this.variantImageEl.src = imageUrl;
+              this.variantImageEl.alt = variant.featured_image.alt || variant.title;
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching variant info:', error);
+          });
+      }
+    }
+
+    customElements.define('sticky-add-to-cart-{{ ai_gen_id }}', StickyAddToCart{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Sticky add to cart",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Bar style"
+    },
+    {
+      "type": "color",
+      "id": "bar_background_color",
+      "label": "Background",
+      "default": "rgba(255, 255, 255, 0.2)"
+    },
+    {
+      "type": "color",
+      "id": "bar_border_color",
+      "label": "Border",
+      "default": "rgba(255, 255, 255, 0.4)"
+    },
+    {
+      "type": "color",
+      "id": "bar_text_color",
+      "label": "Text",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "bar_text_size",
+      "label": "Text size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "bar_border_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Hover background",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky add to cart"
+    }
+  ]
+}
 {% endschema %}
