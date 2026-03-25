@@ -12,7 +12,7 @@
     "logo": "shopify://shop_images/logo_Repeni.png",
     "logo_height": 36,
     "logo_height_mobile": 28,
-    "favicon": "shopify://shop_images/repenic-logo-2.png",
+    "favicon": "shopify://shop_images/logo.png",
     "use_custom_font_body": true,
     "use_custom_font_subheading": true,
     "use_custom_font_heading": true,
@@ -116,11 +116,6 @@
       "855628211100114053": {
         "type": "shopify://apps/klaviyo-email-marketing-sms/blocks/klaviyo-onsite-embed/2632fe16-c075-4321-a88b-50b567f42507",
         "disabled": false,
-        "settings": {}
-      },
-      "4015264832934714879": {
-        "type": "shopify://apps/sendwill-email-popups/blocks/app/a5670cf8-5705-4b01-ad9e-447033feae26",
-        "disabled": true,
         "settings": {}
       },
       "15683396631634586217": {
