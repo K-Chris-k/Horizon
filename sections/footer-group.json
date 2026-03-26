@@ -370,9 +370,8 @@
             "text_BMkfMM": {
               "type": "text",
               "name": "t:names.text",
-              "disabled": true,
               "settings": {
-                "text": "<p><a href=\"/pages/blog\" title=\"Repenic Blog: Smart Switches, Dimmers & Thermostats Guide\">Blog</a></p>",
+                "text": "<p><a href=\"https://ui.awin.com/express-signup/en/awin/124754/421764eb-e050-4af9-a23f-71fcd61530da?t=2FuqWvg5QeWeyMRy96-JpeOhortjC9gYqH17NT-T9eM\" title=\"https://ui.awin.com/express-signup/en/awin/124754/421764eb-e050-4af9-a23f-71fcd61530da?t=2FuqWvg5QeWeyMRy96-JpeOhortjC9gYqH17NT-T9eM\">Affiliate Program</a><br/></p>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
