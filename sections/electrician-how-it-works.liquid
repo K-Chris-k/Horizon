@@ -1,0 +1,380 @@
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    padding-left: {{ section.settings.padding_side }}px;
+    padding-right: {{ section.settings.padding_side }}px;
+  }
+  
+  .title-{{ section.id }} {
+    text-align: center;
+    font-size: {{ section.settings.main_title_size }}px;
+    margin-bottom: 40px;
+    color: #000;
+  }
+
+  .container-{{ section.id }} {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+    border-radius: {{ section.settings.container_radius }}px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .card-{{ section.id }} {
+    flex: 1;
+    padding: 40px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  /* 分隔线逻辑 */
+  .card-{{ section.id }}:not(:last-child) {
+    border-right: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+  }
+
+  .card-{{ section.id }} img {
+    width: {{ section.settings.image_width }}px;
+    height: auto;
+    margin-bottom: 20px;
+    object-fit: contain;
+  }
+
+  .card-{{ section.id }} h3 {
+    font-size: {{ section.settings.card_title_size }}px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #000;
+  }
+
+  .card-{{ section.id }} .desc {
+    font-size: {{ section.settings.card_desc_size }}px;
+    line-height: 1.6;
+    color: #666;
+    margin: 0;
+  }
+
+  .btn-wrapper-{{ section.id }} {
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .btn-{{ section.id }} {
+    display: inline-block;
+    background-color: {{ section.settings.btn_bg_color }};
+    color: {{ section.settings.btn_text_color }};
+    padding: {{ section.settings.btn_padding_v }}px {{ section.settings.btn_padding_h }}px;
+    border-radius: {{ section.settings.btn_radius }}px;
+    font-size: {{ section.settings.btn_font_size }}px;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .btn-{{ section.id }}:hover {
+    opacity: 0.8;
+  }
+
+  /* 移动端设置 */
+  @media screen and (max-width: 768px) {
+    .section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_mob }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mob }}px;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+    .container-{{ section.id }} {
+      flex-direction: column;
+      border: none;
+      background: transparent;
+    }
+    .card-{{ section.id }} {
+      border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }} !important;
+      border-radius: {{ section.settings.container_radius }}px;
+      margin-bottom: 15px;
+      background: #fff;
+    }
+  }
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}">
+  {% if section.settings.main_title != blank %}
+    <h2 class="title-{{ section.id }}">{{ section.settings.main_title }}</h2>
+  {% endif %}
+
+  <div class="container-{{ section.id }}">
+    {% for block in section.blocks %}
+      <div class="card-{{ section.id }}" {{ block.shopify_attributes }}>
+        {% if block.settings.image != blank %}
+          <img src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.title }}" loading="lazy">
+        {% else %}
+          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+        {% endif %}
+        
+        <h3>{{ block.settings.title }}</h3>
+        <div class="desc">{{ block.settings.description }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if section.settings.btn_label != blank %}
+    <div class="btn-wrapper-{{ section.id }}">
+      <a href="{{ section.settings.btn_link }}" class="btn-{{ section.id }}">
+        {{ section.settings.btn_label }}
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Electrician Step Grid",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Overall Layout (Desktop)"
+    },
+    {
+      "type": "text",
+      "id": "main_title",
+      "label": "Main Title",
+      "default": "How does it work ?"
+    },
+    {
+      "type": "range",
+      "id": "main_title_size",
+      "min": 12,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Main Title Font Size",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top Padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom Padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_side",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Side Padding (Desktop)",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Container & Border"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Border Thickness",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border Color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "container_radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Container Corner Radius",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Card Typography"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Image Width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Card Title Font Size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "card_desc_size",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Card Description Font Size",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Bottom Button"
+    },
+    {
+      "type": "text",
+      "id": "btn_label",
+      "label": "Button Label",
+      "default": "Join Now"
+    },
+    {
+      "type": "url",
+      "id": "btn_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg_color",
+      "label": "Button Background",
+      "default": "#2176d2"
+    },
+    {
+      "type": "color",
+      "id": "btn_text_color",
+      "label": "Button Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "btn_padding_v",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Vertical Padding",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "btn_padding_h",
+      "min": 10,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Button Horizontal Padding",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "btn_radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Corner Radius",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "btn_font_size",
+      "min": 12,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Font Size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Mobile Settings"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mob",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Mobile Top Padding",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mob",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Mobile Bottom Padding",
+      "default": 30
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Icon/Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Join"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Description goes here.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Electrician Step Grid",
+      "blocks": [
+        { "type": "step" },
+        { "type": "step" },
+        { "type": "step" }
+      ]
+    }
+  ]
+}
+{% endschema %}
