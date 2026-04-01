@@ -79,46 +79,145 @@
     opacity: 0.8;
   }
 
-  /* 移动端设置 */
+  /* 移动端滑动样式 */
   @media screen and (max-width: 768px) {
     .section-{{ section.id }} {
       padding-top: {{ section.settings.padding_top_mob }}px;
       padding-bottom: {{ section.settings.padding_bottom_mob }}px;
       padding-left: 15px;
       padding-right: 15px;
+      position: relative;
     }
+    
+    /* 滑动容器 */
+    .slider-wrapper-{{ section.id }} {
+      position: relative;
+      overflow: hidden;
+    }
+    
     .container-{{ section.id }} {
-      flex-direction: column;
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox隐藏滚动条 */
+      -ms-overflow-style: none; /* IE隐藏滚动条 */
       border: none;
       background: transparent;
+      margin: 0 auto;
+      gap: 15px;
     }
+    
+    .container-{{ section.id }}::-webkit-scrollbar {
+      display: none; /* Chrome/Safari隐藏滚动条 */
+    }
+    
     .card-{{ section.id }} {
+      flex: 0 0 calc(100% - 20px);
+      scroll-snap-align: start;
       border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }} !important;
       border-radius: {{ section.settings.container_radius }}px;
-      margin-bottom: 15px;
       background: #fff;
+      margin-bottom: 0;
+      padding: 30px 20px;
+    }
+    
+    /* 滑动按钮样式 */
+    .slider-btn-{{ section.id }} {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: all 0.3s ease;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    
+    .slider-btn-{{ section.id }}:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    
+    .slider-btn-{{ section.id }}:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+    
+    .slider-btn-prev-{{ section.id }} {
+      left: 10px;
+    }
+    
+    .slider-btn-next-{{ section.id }} {
+      right: 10px;
+    }
+    
+    /* 指示点样式 */
+    .dots-wrapper-{{ section.id }} {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    
+    .dot-{{ section.id }} {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #ccc;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .dot-{{ section.id }}.active {
+      width: 24px;
+      border-radius: 4px;
+      background-color: {{ section.settings.btn_bg_color | default: '#2176d2' }};
+    }
+    
+    /* 移动端按钮样式调整 */
+    .btn-wrapper-{{ section.id }} {
+      margin-top: 30px;
     }
   }
 {%- endstyle -%}
 
-<div class="section-{{ section.id }}">
+<div class="section-{{ section.id }}" data-section-id="{{ section.id }}">
   {% if section.settings.main_title != blank %}
     <h2 class="title-{{ section.id }}">{{ section.settings.main_title }}</h2>
   {% endif %}
 
-  <div class="container-{{ section.id }}">
-    {% for block in section.blocks %}
-      <div class="card-{{ section.id }}" {{ block.shopify_attributes }}>
-        {% if block.settings.image != blank %}
-          <img src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.title }}" loading="lazy">
-        {% else %}
-          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-        {% endif %}
-        
-        <h3>{{ block.settings.title }}</h3>
-        <div class="desc">{{ block.settings.description }}</div>
-      </div>
-    {% endfor %}
+  <div class="slider-wrapper-{{ section.id }}">
+    <div class="container-{{ section.id }}" id="slider-container-{{ section.id }}">
+      {% for block in section.blocks %}
+        <div class="card-{{ section.id }}" {{ block.shopify_attributes }}>
+          {% if block.settings.image != blank %}
+            <img src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.title }}" loading="lazy">
+          {% else %}
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          {% endif %}
+          
+          <h3>{{ block.settings.title }}</h3>
+          <div class="desc">{{ block.settings.description }}</div>
+        </div>
+      {% endfor %}
+    </div>
+    
+    <!-- 滑动按钮（仅移动端显示） -->
+    <button class="slider-btn-{{ section.id }} slider-btn-prev-{{ section.id }}" aria-label="Previous" style="display: none;">‹</button>
+    <button class="slider-btn-{{ section.id }} slider-btn-next-{{ section.id }}" aria-label="Next" style="display: none;">›</button>
+    
+    <!-- 指示点（仅移动端显示） -->
+    <div class="dots-wrapper-{{ section.id }}" style="display: none;"></div>
   </div>
 
   {% if section.settings.btn_label != blank %}
@@ -129,6 +228,155 @@
     </div>
   {% endif %}
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const sectionId = {{ section.id | json }};
+  const container = document.getElementById(`slider-container-${sectionId}`);
+  const prevBtn = document.querySelector(`.slider-btn-prev-${sectionId}`);
+  const nextBtn = document.querySelector(`.slider-btn-next-${sectionId}`);
+  const dotsWrapper = document.querySelector(`.dots-wrapper-${sectionId}`);
+  
+  if (!container) return;
+  
+  // 检测是否为移动端
+  const isMobile = () => window.innerWidth <= 768;
+  
+  // 更新滑动按钮和指示点的显示状态
+  function updateSliderUI() {
+    if (!isMobile()) {
+      // 桌面端隐藏按钮和指示点
+      if (prevBtn) prevBtn.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+      if (dotsWrapper) dotsWrapper.style.display = 'none';
+      return;
+    }
+    
+    // 移动端显示按钮和指示点
+    if (prevBtn) prevBtn.style.display = 'flex';
+    if (nextBtn) nextBtn.style.display = 'flex';
+    if (dotsWrapper) dotsWrapper.style.display = 'flex';
+    
+    // 生成指示点
+    const cards = container.querySelectorAll(`.card-${sectionId}`);
+    if (cards.length > 0 && dotsWrapper && dotsWrapper.children.length === 0) {
+      for (let i = 0; i < cards.length; i++) {
+        const dot = document.createElement('div');
+        dot.className = `dot-${sectionId}`;
+        dot.addEventListener('click', () => {
+          const scrollPosition = cards[i].offsetLeft - container.offsetLeft;
+          container.scrollTo({
+            left: scrollPosition,
+            behavior: 'smooth'
+          });
+        });
+        dotsWrapper.appendChild(dot);
+      }
+    }
+    
+    updateActiveDot();
+  }
+  
+  // 更新当前激活的指示点
+  function updateActiveDot() {
+    const cards = container.querySelectorAll(`.card-${sectionId}`);
+    const dots = dotsWrapper ? dotsWrapper.children : [];
+    const scrollLeft = container.scrollLeft;
+    const containerWidth = container.clientWidth;
+    
+    let activeIndex = 0;
+    for (let i = 0; i < cards.length; i++) {
+      const cardLeft = cards[i].offsetLeft - container.offsetLeft;
+      const cardRight = cardLeft + cards[i].clientWidth;
+      const centerPoint = scrollLeft + containerWidth / 2;
+      
+      if (centerPoint >= cardLeft && centerPoint <= cardRight) {
+        activeIndex = i;
+        break;
+      }
+    }
+    
+    for (let i = 0; i < dots.length; i++) {
+      dots[i].classList.toggle('active', i === activeIndex);
+    }
+    
+    // 更新按钮状态
+    if (prevBtn) {
+      prevBtn.style.opacity = scrollLeft <= 10 ? '0.5' : '1';
+      prevBtn.style.cursor = scrollLeft <= 10 ? 'not-allowed' : 'pointer';
+    }
+    if (nextBtn) {
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      nextBtn.style.opacity = scrollLeft >= maxScroll - 10 ? '0.5' : '1';
+      nextBtn.style.cursor = scrollLeft >= maxScroll - 10 ? 'not-allowed' : 'pointer';
+    }
+  }
+  
+  // 滑动到上一张
+  function slidePrev() {
+    const cards = container.querySelectorAll(`.card-${sectionId}`);
+    const scrollLeft = container.scrollLeft;
+    let targetIndex = 0;
+    
+    for (let i = 0; i < cards.length; i++) {
+      const cardLeft = cards[i].offsetLeft - container.offsetLeft;
+      if (cardLeft < scrollLeft - 10) {
+        targetIndex = i;
+      }
+    }
+    
+    if (targetIndex >= 0 && scrollLeft > 10) {
+      const targetScroll = cards[targetIndex].offsetLeft - container.offsetLeft;
+      container.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth'
+      });
+    }
+  }
+  
+  // 滑动到下一张
+  function slideNext() {
+    const cards = container.querySelectorAll(`.card-${sectionId}`);
+    const scrollLeft = container.scrollLeft;
+    let targetIndex = cards.length - 1;
+    
+    for (let i = 0; i < cards.length; i++) {
+      const cardLeft = cards[i].offsetLeft - container.offsetLeft;
+      if (cardLeft > scrollLeft + 10) {
+        targetIndex = i;
+        break;
+      }
+    }
+    
+    if (targetIndex < cards.length) {
+      const targetScroll = cards[targetIndex].offsetLeft - container.offsetLeft;
+      container.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth'
+      });
+    }
+  }
+  
+  // 绑定事件
+  if (prevBtn) prevBtn.addEventListener('click', slidePrev);
+  if (nextBtn) nextBtn.addEventListener('click', slideNext);
+  
+  container.addEventListener('scroll', updateActiveDot);
+  window.addEventListener('resize', () => {
+    updateSliderUI();
+    // 确保滚动位置适应新的屏幕尺寸
+    setTimeout(() => {
+      updateActiveDot();
+    }, 100);
+  });
+  
+  // 初始化和窗口加载完成后更新UI
+  updateSliderUI();
+  
+  // 监听窗口加载完成，确保所有图片加载完成后重新计算
+  window.addEventListener('load', updateSliderUI);
+});
+</script>
 
 {% schema %}
 {
