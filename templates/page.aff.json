@@ -93,7 +93,7 @@
       "name": "Electrician Step Grid",
       "settings": {
         "main_title": "Electrician Partnership Program",
-        "main_title_size": 32,
+        "main_title_size": 24,
         "padding_top": 60,
         "padding_bottom": 60,
         "padding_side": 20,
@@ -105,7 +105,7 @@
         "card_desc_size": 14,
         "btn_label": "Join Now",
         "btn_link": "https://twzerk-ee.goaffpro.com/create-account",
-        "btn_bg_color": "#2176d2",
+        "btn_bg_color": "#000000",
         "btn_text_color": "#ffffff",
         "btn_padding_v": 12,
         "btn_padding_h": 30,
