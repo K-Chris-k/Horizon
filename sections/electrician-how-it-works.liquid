@@ -1,27 +1,68 @@
 {%- style -%}
+  /* 移动端滑动模式 */
+@media screen and (max-width: 768px) {
   .section-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
-    padding-left: {{ section.settings.padding_side }}px;
-    padding-right: {{ section.settings.padding_side }}px;
-  }
-  
-  .title-{{ section.id }} {
-    text-align: center;
-    font-size: {{ section.settings.main_title_size }}px;
-    margin-bottom: 40px;
-    color: #000;
+    padding-top: {{ section.settings.padding_top_mob }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mob }}px;
+    padding-left: 0;
+    padding-right: 0;
+    position: relative;
   }
 
   .container-{{ section.id }} {
     display: flex;
-    max-width: 1200px;
-    margin: 0 auto;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    border: none;
+    background: transparent;
+  }
+
+  /* 隐藏滚动条 */
+  .container-{{ section.id }}::-webkit-scrollbar {
+    display: none;
+  }
+  .container-{{ section.id }} {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .card-{{ section.id }} {
+    min-width: 100%;
+    flex: 0 0 100%;
+    scroll-snap-align: center;
     border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
     border-radius: {{ section.settings.container_radius }}px;
-    overflow: hidden;
+    margin: 0 10px;
     background: #fff;
   }
+
+  /* 左右按钮 */
+  .slider-btn-{{ section.id }} {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    background: #fff;
+    border: 1px solid #ddd;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .slider-btn-prev-{{ section.id }} {
+    left: 10px;
+  }
+
+  .slider-btn-next-{{ section.id }} {
+    right: 10px;
+  }
+}
 
   .card-{{ section.id }} {
     flex: 1;
@@ -105,7 +146,8 @@
   {% if section.settings.main_title != blank %}
     <h2 class="title-{{ section.id }}">{{ section.settings.main_title }}</h2>
   {% endif %}
-
+<div class="slider-btn-{{ section.id }} slider-btn-prev-{{ section.id }}">‹</div>
+<div class="slider-btn-{{ section.id }} slider-btn-next-{{ section.id }}">›</div>
   <div class="container-{{ section.id }}">
     {% for block in section.blocks %}
       <div class="card-{{ section.id }}" {{ block.shopify_attributes }}>
@@ -129,6 +171,25 @@
     </div>
   {% endif %}
 </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const container = document.querySelector('.container-{{ section.id }}');
+    const prevBtn = document.querySelector('.slider-btn-prev-{{ section.id }}');
+    const nextBtn = document.querySelector('.slider-btn-next-{{ section.id }}');
+
+    if (!container) return;
+
+    const scrollAmount = container.offsetWidth;
+
+    nextBtn.addEventListener('click', () => {
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    });
+
+    prevBtn.addEventListener('click', () => {
+      container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+  });
+</script>
 
 {% schema %}
 {
@@ -377,4 +438,5 @@
     }
   ]
 }
+
 {% endschema %}
