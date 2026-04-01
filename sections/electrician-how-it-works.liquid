@@ -1,3 +1,15 @@
+/* ✅ 桌面端恢复布局（关键） */
+.container-{{ section.id }} {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap; /* ❗防止换行 */
+  max-width: 1200px;
+  margin: 0 auto;
+  border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+  border-radius: {{ section.settings.container_radius }}px;
+  overflow: hidden;
+  background: #fff;
+}
 {%- style -%}
   /* 移动端滑动模式 */
 @media screen and (max-width: 768px) {
