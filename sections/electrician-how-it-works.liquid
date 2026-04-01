@@ -6,11 +6,13 @@
     padding-bottom: {{ section.settings.padding_bottom_mob }}px;
     padding-left: 0;
     padding-right: 0;
+    overflow: visible;
     position: relative;
   }
 
   .container-{{ section.id }} {
-    display: flex;
+  display: flex;
+  flex-direction: row; /* ✅ 强制桌面端横排 */
     flex-wrap: nowrap;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -120,26 +122,7 @@
     opacity: 0.8;
   }
 
-  /* 移动端设置 */
-  @media screen and (max-width: 768px) {
-    .section-{{ section.id }} {
-      padding-top: {{ section.settings.padding_top_mob }}px;
-      padding-bottom: {{ section.settings.padding_bottom_mob }}px;
-      padding-left: 15px;
-      padding-right: 15px;
-    }
-    .container-{{ section.id }} {
-      flex-direction: column;
-      border: none;
-      background: transparent;
-    }
-    .card-{{ section.id }} {
-      border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }} !important;
-      border-radius: {{ section.settings.container_radius }}px;
-      margin-bottom: 15px;
-      background: #fff;
-    }
-  }
+  
 {%- endstyle -%}
 
 <div class="section-{{ section.id }}">
