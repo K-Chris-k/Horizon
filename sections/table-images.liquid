@@ -60,10 +60,13 @@
 
 .disclaimer-{{ section.id }}{
   position:absolute;
-  right:0;
-  bottom:-20px;
+  right: {{ section.settings.disclaimer_right }}px;
+  bottom: {{ section.settings.disclaimer_bottom }}px;
   font-size: {{ section.settings.disclaimer_size }}px;
   color:#666;
+  max-width: {{ section.settings.disclaimer_width }}px;
+  padding: {{ section.settings.disclaimer_padding_top }}px {{ section.settings.disclaimer_padding_right }}px {{ section.settings.disclaimer_padding_bottom }}px {{ section.settings.disclaimer_padding_left }}px;
+  word-wrap: break-word;
 }
 
 @media(max-width:768px){
@@ -86,7 +89,14 @@
   <div class="container-{{ section.id }}">
 
     <div class="heading-{{ section.id }}">{{ section.settings.heading }}</div>
-    <div class="subheading-{{ section.id }}">{{ section.settings.subheading }}</div>
+
+    <div class="subheading-{{ section.id }}">
+      {% if section.settings.subheading_link != blank %}
+        <a href="{{ section.settings.subheading_link }}">{{ section.settings.subheading }}</a>
+      {% else %}
+        {{ section.settings.subheading }}
+      {% endif %}
+    </div>
 
     <div class="flex-{{ section.id }}">
 
@@ -94,13 +104,7 @@
         <table class="table-{{ section.id }}">
           {% for block in section.blocks %}
             <tr>
-              <td>
-                {% if block.settings.link != blank %}
-                  <a href="{{ block.settings.link }}">{{ block.settings.col1 }}</a>
-                {% else %}
-                  {{ block.settings.col1 }}
-                {% endif %}
-              </td>
+              <td>{{ block.settings.col1 }}</td>
               <td>{{ block.settings.col2 }}</td>
             </tr>
           {% endfor %}
@@ -132,6 +136,7 @@
   "settings": [
     {"type":"text","id":"heading","label":"Heading","default":"Main Title"},
     {"type":"text","id":"subheading","label":"Subheading","default":"Sub Title"},
+    {"type":"url","id":"subheading_link","label":"Subheading Link (mailto supported)"},
 
     {"type":"range","id":"heading_size","min":16,"max":72,"step":1,"default":36,"label":"Heading Size"},
     {"type":"range","id":"subheading_size","min":12,"max":40,"step":1,"default":18,"label":"Subheading Size"},
@@ -152,6 +157,15 @@
 
     {"type":"text","id":"disclaimer","label":"Disclaimer Text","default":"* Terms apply"},
     {"type":"range","id":"disclaimer_size","min":10,"max":20,"step":1,"default":12,"label":"Disclaimer Font Size"},
+    {"type":"range","id":"disclaimer_width","min":100,"max":600,"step":10,"default":300,"label":"Disclaimer Max Width"},
+
+    {"type":"range","id":"disclaimer_padding_top","min":0,"max":30,"step":1,"default":5,"label":"Disclaimer Padding Top"},
+    {"type":"range","id":"disclaimer_padding_right","min":0,"max":30,"step":1,"default":5,"label":"Disclaimer Padding Right"},
+    {"type":"range","id":"disclaimer_padding_bottom","min":0,"max":30,"step":1,"default":5,"label":"Disclaimer Padding Bottom"},
+    {"type":"range","id":"disclaimer_padding_left","min":0,"max":30,"step":1,"default":5,"label":"Disclaimer Padding Left"},
+
+    {"type":"range","id":"disclaimer_right","min":0,"max":100,"step":1,"default":0,"label":"Disclaimer Right Offset"},
+    {"type":"range","id":"disclaimer_bottom","min":-20,"max":80,"step":1,"default":0,"label":"Disclaimer Bottom Offset"},
 
     {"type":"range","id":"section_padding","min":0,"max":100,"step":5,"default":40,"label":"Section Padding"}
   ],
@@ -162,8 +176,7 @@
       "name": "Table Row",
       "settings": [
         {"type":"text","id":"col1","label":"Column 1","default":"Feature"},
-        {"type":"text","id":"col2","label":"Column 2","default":"Details"},
-        {"type":"url","id":"link","label":"Optional Link (mailto: support@example.com)"}
+        {"type":"text","id":"col2","label":"Column 2","default":"Details"}
       ]
     }
   ],
