@@ -162,49 +162,56 @@
           "type": "row",
           "settings": {
             "col1": "Professional Profile",
-            "col2": "Lajos Gonczi"
+            "col2": "Lajos Gonczi",
+            "link": ""
           }
         },
         "row_RhALeg": {
           "type": "row",
           "settings": {
             "col1": "Company",
-            "col2": "Electropro-liverpool LTD"
+            "col2": "Electropro-liverpool LTD",
+            "link": ""
           }
         },
         "row_Hh94wX": {
           "type": "row",
           "settings": {
             "col1": "Qualifications",
-            "col2": "NAPIT Certified"
+            "col2": "NAPIT Certified",
+            "link": ""
           }
         },
         "row_TDCYTQ": {
           "type": "row",
           "settings": {
             "col1": "Experience",
-            "col2": "25+ Years Global Experience (10 Years in the UK)"
+            "col2": "25+ Years Global Experience (10 Years in the UK)",
+            "link": ""
           }
         },
         "row_6hdfwi": {
           "type": "row",
           "settings": {
             "col1": "Service Areas",
-            "col2": "Liverpool & all of Merseyside (Available for travel)"
+            "col2": "Liverpool & all of Merseyside (Available for travel)",
+            "link": ""
           }
         },
         "row_LDwhkL": {
           "type": "row",
           "settings": {
             "col1": "Phone/whatsapp",
-            "col2": "7492705244"
+            "col2": "7492705244",
+            "link": ""
           }
         },
         "row_XB89Yj": {
           "type": "row",
           "settings": {
             "col1": "Email",
-            "col2": "lajos.gonczi@electropro-liverpool.co.uk"
+            "col2": "lajos.gonczi@electropro-liverpool.co.uk",
+            "link": "mailto:lajos.gonczi@electropro-liverpool.co.uk"
           }
         },
         "row_XmpynF": {
@@ -212,7 +219,8 @@
           "disabled": true,
           "settings": {
             "col1": "Feature",
-            "col2": "Details"
+            "col2": "Details",
+            "link": ""
           }
         }
       },
@@ -241,6 +249,8 @@
         "table_border_color": "#dddddd",
         "table_bg": "#ffffff",
         "image": "shopify://shop_images/1000019836.jpg",
+        "disclaimer": "* Terms apply",
+        "disclaimer_size": 12,
         "section_padding": 40
       }
     }
