@@ -1,0 +1,216 @@
+{% comment %}
+  Shopify Section: Electrician Pro V4 - Button Navigation & Compact Mobile
+{% endcomment %}
+
+<section class="electrician-v4-{{ section.id }} section-wrapper">
+  <div class="section-container">
+    <div class="section-header">
+      <h2 class="main-title">{{ section.settings.title }}</h2>
+      <p class="sub-title">{{ section.settings.subtitle }}</p>
+      {% if section.settings.disclaimer != blank %}
+        <div class="disclaimer">{{ section.settings.disclaimer }}</div>
+      {% endif %}
+    </div>
+
+    <div class="slider-wrapper-outer">
+      <div class="electrician-list" id="Slider-{{ section.id }}">
+        {% for block in section.blocks %}
+          <div class="electrician-item" {{ block.shopify_attributes }}>
+            <div class="flex-layout">
+              
+              <div class="info-side">
+                <div class="info-table-box">
+                  <table class="profile-table">
+                    <tbody>
+                      {%- for i in (1..10) -%}
+                        {%- capture label_id -%}info_label_{{ i }}{%- endcapture -%}
+                        {%- capture value_id -%}info_value_{{ i }}{%- endcapture -%}
+                        {%- assign label = block.settings[label_id] -%}
+                        {%- assign value = block.settings[value_id] -%}
+                        
+                        {%- if label != blank or value != blank -%}
+                          <tr>
+                            <td class="row-label">{{ label }}</td>
+                            <td class="row-value">
+                              {% if value contains '@' %}
+                                <a href="mailto:{{ value | strip }}">{{ value | strip }}</a>
+                              {% else %}
+                                {{ value | strip }}
+                              {% endif %}
+                            </td>
+                          </tr>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="image-side">
+                <div class="image-wrapper">
+                  {% if block.settings.image != blank %}
+                    <img src="{{ block.settings.image | image_url: width: 1200 }}" alt="Electrician Photo" loading="lazy">
+                  {% else %}
+                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                  {% endif %}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if section.blocks.size > 1 %}
+        <button class="slider-btn prev" onclick="scrollSlider('{{ section.id }}', -1)" aria-label="Previous">❮</button>
+        <button class="slider-btn next" onclick="scrollSlider('{{ section.id }}', 1)" aria-label="Next">❯</button>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<script>
+function scrollSlider(id, direction) {
+  const container = document.getElementById('Slider-' + id);
+  const scrollAmount = container.offsetWidth;
+  container.scrollBy({
+    left: direction * scrollAmount,
+    behavior: 'smooth'
+  });
+}
+</script>
+
+<style>
+.electrician-v4-{{ section.id }} {
+  padding: {{ section.settings.p_top }}px {{ section.settings.p_hor }}px {{ section.settings.p_bottom }}px;
+  background-color: {{ section.settings.bg_color }};
+}
+.electrician-v4-{{ section.id }} .section-container { max-width: 1200px; margin: 0 auto; position: relative; }
+.electrician-v4-{{ section.id }} .section-header { text-align: center; margin-bottom: 40px; }
+
+/* 滑动核心样式 */
+.slider-wrapper-outer { position: relative; width: 100%; }
+.electrician-list {
+  display: flex;
+  overflow-x: hidden; /* 隐藏滑动条 */
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+.electrician-item { flex: 0 0 100%; scroll-snap-align: start; width: 100%; }
+
+/* 1:1 布局 */
+.flex-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: {{ section.settings.gap }}px;
+}
+
+/* 信息表格样式 */
+.info-table-box {
+  height: 100%;
+  padding: {{ section.settings.info_p }}px;
+  background: {{ section.settings.info_bg }};
+  border: 1px solid {{ section.settings.info_border }};
+  border-radius: {{ section.settings.radius }}px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+}
+.profile-table { width: 100%; border-collapse: collapse; }
+.profile-table td {
+  padding: 12px 0;
+  border-bottom: 1px solid {{ section.settings.info_border | color_modify: 'alpha', 0.1 }};
+  font-size: {{ section.settings.font_size }}px;
+  color: #000;
+}
+.row-label { font-weight: bold; width: 35%; }
+
+/* 图片样式 */
+.image-wrapper { 
+  width: 100%; aspect-ratio: 1 / 1; 
+  border-radius: {{ section.settings.radius }}px; 
+  overflow: hidden; 
+}
+.image-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
+
+/* 按钮样式 */
+.slider-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: #000; color: #fff; border: none; width: 40px; height: 40px;
+  border-radius: 50%; cursor: pointer; z-index: 10; opacity: 0.6; transition: 0.3s;
+}
+.slider-btn:hover { opacity: 1; transform: translateY(-50%) scale(1.1); }
+.slider-btn.prev { left: -20px; }
+.slider-btn.next { right: -20px; }
+
+/* 移动端紧凑化优化 */
+@media (max-width: 768px) {
+  .electrician-v4-{{ section.id }} { padding: 30px 15px; }
+  .flex-layout { grid-template-columns: 1fr; gap: 10px; } /* 缩小图片与信息的间距 */
+  .info-table-box { padding: 20px; } /* 缩小内部边距 */
+  .profile-table td { padding: 8px 0; } /* 缩小行距 */
+  .slider-btn { width: 30px; height: 30px; }
+  .slider-btn.prev { left: 5px; }
+  .slider-btn.next { right: 5px; }
+  .section-header { margin-bottom: 20px; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Electrician Pro V4",
+  "settings": [
+    { "type": "header", "content": "Header" },
+    { "type": "text", "id": "title", "label": "Main Title", "default": "Our Partners" },
+    { "type": "range", "id": "title_size", "min": 20, "max": 60, "default": 32, "unit": "px", "label": "Title Font Size" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Certified professionals" },
+    { "type": "range", "id": "sub_size", "min": 14, "max": 30, "default": 18, "unit": "px", "label": "Subtitle Font Size" },
+    { "type": "textarea", "id": "disclaimer", "label": "Disclaimer" },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "p_top", "min": 0, "max": 100, "default": 50, "unit": "px", "label": "Padding Top" },
+    { "type": "range", "id": "p_bottom", "min": 0, "max": 100, "default": 50, "unit": "px", "label": "Padding Bottom" },
+    { "type": "range", "id": "p_hor", "min": 0, "max": 100, "default": 20, "unit": "px", "label": "Padding Horizontal" },
+    { "type": "range", "id": "gap", "min": 0, "max": 100, "default": 30, "unit": "px", "label": "Gap (Info & Image)" },
+    { "type": "header", "content": "Style" },
+    { "type": "range", "id": "info_p", "min": 10, "max": 80, "default": 40, "unit": "px", "label": "Inner Table Padding" },
+    { "type": "range", "id": "font_size", "min": 12, "max": 30, "default": 16, "unit": "px", "label": "Text Size" },
+    { "type": "range", "id": "radius", "min": 0, "max": 50, "default": 8, "unit": "px", "label": "Corner Radius" },
+    { "type": "color", "id": "bg_color", "label": "Section Background", "default": "#ffffff" },
+    { "type": "color", "id": "info_bg", "label": "Info Background", "default": "rgba(255, 255, 255, 0.5)" },
+    { "type": "color", "id": "info_border", "label": "Info Border", "default": "#000000" }
+  ],
+  "blocks": [
+    {
+      "type": "electrician",
+      "name": "Electrician",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "info_label_1", "label": "Row 1: Label", "default": "Name" },
+        { "type": "text", "id": "info_value_1", "label": "Row 1: Value", "default": "Alex" },
+        { "type": "text", "id": "info_label_2", "label": "Row 2: Label", "default": "Age" },
+        { "type": "text", "id": "info_value_2", "label": "Row 2: Value", "default": "18" },
+        { "type": "text", "id": "info_label_3", "label": "Row 3: Label", "default": "Email" },
+        { "type": "text", "id": "info_value_3", "label": "Row 3: Value" },
+        { "type": "text", "id": "info_label_4", "label": "Row 4: Label" },
+        { "type": "text", "id": "info_value_4", "label": "Row 4: Value" },
+        { "type": "text", "id": "info_label_5", "label": "Row 5: Label" },
+        { "type": "text", "id": "info_value_5", "label": "Row 5: Value" },
+        { "type": "text", "id": "info_label_6", "label": "Row 6: Label" },
+        { "type": "text", "id": "info_value_6", "label": "Row 6: Value" },
+        { "type": "text", "id": "info_label_7", "label": "Row 7: Label" },
+        { "type": "text", "id": "info_value_7", "label": "Row 7: Value" },
+        { "type": "text", "id": "info_label_8", "label": "Row 8: Label" },
+        { "type": "text", "id": "info_value_8", "label": "Row 8: Value" },
+        { "type": "text", "id": "info_label_9", "label": "Row 9: Label" },
+        { "type": "text", "id": "info_value_9", "label": "Row 9: Value" },
+        { "type": "text", "id": "info_label_10", "label": "Row 10: Label" },
+        { "type": "text", "id": "info_value_10", "label": "Row 10: Value" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Electrician Pro V4" }
+  ]
+}
+{% endschema %}
