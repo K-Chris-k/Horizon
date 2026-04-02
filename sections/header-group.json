@@ -154,11 +154,100 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "table_images_qbpbtB": {
+      "type": "table-images",
+      "blocks": {
+        "row_ywFLzq": {
+          "type": "row",
+          "settings": {
+            "col1": "Professional Profile",
+            "col2": "Lajos Gonczi"
+          }
+        },
+        "row_RhALeg": {
+          "type": "row",
+          "settings": {
+            "col1": "Company",
+            "col2": "Electropro-liverpool LTD"
+          }
+        },
+        "row_Hh94wX": {
+          "type": "row",
+          "settings": {
+            "col1": "Qualifications",
+            "col2": "NAPIT Certified"
+          }
+        },
+        "row_TDCYTQ": {
+          "type": "row",
+          "settings": {
+            "col1": "Experience",
+            "col2": "25+ Years Global Experience (10 Years in the UK)"
+          }
+        },
+        "row_6hdfwi": {
+          "type": "row",
+          "settings": {
+            "col1": "Service Areas",
+            "col2": "Liverpool & all of Merseyside (Available for travel)"
+          }
+        },
+        "row_LDwhkL": {
+          "type": "row",
+          "settings": {
+            "col1": "Phone/whatsapp",
+            "col2": "7492705244"
+          }
+        },
+        "row_XB89Yj": {
+          "type": "row",
+          "settings": {
+            "col1": "Email",
+            "col2": "lajos.gonczi@electropro-liverpool.co.uk"
+          }
+        },
+        "row_XmpynF": {
+          "type": "row",
+          "settings": {
+            "col1": "Feature",
+            "col2": "Details"
+          }
+        }
+      },
+      "block_order": [
+        "row_ywFLzq",
+        "row_RhALeg",
+        "row_Hh94wX",
+        "row_TDCYTQ",
+        "row_6hdfwi",
+        "row_LDwhkL",
+        "row_XB89Yj",
+        "row_XmpynF"
+      ],
+      "name": "Table + Image (Clean)",
+      "settings": {
+        "heading": "Repenic Professional Installer Network",
+        "subheading": "Professional setup for your dimmers and thermostats. Safe, certified, and local.",
+        "heading_size": 36,
+        "subheading_size": 18,
+        "heading_spacing": 10,
+        "subheading_spacing": 20,
+        "table_height": 400,
+        "image_height": 400,
+        "table_font_size": 14,
+        "cell_padding": 12,
+        "table_border_color": "#dddddd",
+        "table_bg": "#ffffff",
+        "image": "shopify://shop_images/Temperature_Control-_-png.webp",
+        "section_padding": 40
+      }
     }
   },
   "order": [
     "header_announcements_9jGBFp",
     "header_section",
-    "177079264671ab6503"
+    "177079264671ab6503",
+    "table_images_qbpbtB"
   ]
 }
