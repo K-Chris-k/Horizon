@@ -345,7 +345,7 @@
               "type": "text",
               "name": "t:names.text",
               "settings": {
-                "text": "<h1>Trade Account Terms & Conditions</h1>",
+                "text": "<h1><a href=\"https://www.repenic.com/pages/repenic-trade-account-terms-conditions\" title=\"https://www.repenic.com/pages/repenic-trade-account-terms-conditions\">Trade Account Terms & Conditions</a></h1>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
