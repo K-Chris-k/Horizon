@@ -9,49 +9,49 @@
     background-color: {{ section.settings.bg_color }};
   }
 
-  .custom-section-container {
+  .custom-section-container-{{ section.id }} {
     max-width: {{ section.settings.content_width }}px;
     margin: 0 auto;
     padding: 0 20px;
   }
 
-  /* 标题样式自定义 */
-  .section-header {
+  .section-header-{{ section.id }} {
     text-align: center;
     margin-bottom: {{ section.settings.header_margin_bottom }}px;
   }
 
-  .main-title {
+  .main-title-{{ section.id }} {
     font-size: {{ section.settings.title_size }}px;
     margin-bottom: 10px;
     color: {{ section.settings.title_color }};
     line-height: 1.2;
+    margin-top: 0;
   }
 
-  .sub-title {
+  .sub-title-{{ section.id }} {
     font-size: {{ section.settings.subtitle_size }}px;
     color: {{ section.settings.subtitle_color }};
+    margin-top: 0;
   }
 
-  /* 左右布局 */
-  .flex-layout {
+  .flex-layout-{{ section.id }} {
     display: flex;
     flex-wrap: wrap;
     gap: {{ section.settings.gap }}px;
     align-items: center;
   }
 
-  .flex-item {
+  .flex-item-{{ section.id }} {
     flex: 1 1 calc(50% - {{ section.settings.gap | divided_by: 2 }}px);
     min-width: 300px;
   }
 
-  /* 表格高度自定义 */
-  .table-wrapper {
+  .table-wrapper-{{ section.id }} {
+    width: 100%;
     overflow-x: auto;
   }
 
-  .custom-table {
+  .custom-table-{{ section.id }} {
     width: 100%;
     border-collapse: collapse;
     background: {{ section.settings.table_bg }};
@@ -62,20 +62,20 @@
     font-size: {{ section.settings.table_font_size }}px;
   }
 
-  .custom-table th, .custom-table td {
+  .custom-table-{{ section.id }} th, 
+  .custom-table-{{ section.id }} td {
     padding: {{ section.settings.cell_padding }}px;
     border: 1px solid {{ section.settings.border_color }};
     text-align: left;
     color: {{ section.settings.table_text_color }};
   }
 
-  .custom-table thead {
+  .custom-table-{{ section.id }} thead {
     background: rgba(0,0,0,0.05);
     font-weight: bold;
   }
 
-  /* 图片自定义 */
-  .image-wrapper img {
+  .image-wrapper-{{ section.id }} img {
     width: 100%;
     height: auto;
     display: block;
@@ -86,23 +86,27 @@
   }
 
   @media (max-width: 768px) {
-    .flex-item { flex: 1 1 100%; }
-    .main-title { font-size: calc({{ section.settings.title_size }}px * 0.7); }
+    .flex-item-{{ section.id }} { flex: 1 1 100%; }
+    .main-title-{{ section.id }} { font-size: calc({{ section.settings.title_size }}px * 0.7); }
   }
 </style>
 
-<div class="custom-section-container">
+<div class="custom-section-container-{{ section.id }}">
   {% if section.settings.title != blank or section.settings.subtitle != blank %}
-    <header class="section-header">
-      <h2 class="main-title">{{ section.settings.title }}</h2>
-      <p class="sub-title">{{ section.settings.subtitle }}</p>
+    <header class="section-header-{{ section.id }}">
+      {% if section.settings.title != blank %}
+        <h2 class="main-title-{{ section.id }}">{{ section.settings.title }}</h2>
+      {% endif %}
+      {% if section.settings.subtitle != blank %}
+        <p class="sub-title-{{ section.id }}">{{ section.settings.subtitle }}</p>
+      {% endif %}
     </header>
   {% endif %}
 
-  <div class="flex-layout">
-    <div class="flex-item">
-      <div class="table-wrapper">
-        <table class="custom-table">
+  <div class="flex-layout-{{ section.id }}">
+    <div class="flex-item-{{ section.id }}">
+      <div class="table-wrapper-{{ section.id }}">
+        <table class="custom-table-{{ section.id }}">
           <thead>
             <tr>
               <th>{{ section.settings.col_1_label }}</th>
@@ -111,7 +115,7 @@
           </thead>
           <tbody>
             {% for block in section.blocks %}
-              <tr>
+              <tr {{ block.shopify_attributes }}>
                 <td>{{ block.settings.row_label }}</td>
                 <td>{{ block.settings.row_value }}</td>
               </tr>
@@ -121,10 +125,14 @@
       </div>
     </div>
 
-    <div class="flex-item">
-      <div class="image-wrapper">
+    <div class="flex-item-{{ section.id }}">
+      <div class="image-wrapper-{{ section.id }}">
         {% if section.settings.image != blank %}
-          {{ section.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy' }}
+          <img src="{{ section.settings.image | image_url: width: 1000 }}" 
+               alt="{{ section.settings.image.alt | escape }}"
+               loading="lazy"
+               width="{{ section.settings.image.width }}"
+               height="{{ section.settings.image.height }}">
         {% else %}
           {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
         {% endif %}
@@ -137,42 +145,215 @@
 {
   "name": "自定义表格图片板块",
   "settings": [
-    { "type": "header", "content": "内容设置" },
-    { "type": "text", "id": "title", "label": "大标题", "default": "产品规格参数" },
-    { "type": "text", "id": "subtitle", "label": "副标题", "default": "详细的数据对比展示" },
-    { "type": "image_picker", "id": "image", "label": "展示图片" },
-    
-    { "type": "header", "content": "标题自定义" },
-    { "type": "range", "id": "title_size", "min": 20, "max": 80, "step": 2, "unit": "px", "label": "大标题字号", "default": 40 },
-    { "type": "color", "id": "title_color", "label": "大标题颜色", "default": "#000000" },
-    { "type": "range", "id": "subtitle_size", "min": 12, "max": 30, "step": 1, "unit": "px", "label": "副标题字号", "default": 18 },
-    { "type": "color", "id": "subtitle_color", "label": "副标题颜色", "default": "#666666" },
-    { "type": "range", "id": "header_margin_bottom", "min": 0, "max": 100, "step": 5, "unit": "px", "label": "标题下方间距", "default": 40 },
-
-    { "type": "header", "content": "表格自定义" },
-    { "type": "text", "id": "col_1_label", "label": "第一列标题", "default": "项目" },
-    { "type": "text", "id": "col_2_label", "label": "第二列标题", "default": "参数" },
-    { "type": "range", "id": "table_font_size", "min": 12, "max": 24, "step": 1, "unit": "px", "label": "表格字号", "default": 16 },
-    { "type": "range", "id": "cell_padding", "min": 5, "max": 40, "step": 1, "unit": "px", "label": "单元格内边距", "default": 15 },
-    { "type": "color", "id": "table_bg", "label": "表格背景 (带透明度)", "default": "#ffffff" },
-    { "type": "color", "id": "table_text_color", "label": "表格文字颜色", "default": "#000000" },
-    { "type": "color", "id": "border_color", "label": "边框颜色", "default": "#e0e0e0" },
-
-    { "type": "header", "content": "全局与图片" },
-    { "type": "range", "id": "content_width", "min": 800, "max": 1600, "step": 50, "unit": "px", "label": "板块最大宽度", "default": 1200 },
-    { "type": "range", "id": "gap", "min": 0, "max": 100, "step": 5, "unit": "px", "label": "图表间距", "default": 40 },
-    { "type": "range", "id": "corner_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "圆角大小", "default": 8 },
-    { "type": "range", "id": "image_max_height", "min": 200, "max": 800, "step": 50, "unit": "px", "label": "图片最大高度", "default": 500 },
-    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "顶部内边距", "default": 40 },
-    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "底部内边距", "default": 40 }
+    {
+      "type": "header",
+      "content": "内容设置"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "大标题",
+      "default": "产品规格参数"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "副标题",
+      "default": "详细的数据对比展示"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "展示图片"
+    },
+    {
+      "type": "header",
+      "content": "标题自定义"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "大标题字号",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "大标题颜色",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "副标题字号",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "副标题颜色",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "header_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "标题下方间距",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "表格自定义"
+    },
+    {
+      "type": "text",
+      "id": "col_1_label",
+      "label": "第一列标题",
+      "default": "项目"
+    },
+    {
+      "type": "text",
+      "id": "col_2_label",
+      "label": "第二列标题",
+      "default": "参数"
+    },
+    {
+      "type": "range",
+      "id": "table_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "表格字号",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "cell_padding",
+      "min": 5,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "单元格内边距",
+      "default": 15
+    },
+    {
+      "type": "color",
+      "id": "table_bg",
+      "label": "表格背景",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "table_text_color",
+      "label": "表格文字颜色",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "边框颜色",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "header",
+      "content": "全局与图片"
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "label": "板块最大宽度",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "图表间距",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "圆角大小",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "image_max_height",
+      "min": 200,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "label": "图片最大高度",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "顶部内边距",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "底部内边距",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "板块背景颜色",
+      "default": "#ffffff"
+    }
   ],
   "blocks": [
     {
       "type": "row",
       "name": "表格行",
       "settings": [
-        { "type": "text", "id": "row_label", "label": "项目名称", "default": "示例项目" },
-        { "type": "text", "id": "row_value", "label": "对应数值", "default": "示例数值" }
+        {
+          "type": "text",
+          "id": "row_label",
+          "label": "项目名称",
+          "default": "示例项目"
+        },
+        {
+          "type": "text",
+          "id": "row_value",
+          "label": "对应数值",
+          "default": "示例数值"
+        }
       ]
     }
   ],
@@ -180,9 +361,15 @@
     {
       "name": "自定义表格图片板块",
       "blocks": [
-        { "type": "row" },
-        { "type": "row" },
-        { "type": "row" }
+        {
+          "type": "row"
+        },
+        {
+          "type": "row"
+        },
+        {
+          "type": "row"
+        }
       ]
     }
   ]
