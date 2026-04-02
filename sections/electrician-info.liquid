@@ -1,0 +1,217 @@
+{% schema %}
+{
+  "name": "Electrician Info Section",
+  "settings": [
+    {
+      "id": "heading",
+      "type": "text",
+      "label": "大标题",
+      "default": "我们的电工团队"
+    },
+    {
+      "id": "subheading",
+      "type": "text",
+      "label": "副标题",
+      "default": "专业电工，随时为您服务"
+    },
+    {
+      "id": "disclaimer",
+      "type": "textarea",
+      "label": "免责声明",
+      "default": "本信息仅供参考。"
+    },
+    {
+      "id": "heading_font_size",
+      "type": "number",
+      "label": "大标题字体大小(px)",
+      "default": 36
+    },
+    {
+      "id": "subheading_font_size",
+      "type": "number",
+      "label": "副标题字体大小(px)",
+      "default": 18
+    },
+    {
+      "id": "disclaimer_font_size",
+      "type": "number",
+      "label": "免责声明字体大小(px)",
+      "default": 14
+    },
+    {
+      "id": "heading_color",
+      "type": "color",
+      "label": "大标题颜色",
+      "default": "#000000"
+    },
+    {
+      "id": "subheading_color",
+      "type": "color",
+      "label": "副标题颜色",
+      "default": "#555555"
+    },
+    {
+      "id": "disclaimer_color",
+      "type": "color",
+      "label": "免责声明颜色",
+      "default": "#888888"
+    },
+    {
+      "id": "section_bg_color",
+      "type": "color",
+      "label": "板块背景色",
+      "default": "#ffffff"
+    },
+    {
+      "id": "card_height",
+      "type": "number",
+      "label": "个人信息卡高度(px)",
+      "default": 300
+    },
+    {
+      "id": "card_gap",
+      "type": "number",
+      "label": "信息卡间距(px)",
+      "default": 30
+    }
+  ],
+  "blocks": [
+    {
+      "type": "electrician",
+      "name": "电工信息",
+      "settings": [
+        {
+          "id": "name",
+          "type": "text",
+          "label": "姓名",
+          "default": "张三"
+        },
+        {
+          "id": "title",
+          "type": "text",
+          "label": "职位/职称",
+          "default": "高级电工"
+        },
+        {
+          "id": "phone",
+          "type": "text",
+          "label": "电话",
+          "default": "123456789"
+        },
+        {
+          "id": "email",
+          "type": "text",
+          "label": "邮箱",
+          "default": "email@example.com"
+        },
+        {
+          "id": "photo",
+          "type": "image_picker",
+          "label": "照片"
+        },
+        {
+          "id": "info_bg_color",
+          "type": "color",
+          "label": "信息卡背景色",
+          "default": "#f5f5f5"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "电工个人信息板块",
+      "category": "Team"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+.section-{{ section.id }} {
+  background-color: {{ section.settings.section_bg_color }};
+  padding: 50px 20px;
+}
+.section-{{ section.id }} .heading {
+  font-size: {{ section.settings.heading_font_size }}px;
+  color: {{ section.settings.heading_color }};
+  text-align: center;
+  margin-bottom: 10px;
+}
+.section-{{ section.id }} .subheading {
+  font-size: {{ section.settings.subheading_font_size }}px;
+  color: {{ section.settings.subheading_color }};
+  text-align: center;
+  margin-bottom: 20px;
+}
+.section-{{ section.id }} .disclaimer {
+  font-size: {{ section.settings.disclaimer_font_size }}px;
+  color: {{ section.settings.disclaimer_color }};
+  text-align: center;
+  margin-bottom: 40px;
+}
+.section-{{ section.id }} .cards-wrapper {
+  display: flex;
+  gap: {{ section.settings.card_gap }}px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.section-{{ section.id }} .card {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--info-bg);
+  padding: 20px;
+  height: {{ section.settings.card_height }}px;
+  min-width: 400px;
+  border-radius: 10px;
+}
+.section-{{ section.id }} .card .info {
+  flex: 1;
+  padding-right: 20px;
+}
+.section-{{ section.id }} .card img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+@media screen and (max-width: 768px) {
+  .section-{{ section.id }} .card {
+    flex-direction: column;
+    text-align: center;
+    height: auto;
+  }
+  .section-{{ section.id }} .card .info {
+    padding-right: 0;
+    margin-bottom: 15px;
+  }
+}
+{% endstylesheet %}
+
+<div class="section-{{ section.id }}">
+  <div class="heading">{{ section.settings.heading }}</div>
+  <div class="subheading">{{ section.settings.subheading }}</div>
+  <div class="disclaimer">{{ section.settings.disclaimer }}</div>
+
+  {% if section.blocks.size > 1 %}
+    <div class="cards-wrapper">
+  {% else %}
+    <div class="cards-wrapper" style="justify-content: center;">
+  {% endif %}
+    {% for block in section.blocks %}
+      <div class="card" style="--info-bg: {{ block.settings.info_bg_color }}">
+        <div class="info">
+          <h3>{{ block.settings.name }}</h3>
+          <p>{{ block.settings.title }}</p>
+          <p>电话: {{ block.settings.phone }}</p>
+          <p>邮箱: {{ block.settings.email }}</p>
+        </div>
+        {% if block.settings.photo %}
+          <img src="{{ block.settings.photo | img_url: '300x300' }}" alt="{{ block.settings.name }}">
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
