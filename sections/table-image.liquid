@@ -1,140 +1,533 @@
 <style>
 .section-{{ section.id }}{
-  padding: {{ section.settings.section_padding }}px 0;
+  padding: {{ section.settings.section_padding_top }}px {{ section.settings.section_padding_right }}px {{ section.settings.section_padding_bottom }}px {{ section.settings.section_padding_left }}px;
+  background-color: {{ section.settings.section_bg_color }};
 }
 
 .container-{{ section.id }}{
   max-width: 1300px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
 .heading-{{ section.id }}{
   font-size: {{ section.settings.heading_size }}px;
   margin-bottom: {{ section.settings.heading_spacing }}px;
-  text-align:center;
+  text-align: center;
+  font-weight: 600;
+  color: {{ section.settings.heading_color }};
+  letter-spacing: -0.02em;
 }
 
 .subheading-{{ section.id }}{
   font-size: {{ section.settings.subheading_size }}px;
   margin-bottom: {{ section.settings.subheading_spacing }}px;
-  text-align:center;
+  text-align: center;
+  color: {{ section.settings.subheading_color }};
+  opacity: 0.8;
 }
 
 .flex-{{ section.id }}{
-  display:flex;
-  gap: 20px;
+  display: flex;
+  gap: 40px;
+  margin-bottom: {{ section.settings.disclaimer_margin_top }}px;
 }
 
 .left-{{ section.id }}{
-  width:50%;
+  width: 50%;
 }
 
 .right-{{ section.id }}{
-  width:50%;
+  width: 50%;
+}
+
+.table-wrapper-{{ section.id }}{
+  overflow-x: auto;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
 .table-{{ section.id }}{
-  width:100%;
-  height: {{ section.settings.table_height }}px;
+  width: 100%;
   border-collapse: collapse;
   background: {{ section.settings.table_bg }};
   font-size: {{ section.settings.table_font_size }}px;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .table-{{ section.id }} td{
-  border:1px solid {{ section.settings.table_border_color }};
+  border-bottom: 1px solid {{ section.settings.table_border_color }};
   padding: {{ section.settings.cell_padding }}px;
+  color: {{ section.settings.table_text_color }};
+}
+
+.table-{{ section.id }} tr:last-child td{
+  border-bottom: none;
+}
+
+.table-{{ section.id }} tr:hover td{
+  background-color: {{ section.settings.table_hover_bg }};
+  transition: background-color 0.2s ease;
+}
+
+.link-cell-{{ section.id }} a{
+  color: {{ section.settings.link_color }};
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.link-cell-{{ section.id }} a:hover{
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+.image-{{ section.id }}{
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  height: 100%;
 }
 
 .image-{{ section.id }} img{
-  width:100%;
+  width: 100%;
   height: {{ section.settings.image_height }}px;
-  object-fit:cover;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
 }
 
-@media(max-width:768px){
+.image-{{ section.id }}:hover img{
+  transform: scale(1.02);
+}
+
+/* 免责声明样式 */
+.disclaimer-{{ section.id }}{
+  max-width: 50%;
+  margin: 0 auto;
+  font-size: {{ section.settings.disclaimer_font_size }}px;
+  color: {{ section.settings.disclaimer_text_color }};
+  background-color: {{ section.settings.disclaimer_bg_color }};
+  padding: {{ section.settings.disclaimer_padding_top }}px {{ section.settings.disclaimer_padding_right }}px {{ section.settings.disclaimer_padding_bottom }}px {{ section.settings.disclaimer_padding_left }}px;
+  border-radius: 12px;
+  text-align: center;
+  line-height: 1.5;
+  word-wrap: break-word;
+  white-space: normal;
+  word-break: break-word;
+}
+
+@media(max-width: 768px){
   .flex-{{ section.id }}{
-    flex-direction:column;
+    flex-direction: column;
+    gap: 30px;
   }
   .left-{{ section.id }},
   .right-{{ section.id }}{
-    width:100%;
+    width: 100%;
+  }
+  .disclaimer-{{ section.id }}{
+    max-width: 100%;
   }
 }
 </style>
 
 <div class="section-{{ section.id }}">
   <div class="container-{{ section.id }}">
-
-    <div class="heading-{{ section.id }}">{{ section.settings.heading }}</div>
-    <div class="subheading-{{ section.id }}">{{ section.settings.subheading }}</div>
+    {% if section.settings.heading != blank %}
+      <div class="heading-{{ section.id }}">{{ section.settings.heading }}</div>
+    {% endif %}
+    {% if section.settings.subheading != blank %}
+      <div class="subheading-{{ section.id }}">{{ section.settings.subheading }}</div>
+    {% endif %}
 
     <div class="flex-{{ section.id }}">
-
       <div class="left-{{ section.id }}">
-        <table class="table-{{ section.id }}">
-          {% for block in section.blocks %}
-            <tr>
-              <td>{{ block.settings.col1 }}</td>
-              <td>{{ block.settings.col2 }}</td>
-            </tr>
-          {% endfor %}
-        </table>
+        <div class="table-wrapper-{{ section.id }}">
+          <table class="table-{{ section.id }}">
+            {% for block in section.blocks %}
+              <tr>
+                <td class="{% if block.settings.col2_link != blank %}link-cell-{{ section.id }}{% endif %}">
+                  {{ block.settings.col1 }}
+                </td>
+                <td class="{% if block.settings.col2_link != blank %}link-cell-{{ section.id }}{% endif %}">
+                  {% if block.settings.col2_link != blank %}
+                    <a href="{{ block.settings.col2_link }}" {% if block.settings.open_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                      {{ block.settings.col2 }}
+                    </a>
+                  {% else %}
+                    {{ block.settings.col2 }}
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
       </div>
 
       <div class="right-{{ section.id }}">
         <div class="image-{{ section.id }}">
           {% if section.settings.image %}
-            <img src="{{ section.settings.image | image_url: width: 1000 }}">
+            <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.image.alt | default: section.settings.heading }}">
+          {% else %}
+            <div style="background: #f0f0f0; height: {{ section.settings.image_height }}px; display: flex; align-items: center; justify-content: center; border-radius: 20px;">
+              <span style="color: #999;">请选择图片</span>
+            </div>
           {% endif %}
         </div>
       </div>
-
     </div>
 
+    {% if section.settings.show_disclaimer %}
+      <div class="disclaimer-{{ section.id }}">
+        {{ section.settings.disclaimer_text }}
+      </div>
+    {% endif %}
   </div>
 </div>
 
 {% schema %}
 {
-  "name": "Table + Image (Clean)",
+  "name": "表格+图片（增强版）",
   "settings": [
-    {"type":"text","id":"heading","label":"Heading","default":"Main Title"},
-    {"type":"text","id":"subheading","label":"Subheading","default":"Sub Title"},
-
-    {"type":"range","id":"heading_size","min":16,"max":72,"step":1,"default":36,"label":"Heading Size"},
-    {"type":"range","id":"subheading_size","min":12,"max":40,"step":1,"default":18,"label":"Subheading Size"},
-
-    {"type":"range","id":"heading_spacing","min":0,"max":50,"step":1,"default":10,"label":"Heading Bottom Spacing"},
-    {"type":"range","id":"subheading_spacing","min":0,"max":50,"step":1,"default":20,"label":"Subheading Bottom Spacing"},
-
-    {"type":"range","id":"table_height","min":200,"max":800,"step":10,"default":400,"label":"Table Height"},
-    {"type":"range","id":"image_height","min":200,"max":800,"step":10,"default":400,"label":"Image Height"},
-
-    {"type":"range","id":"table_font_size","min":10,"max":24,"step":1,"default":14,"label":"Table Font Size"},
-    {"type":"range","id":"cell_padding","min":5,"max":30,"step":1,"default":12,"label":"Cell Padding"},
-
-    {"type":"color","id":"table_border_color","label":"Table Border Color","default":"#dddddd"},
-    {"type":"color","id":"table_bg","label":"Table Background","default":"#ffffff"},
-
-    {"type":"image_picker","id":"image","label":"Right Image"},
-
-    {"type":"range","id":"section_padding","min":0,"max":100,"step":5,"default":40,"label":"Section Padding"}
+    {
+      "type": "header",
+      "content": "内容设置"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "主标题",
+      "default": "产品规格对比"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "副标题",
+      "default": "详细了解产品特性"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "右侧图片"
+    },
+    {
+      "type": "header",
+      "content": "颜色样式"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "区域背景色",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "主标题颜色",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "副标题颜色",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "table_border_color",
+      "label": "表格边框颜色",
+      "default": "#eeeeee"
+    },
+    {
+      "type": "color",
+      "id": "table_bg",
+      "label": "表格背景色",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "table_text_color",
+      "label": "表格文字颜色",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "table_hover_bg",
+      "label": "表格悬停背景色",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "链接颜色",
+      "default": "#0066cc"
+    },
+    {
+      "type": "header",
+      "content": "尺寸设置"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 16,
+      "max": 72,
+      "step": 1,
+      "default": 40,
+      "label": "主标题字号"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "default": 18,
+      "label": "副标题字号"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 12,
+      "label": "主标题底部间距"
+    },
+    {
+      "type": "range",
+      "id": "subheading_spacing",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 30,
+      "label": "副标题底部间距"
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "min": 200,
+      "max": 600,
+      "step": 10,
+      "default": 400,
+      "label": "图片高度"
+    },
+    {
+      "type": "range",
+      "id": "table_font_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 15,
+      "label": "表格字号"
+    },
+    {
+      "type": "range",
+      "id": "cell_padding",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "default": 16,
+      "label": "单元格内边距"
+    },
+    {
+      "type": "header",
+      "content": "区域内边距"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "label": "上内边距"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "label": "下内边距"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_left",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0,
+      "label": "左内边距"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_right",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0,
+      "label": "右内边距"
+    },
+    {
+      "type": "header",
+      "content": "免责声明设置"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_disclaimer",
+      "label": "显示免责声明",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "disclaimer_text",
+      "label": "免责声明内容",
+      "default": "* 以上信息仅供参考，最终解释权归本公司所有。"
+    },
+    {
+      "type": "range",
+      "id": "disclaimer_font_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "default": 13,
+      "label": "免责声明字号"
+    },
+    {
+      "type": "color",
+      "id": "disclaimer_text_color",
+      "label": "免责声明文字颜色",
+      "default": "#888888"
+    },
+    {
+      "type": "color",
+      "id": "disclaimer_bg_color",
+      "label": "免责声明背景色",
+      "default": "#f8f8f8"
+    },
+    {
+      "type": "range",
+      "id": "disclaimer_padding_top",
+      "min": 4,
+      "max": 30,
+      "step": 1,
+      "default": 12,
+      "label": "免责声明上内边距"
+    },
+    {
+      "type": "range",
+      "id": "disclaimer_padding_bottom",
+      "min": 4,
+      "max": 30,
+      "step": 1,
+      "default": 12,
+      "label": "免责声明下内边距"
+    },
+    {
+      "type": "range",
+      "id": "disclaimer_padding_left",
+      "min": 4,
+      "max": 40,
+      "step": 1,
+      "default": 20,
+      "label": "免责声明左内边距"
+    },
+    {
+      "type": "range",
+      "id": "disclaimer_padding_right",
+      "min": 4,
+      "max": 40,
+      "step": 1,
+      "default": 20,
+      "label": "免责声明右内边距"
+    },
+    {
+      "type": "range",
+      "id": "disclaimer_margin_top",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "default": 30,
+      "label": "免责声明上边距（与表格间距）"
+    }
   ],
-
   "blocks": [
     {
       "type": "row",
-      "name": "Table Row",
+      "name": "表格行",
       "settings": [
-        {"type":"text","id":"col1","label":"Column 1","default":"Feature"},
-        {"type":"text","id":"col2","label":"Column 2","default":"Details"}
+        {
+          "type": "text",
+          "id": "col1",
+          "label": "第一列内容",
+          "default": "特性"
+        },
+        {
+          "type": "text",
+          "id": "col2",
+          "label": "第二列内容",
+          "default": "详情"
+        },
+        {
+          "type": "url",
+          "id": "col2_link",
+          "label": "第二列链接",
+          "info": "留空则不添加链接"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_new_tab",
+          "label": "在新标签页打开链接",
+          "default": false
+        }
       ]
     }
   ],
-
   "presets": [
-    {"name": "Table + Image (Clean)"}
+    {
+      "name": "表格+图片（增强版）",
+      "settings": {
+        "heading": "产品规格对比",
+        "subheading": "详细了解产品特性",
+        "show_disclaimer": true,
+        "disclaimer_text": "* 以上信息仅供参考，最终解释权归本公司所有。"
+      },
+      "blocks": [
+        {
+          "type": "row",
+          "settings": {
+            "col1": "处理器",
+            "col2": "Intel Core i7"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "col1": "内存",
+            "col2": "16GB DDR5"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "col1": "存储",
+            "col2": "512GB SSD"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "col1": "了解更多",
+            "col2": "查看详情",
+            "col2_link": "/products/detail",
+            "open_new_tab": true
+          }
+        }
+      ]
+    }
   ]
 }
 {% endschema %}
