@@ -1,155 +1,598 @@
-<style>
-.section-{{ section.id }}{
-  padding: {{ section.settings.section_padding }}px 0;
-}
-
-.container-{{ section.id }}{
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.heading-{{ section.id }}{
-  font-size: {{ section.settings.heading_size }}px;
-  margin-bottom: {{ section.settings.heading_spacing }}px;
-  text-align:center;
-}
-
-.subheading-{{ section.id }}{
-  font-size: {{ section.settings.subheading_size }}px;
-  margin-bottom: {{ section.settings.subheading_spacing }}px;
-  text-align:center;
-}
-
-.flex-{{ section.id }}{
-  display:flex;
-  align-items:stretch;
-}
-
-.table-wrap-{{ section.id }}{
-  width: {{ section.settings.table_width }}%;
-}
-
-.images-wrap-{{ section.id }}{
-  width: calc(100% - {{ section.settings.table_width }}%);
-  display:flex;
-}
-
-.image-box-{{ section.id }}{
-  width:50%;
-}
-
-.image-box-{{ section.id }} img{
-  width:100%;
-  height: {{ section.settings.image_height }}px;
-  object-fit:cover;
-}
-
-.table-{{ section.id }}{
-  width:100%;
-  height: {{ section.settings.table_height }}px;
-  border-collapse: collapse;
-  background: {{ section.settings.table_bg }};
-  font-size: {{ section.settings.table_font_size }}px;
-}
-
-.table-{{ section.id }} td{
-  border:1px solid {{ section.settings.table_border_color }};
-  padding: {{ section.settings.cell_padding }}px;
-}
-
-@media(max-width:768px){
-  .flex-{{ section.id }}{
-    flex-direction:column;
-  }
-  .table-wrap-{{ section.id }},
-  .images-wrap-{{ section.id }}{
-    width:100%;
-  }
-}
-</style>
-
-<div class="section-{{ section.id }}">
-  <div class="container-{{ section.id }}">
-
-    <div class="heading-{{ section.id }}">{{ section.settings.heading }}</div>
-    <div class="subheading-{{ section.id }}">{{ section.settings.subheading }}</div>
-
-    <div class="flex-{{ section.id }}">
-
-      <div class="table-wrap-{{ section.id }}">
-        <table class="table-{{ section.id }}">
-          {% for block in section.blocks %}
-            <tr>
-              <td>{{ block.settings.col1 }}</td>
-              <td>{{ block.settings.col2 }}</td>
-            </tr>
-          {% endfor %}
-        </table>
-      </div>
-
-      <div class="images-wrap-{{ section.id }}">
-        <div class="image-box-{{ section.id }}">
-          {% if section.settings.left_image %}
-            <img src="{{ section.settings.left_image | image_url: width: 800 }}">
-          {% endif %}
-        </div>
-        <div class="image-box-{{ section.id }}">
-          {% if section.settings.right_image %}
-            <img src="{{ section.settings.right_image | image_url: width: 800 }}">
-          {% endif %}
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-</div>
+{% comment %}
+  Section: 表格与图片对比区块
+  特点: 大标题 + 副标题 + 左侧表格(可自定义) + 右侧图片(5:5比例)
+  所有样式均可在Shopify主题编辑器中自定义
+{% endcomment %}
 
 {% schema %}
 {
-  "name": "Table + Images (Advanced)",
+  "name": "表格与图片对比",
   "settings": [
-    {"type":"text","id":"heading","label":"Main Heading","default":"Main Title"},
-    {"type":"text","id":"subheading","label":"Sub Heading","default":"Sub Title"},
-
-    {"type":"range","id":"heading_size","min":16,"max":72,"step":1,"default":36,"label":"Heading Size"},
-    {"type":"range","id":"subheading_size","min":12,"max":40,"step":1,"default":18,"label":"Subheading Size"},
-
-    {"type":"range","id":"heading_spacing","min":0,"max":50,"step":1,"default":10,"label":"Heading Bottom Spacing"},
-    {"type":"range","id":"subheading_spacing","min":0,"max":50,"step":1,"default":20,"label":"Subheading Bottom Spacing"},
-
-    {"type":"range","id":"table_width","min":30,"max":70,"step":1,"default":50,"label":"Table Width (%)"},
-
-    {"type":"range","id":"table_height","min":200,"max":800,"step":10,"default":400,"label":"Table Height"},
-
-    {"type":"range","id":"table_font_size","min":10,"max":24,"step":1,"default":14,"label":"Table Font Size"},
-
-    {"type":"range","id":"cell_padding","min":5,"max":30,"step":1,"default":12,"label":"Cell Padding"},
-
-    {"type":"color","id":"table_border_color","label":"Table Border Color","default":"#dddddd"},
-    {"type":"color","id":"table_bg","label":"Table Background","default":"#ffffff"},
-
-    {"type":"image_picker","id":"left_image","label":"Left Image"},
-    {"type":"image_picker","id":"right_image","label":"Right Image"},
-
-    {"type":"range","id":"image_height","min":200,"max":800,"step":10,"default":400,"label":"Image Height"},
-
-    {"type":"range","id":"section_padding","min":0,"max":100,"step":5,"default":40,"label":"Section Padding"}
+    {
+      "type": "header",
+      "content": "标题设置"
+    },
+    {
+      "type": "text",
+      "id": "main_title",
+      "label": "大标题文字",
+      "default": "产品规格对比表"
+    },
+    {
+      "type": "range",
+      "id": "main_title_font_size",
+      "label": "大标题字体大小",
+      "min": 24,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "main_title_font_weight",
+      "label": "大标题字重",
+      "min": 400,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "main_title_letter_spacing",
+      "label": "大标题字间距",
+      "min": -2,
+      "max": 10,
+      "step": 0.5,
+      "unit": "px",
+      "default": -0.5
+    },
+    {
+      "type": "range",
+      "id": "main_title_margin_bottom",
+      "label": "大标题底部间距",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "main_title_color",
+      "label": "大标题颜色",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "text",
+      "id": "sub_title",
+      "label": "副标题文字",
+      "default": "详细参数一览 · 专业级数据展示"
+    },
+    {
+      "type": "range",
+      "id": "sub_title_font_size",
+      "label": "副标题字体大小",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "sub_title_font_weight",
+      "label": "副标题字重",
+      "min": 300,
+      "max": 700,
+      "step": 100,
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "sub_title_margin_bottom",
+      "label": "副标题底部间距",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "sub_title_color",
+      "label": "副标题颜色",
+      "default": "#5a5a5a"
+    },
+    {
+      "type": "header",
+      "content": "表格样式设置"
+    },
+    {
+      "type": "range",
+      "id": "table_font_size",
+      "label": "表格内容字体大小",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "table_header_font_size",
+      "label": "表格表头字体大小",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "table_header_font_weight",
+      "label": "表头字体粗细",
+      "min": 400,
+      "max": 800,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "table_cell_padding_vertical",
+      "label": "单元格垂直内边距",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "table_cell_padding_horizontal",
+      "label": "单元格水平内边距",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "table_border_color",
+      "label": "表格边框颜色",
+      "default": "#e2e6e9"
+    },
+    {
+      "type": "color",
+      "id": "table_header_bg",
+      "label": "表头背景色",
+      "default": "#f9fafb"
+    },
+    {
+      "type": "color",
+      "id": "table_header_color",
+      "label": "表头文字颜色",
+      "default": "#1e293b"
+    },
+    {
+      "type": "color",
+      "id": "table_body_color",
+      "label": "表格内容文字颜色",
+      "default": "#334155"
+    },
+    {
+      "type": "color",
+      "id": "table_row_hover_bg",
+      "label": "行悬停背景色",
+      "default": "#f5f7fa"
+    },
+    {
+      "type": "range",
+      "id": "table_border_radius",
+      "label": "表格圆角",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "图片样式设置"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_image",
+      "label": "右侧图片"
+    },
+    {
+      "type": "url",
+      "id": "image_link",
+      "label": "图片链接地址"
+    },
+    {
+      "type": "range",
+      "id": "image_max_height",
+      "label": "图片最大高度",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 480
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "图片圆角",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "image_object_fit",
+      "label": "图片适配方式",
+      "options": [
+        { "value": "cover", "label": "裁剪填充 (cover)" },
+        { "value": "contain", "label": "完整显示 (contain)" },
+        { "value": "fill", "label": "拉伸填充 (fill)" },
+        { "value": "scale-down", "label": "缩小显示 (scale-down)" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "range",
+      "id": "image_shadow_opacity",
+      "label": "图片阴影强度",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "%",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "布局与间距设置"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "区块上边距",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "区块下边距",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "左右两栏间距",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "区块背景色",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "区块宽度",
+      "options": [
+        { "value": "boxed", "label": "盒装（有限宽度）" },
+        { "value": "full_width", "label": "全宽" }
+      ],
+      "default": "boxed"
+    }
   ],
-
   "blocks": [
     {
-      "type": "row",
-      "name": "Table Row",
+      "type": "table_row",
+      "name": "表格行",
+      "limit": 20,
       "settings": [
-        {"type":"text","id":"col1","label":"Column 1","default":"Feature"},
-        {"type":"text","id":"col2","label":"Column 2","default":"Details"}
+        {
+          "type": "text",
+          "id": "col_1",
+          "label": "第一列内容",
+          "default": "功能项"
+        },
+        {
+          "type": "text",
+          "id": "col_2",
+          "label": "第二列内容",
+          "default": "标准版"
+        },
+        {
+          "type": "text",
+          "id": "col_3",
+          "label": "第三列内容",
+          "default": "专业版"
+        }
       ]
     }
   ],
-
+  "max_blocks": 20,
   "presets": [
-    {"name": "Table + Images"}
+    {
+      "name": "表格与图片对比",
+      "blocks": [
+        {
+          "type": "table_row",
+          "settings": {
+            "col_1": "最大并发数",
+            "col_2": "100",
+            "col_3": "500"
+          }
+        },
+        {
+          "type": "table_row",
+          "settings": {
+            "col_1": "存储空间",
+            "col_2": "50GB",
+            "col_3": "1TB"
+          }
+        },
+        {
+          "type": "table_row",
+          "settings": {
+            "col_1": "专属支持",
+            "col_2": "标准响应",
+            "col_3": "7x24 专属客服"
+          }
+        },
+        {
+          "type": "table_row",
+          "settings": {
+            "col_1": "API 调用次数",
+            "col_2": "10k/月",
+            "col_3": "100k/月"
+          }
+        }
+      ]
+    }
   ]
 }
 {% endschema %}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --main-title-font-size: {{ section.settings.main_title_font_size }}px;
+    --main-title-font-weight: {{ section.settings.main_title_font_weight }};
+    --main-title-letter-spacing: {{ section.settings.main_title_letter_spacing }}px;
+    --main-title-margin-bottom: {{ section.settings.main_title_margin_bottom }}px;
+    --main-title-color: {{ section.settings.main_title_color }};
+    
+    --sub-title-font-size: {{ section.settings.sub_title_font_size }}px;
+    --sub-title-font-weight: {{ section.settings.sub_title_font_weight }};
+    --sub-title-margin-bottom: {{ section.settings.sub_title_margin_bottom }}px;
+    --sub-title-color: {{ section.settings.sub_title_color }};
+    
+    --table-font-size: {{ section.settings.table_font_size }}px;
+    --table-header-font-size: {{ section.settings.table_header_font_size }}px;
+    --table-header-font-weight: {{ section.settings.table_header_font_weight }};
+    --table-cell-padding-vertical: {{ section.settings.table_cell_padding_vertical }}px;
+    --table-cell-padding-horizontal: {{ section.settings.table_cell_padding_horizontal }}px;
+    --table-border-color: {{ section.settings.table_border_color }};
+    --table-header-bg: {{ section.settings.table_header_bg }};
+    --table-header-color: {{ section.settings.table_header_color }};
+    --table-body-color: {{ section.settings.table_body_color }};
+    --table-row-hover-bg: {{ section.settings.table_row_hover_bg }};
+    --table-border-radius: {{ section.settings.table_border_radius }}px;
+    
+    --image-max-height: {{ section.settings.image_max_height }}px;
+    --image-border-radius: {{ section.settings.image_border_radius }}px;
+    --image-object-fit: {{ section.settings.image_object_fit }};
+    --image-shadow-opacity: {{ section.settings.image_shadow_opacity }}%;
+    
+    --section-padding-top: {{ section.settings.section_padding_top }}px;
+    --section-padding-bottom: {{ section.settings.section_padding_bottom }}px;
+    --grid-gap: {{ section.settings.grid_gap }}px;
+    --section-bg: {{ section.settings.section_bg_color }};
+  }
+  
+  .table-image-section-{{ section.id }} {
+    background-color: var(--section-bg);
+    padding-top: var(--section-padding-top);
+    padding-bottom: var(--section-padding-bottom);
+  }
+  
+  {% if section.settings.section_width == 'boxed' %}
+    .table-image-section-{{ section.id }} .section-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+  {% else %}
+    .table-image-section-{{ section.id }} .section-container {
+      width: 100%;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+  {% endif %}
+  
+  .table-image-section-{{ section.id }} .section-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  
+  .table-image-section-{{ section.id }} .main-title {
+    font-size: var(--main-title-font-size);
+    font-weight: var(--main-title-font-weight);
+    letter-spacing: var(--main-title-letter-spacing);
+    margin-bottom: var(--main-title-margin-bottom);
+    color: var(--main-title-color);
+    line-height: 1.2;
+    margin-top: 0;
+  }
+  
+  .table-image-section-{{ section.id }} .sub-title {
+    font-size: var(--sub-title-font-size);
+    font-weight: var(--sub-title-font-weight);
+    margin-bottom: var(--sub-title-margin-bottom);
+    color: var(--sub-title-color);
+    line-height: 1.4;
+  }
+  
+  .table-image-section-{{ section.id }} .two-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--grid-gap);
+  }
+  
+  .table-image-section-{{ section.id }} .col-table {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .table-image-section-{{ section.id }} .col-image {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .table-image-section-{{ section.id }} .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: var(--table-border-radius);
+    border: 1px solid var(--table-border-color);
+    background: #fff;
+  }
+  
+  .table-image-section-{{ section.id }} .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--table-font-size);
+    min-width: 280px;
+  }
+  
+  .table-image-section-{{ section.id }} .data-table th,
+  .table-image-section-{{ section.id }} .data-table td {
+    padding: var(--table-cell-padding-vertical) var(--table-cell-padding-horizontal);
+    text-align: left;
+    border-bottom: 1px solid var(--table-border-color);
+    vertical-align: top;
+  }
+  
+  .table-image-section-{{ section.id }} .data-table th {
+    background-color: var(--table-header-bg);
+    font-size: var(--table-header-font-size);
+    font-weight: var(--table-header-font-weight);
+    color: var(--table-header-color);
+  }
+  
+  .table-image-section-{{ section.id }} .data-table td {
+    color: var(--table-body-color);
+  }
+  
+  .table-image-section-{{ section.id }} .data-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .table-image-section-{{ section.id }} .data-table tbody tr:hover td {
+    background-color: var(--table-row-hover-bg);
+    transition: background 0.2s ease;
+  }
+  
+  .table-image-section-{{ section.id }} .image-box {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .table-image-section-{{ section.id }} .custom-image {
+    max-width: 100%;
+    max-height: var(--image-max-height);
+    width: 100%;
+    height: auto;
+    object-fit: var(--image-object-fit);
+    border-radius: var(--image-border-radius);
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,calc(var(--image-shadow-opacity) / 100)), 0 2px 4px -1px rgba(0,0,0,calc(var(--image-shadow-opacity) / 200));
+    display: block;
+  }
+  
+  {% if section.settings.image_link != blank %}
+    .table-image-section-{{ section.id }} .image-link {
+      display: block;
+      text-decoration: none;
+    }
+  {% endif %}
+  
+  @media (max-width: 768px) {
+    .table-image-section-{{ section.id }} .two-columns {
+      flex-direction: column;
+      gap: 32px;
+    }
+  }
+</style>
+
+<div class="table-image-section-{{ section.id }}">
+  <div class="section-container">
+    <div class="section-header">
+      <h2 class="main-title">{{ section.settings.main_title | escape }}</h2>
+      <div class="sub-title">{{ section.settings.sub_title | escape }}</div>
+    </div>
+    
+    <div class="two-columns">
+      <div class="col-table">
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>特性</th>
+                <th>标准版</th>
+                <th>专业版</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for block in section.blocks %}
+                <tr>
+                  <td>{{ block.settings.col_1 | escape }}</td>
+                  <td>{{ block.settings.col_2 | escape }}</td>
+                  <td>{{ block.settings.col_3 | escape }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="col-image">
+        <div class="image-box">
+          {% if section.settings.image_link != blank %}
+            <a href="{{ section.settings.image_link }}" class="image-link">
+          {% endif %}
+          {% if section.settings.section_image != blank %}
+            {{ section.settings.section_image | image_url: width: 1000 | image_tag: class: 'custom-image', loading: 'lazy' }}
+          {% else %}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'custom-image placeholder-svg' }}
+          {% endif %}
+          {% if section.settings.image_link != blank %}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
