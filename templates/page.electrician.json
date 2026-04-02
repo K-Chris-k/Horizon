@@ -56,9 +56,62 @@
         "padding-block-start": 40,
         "padding-block-end": 80
       }
+    },
+    "lectrician_showcase_FxXDRD": {
+      "type": "lectrician-showcase",
+      "blocks": {
+        "electrician_QAcJeL": {
+          "type": "electrician",
+          "settings": {
+            "image": "shopify://shop_images/1000019836.jpg",
+            "info_label_1": "Professional Profile",
+            "info_value_1": "Lajos Gonczi",
+            "info_label_2": "Company",
+            "info_value_2": "Electropro-liverpool LTD",
+            "info_label_3": "Qualifications",
+            "info_value_3": "NAPIT Certified",
+            "info_label_4": "Experience",
+            "info_value_4": "25+ Years Global Experience (10 Years in the UK)",
+            "info_label_5": "Service Areas",
+            "info_value_5": "Liverpool & all of Merseyside (Available for travel)",
+            "info_label_6": "Phone/whatsapp",
+            "info_value_6": "7492705244",
+            "info_label_7": "Email",
+            "info_value_7": "lajos.gonczi@electropro-liverpool.co.uk",
+            "info_label_8": "",
+            "info_value_8": "",
+            "info_label_9": "",
+            "info_value_9": "",
+            "info_label_10": "",
+            "info_value_10": ""
+          }
+        }
+      },
+      "block_order": [
+        "electrician_QAcJeL"
+      ],
+      "name": "Electrician Pro V4",
+      "settings": {
+        "title": "Our Partners",
+        "title_size": 32,
+        "subtitle": "Certified professionals",
+        "sub_size": 18,
+        "disclaimer": "",
+        "p_top": 50,
+        "p_bottom": 50,
+        "p_hor": 20,
+        "gap": 30,
+        "info_p": 40,
+        "font_size": 16,
+        "radius": 8,
+        "bg_color": "#ffffff",
+        "info_bg": "rgba(255, 255, 255, 0.5)",
+        "info_border": "#000000"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "lectrician_showcase_FxXDRD"
   ]
 }
