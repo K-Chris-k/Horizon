@@ -1,0 +1,140 @@
+<style>
+.section-{{ section.id }}{
+  padding: {{ section.settings.section_padding }}px 0;
+}
+
+.container-{{ section.id }}{
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.heading-{{ section.id }}{
+  font-size: {{ section.settings.heading_size }}px;
+  margin-bottom: {{ section.settings.heading_spacing }}px;
+  text-align:center;
+}
+
+.subheading-{{ section.id }}{
+  font-size: {{ section.settings.subheading_size }}px;
+  margin-bottom: {{ section.settings.subheading_spacing }}px;
+  text-align:center;
+}
+
+.flex-{{ section.id }}{
+  display:flex;
+  gap: 20px;
+}
+
+.left-{{ section.id }}{
+  width:50%;
+}
+
+.right-{{ section.id }}{
+  width:50%;
+}
+
+.table-{{ section.id }}{
+  width:100%;
+  height: {{ section.settings.table_height }}px;
+  border-collapse: collapse;
+  background: {{ section.settings.table_bg }};
+  font-size: {{ section.settings.table_font_size }}px;
+}
+
+.table-{{ section.id }} td{
+  border:1px solid {{ section.settings.table_border_color }};
+  padding: {{ section.settings.cell_padding }}px;
+}
+
+.image-{{ section.id }} img{
+  width:100%;
+  height: {{ section.settings.image_height }}px;
+  object-fit:cover;
+}
+
+@media(max-width:768px){
+  .flex-{{ section.id }}{
+    flex-direction:column;
+  }
+  .left-{{ section.id }},
+  .right-{{ section.id }}{
+    width:100%;
+  }
+}
+</style>
+
+<div class="section-{{ section.id }}">
+  <div class="container-{{ section.id }}">
+
+    <div class="heading-{{ section.id }}">{{ section.settings.heading }}</div>
+    <div class="subheading-{{ section.id }}">{{ section.settings.subheading }}</div>
+
+    <div class="flex-{{ section.id }}">
+
+      <div class="left-{{ section.id }}">
+        <table class="table-{{ section.id }}">
+          {% for block in section.blocks %}
+            <tr>
+              <td>{{ block.settings.col1 }}</td>
+              <td>{{ block.settings.col2 }}</td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+      <div class="right-{{ section.id }}">
+        <div class="image-{{ section.id }}">
+          {% if section.settings.image %}
+            <img src="{{ section.settings.image | image_url: width: 1000 }}">
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Table + Image (Clean)",
+  "settings": [
+    {"type":"text","id":"heading","label":"Heading","default":"Main Title"},
+    {"type":"text","id":"subheading","label":"Subheading","default":"Sub Title"},
+
+    {"type":"range","id":"heading_size","min":16,"max":72,"step":1,"default":36,"label":"Heading Size"},
+    {"type":"range","id":"subheading_size","min":12,"max":40,"step":1,"default":18,"label":"Subheading Size"},
+
+    {"type":"range","id":"heading_spacing","min":0,"max":50,"step":1,"default":10,"label":"Heading Bottom Spacing"},
+    {"type":"range","id":"subheading_spacing","min":0,"max":50,"step":1,"default":20,"label":"Subheading Bottom Spacing"},
+
+    {"type":"range","id":"table_height","min":200,"max":800,"step":10,"default":400,"label":"Table Height"},
+    {"type":"range","id":"image_height","min":200,"max":800,"step":10,"default":400,"label":"Image Height"},
+
+    {"type":"range","id":"table_font_size","min":10,"max":24,"step":1,"default":14,"label":"Table Font Size"},
+    {"type":"range","id":"cell_padding","min":5,"max":30,"step":1,"default":12,"label":"Cell Padding"},
+
+    {"type":"color","id":"table_border_color","label":"Table Border Color","default":"#dddddd"},
+    {"type":"color","id":"table_bg","label":"Table Background","default":"#ffffff"},
+
+    {"type":"image_picker","id":"image","label":"Right Image"},
+
+    {"type":"range","id":"section_padding","min":0,"max":100,"step":5,"default":40,"label":"Section Padding"}
+  ],
+
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Table Row",
+      "settings": [
+        {"type":"text","id":"col1","label":"Column 1","default":"Feature"},
+        {"type":"text","id":"col2","label":"Column 2","default":"Details"}
+      ]
+    }
+  ],
+
+  "presets": [
+    {"name": "Table + Image (Clean)"}
+  ]
+}
+{% endschema %}
