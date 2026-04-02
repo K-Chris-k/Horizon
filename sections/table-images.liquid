@@ -46,6 +46,12 @@
   padding: {{ section.settings.cell_padding }}px;
 }
 
+/* 仅新增：确保链接颜色与表格文字一致 */
+.table-{{ section.id }} td a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 .image-{{ section.id }} img{
   width:100%;
   height: {{ section.settings.image_height }}px;
@@ -76,7 +82,16 @@
           {% for block in section.blocks %}
             <tr>
               <td>{{ block.settings.col1 }}</td>
-              <td>{{ block.settings.col2 }}</td>
+              <td>
+                {%- assign content = block.settings.col2 -%}
+                {%- if content contains 'http' or content contains '/' -%}
+                  <a href="{{ content }}">{{ content }}</a>
+                {%- elsif content contains '@' -%}
+                  <a href="mailto:{{ content }}">{{ content }}</a>
+                {%- else -%}
+                  {{ content }}
+                {%- endif -%}
+              </td>
             </tr>
           {% endfor %}
         </table>
