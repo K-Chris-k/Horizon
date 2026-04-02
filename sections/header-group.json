@@ -209,6 +209,7 @@
         },
         "row_XmpynF": {
           "type": "row",
+          "disabled": true,
           "settings": {
             "col1": "Feature",
             "col2": "Details"
