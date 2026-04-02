@@ -6,7 +6,6 @@
 .container-{{ section.id }}{
   max-width: 1300px;
   margin: 0 auto;
-  position: relative;
 }
 
 .heading-{{ section.id }}{
@@ -47,26 +46,10 @@
   padding: {{ section.settings.cell_padding }}px;
 }
 
-.table-{{ section.id }} a{
-  color: inherit;
-  text-decoration: underline;
-}
-
 .image-{{ section.id }} img{
   width:100%;
   height: {{ section.settings.image_height }}px;
   object-fit:cover;
-}
-
-.disclaimer-{{ section.id }}{
-  position:absolute;
-  right: {{ section.settings.disclaimer_right }}px;
-  bottom: {{ section.settings.disclaimer_bottom }}px;
-  font-size: {{ section.settings.disclaimer_size }}px;
-  color:#666;
-  max-width: {{ section.settings.disclaimer_width }}px;
-  padding: {{ section.settings.disclaimer_padding_top }}px {{ section.settings.disclaimer_padding_right }}px {{ section.settings.disclaimer_padding_bottom }}px {{ section.settings.disclaimer_padding_left }}px;
-  word-wrap: break-word;
 }
 
 @media(max-width:768px){
@@ -77,11 +60,6 @@
   .right-{{ section.id }}{
     width:100%;
   }
-  .disclaimer-{{ section.id }}{
-    position:static;
-    margin-top:10px;
-    text-align:right;
-  }
 }
 </style>
 
@@ -89,14 +67,7 @@
   <div class="container-{{ section.id }}">
 
     <div class="heading-{{ section.id }}">{{ section.settings.heading }}</div>
-
-    <div class="subheading-{{ section.id }}">
-      {% if section.settings.subheading_link != blank %}
-        <a href="{{ section.settings.subheading_link }}">{{ section.settings.subheading }}</a>
-      {% else %}
-        {{ section.settings.subheading }}
-      {% endif %}
-    </div>
+    <div class="subheading-{{ section.id }}">{{ section.settings.subheading }}</div>
 
     <div class="flex-{{ section.id }}">
 
@@ -121,12 +92,6 @@
 
     </div>
 
-    {% if section.settings.disclaimer != blank %}
-      <div class="disclaimer-{{ section.id }}">
-        {{ section.settings.disclaimer }}
-      </div>
-    {% endif %}
-
   </div>
 </div>
 
@@ -136,7 +101,6 @@
   "settings": [
     {"type":"text","id":"heading","label":"Heading","default":"Main Title"},
     {"type":"text","id":"subheading","label":"Subheading","default":"Sub Title"},
-    {"type":"url","id":"subheading_link","label":"Subheading Link (mailto supported)"},
 
     {"type":"range","id":"heading_size","min":16,"max":72,"step":1,"default":36,"label":"Heading Size"},
     {"type":"range","id":"subheading_size","min":12,"max":40,"step":1,"default":18,"label":"Subheading Size"},
@@ -154,18 +118,6 @@
     {"type":"color","id":"table_bg","label":"Table Background","default":"#ffffff"},
 
     {"type":"image_picker","id":"image","label":"Right Image"},
-
-    {"type":"text","id":"disclaimer","label":"Disclaimer Text","default":"* Terms apply"},
-    {"type":"range","id":"disclaimer_size","min":10,"max":20,"step":1,"default":12,"label":"Disclaimer Font Size"},
-    {"type":"range","id":"disclaimer_width","min":100,"max":600,"step":10,"default":300,"label":"Disclaimer Max Width"},
-
-    {"type":"range","id":"disclaimer_padding_top","min":0,"max":30,"step":1,"default":5,"label":"Disclaimer Padding Top"},
-    {"type":"range","id":"disclaimer_padding_right","min":0,"max":30,"step":1,"default":5,"label":"Disclaimer Padding Right"},
-    {"type":"range","id":"disclaimer_padding_bottom","min":0,"max":30,"step":1,"default":5,"label":"Disclaimer Padding Bottom"},
-    {"type":"range","id":"disclaimer_padding_left","min":0,"max":30,"step":1,"default":5,"label":"Disclaimer Padding Left"},
-
-    {"type":"range","id":"disclaimer_right","min":0,"max":100,"step":1,"default":0,"label":"Disclaimer Right Offset"},
-    {"type":"range","id":"disclaimer_bottom","min":-20,"max":80,"step":1,"default":0,"label":"Disclaimer Bottom Offset"},
 
     {"type":"range","id":"section_padding","min":0,"max":100,"step":5,"default":40,"label":"Section Padding"}
   ],
