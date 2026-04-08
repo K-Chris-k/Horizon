@@ -92,7 +92,7 @@
       ],
       "name": "Electrician Pro V4",
       "settings": {
-        "title": "Repenic Professional Installer Network",
+        "title": "Repenic Professional Electrician Network",
         "title_size": 20,
         "subtitle": "Professional setup for your dimmers and thermostats. Safe, certified, and local.",
         "sub_size": 14,
@@ -105,7 +105,7 @@
         "font_size": 16,
         "radius": 8,
         "bg_color": "#ffffff",
-        "info_bg": "rgba(255, 255, 255, 0.5)",
+        "info_bg": "#ffffff80",
         "info_border": "#000000"
       }
     }
