@@ -71,14 +71,21 @@
         "download_Fqr9TA": {
           "type": "download",
           "settings": {
-            "label": "Product datasheets",
+            "label": "Crafting Atmosphere with Premium Lighting Hardware & Design",
             "file": ""
           }
         },
         "download_HdbH83": {
           "type": "download",
           "settings": {
-            "label": "Instructions",
+            "label": "Intelligent Control in British Homes & Overcoming Retrofit Challenges",
+            "file": ""
+          }
+        },
+        "download_XN9jPH": {
+          "type": "download",
+          "settings": {
+            "label": "Smart Control, Smarter Living & Maximizing Efficiency and Future-Proofing Your System",
             "file": ""
           }
         }
@@ -86,7 +93,8 @@
       "block_order": [
         "tab_item_9Mzmew",
         "download_Fqr9TA",
-        "download_HdbH83"
+        "download_HdbH83",
+        "download_XN9jPH"
       ],
       "name": "Technical Specifications",
       "settings": {
