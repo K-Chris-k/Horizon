@@ -68,18 +68,11 @@
             "tab_text_color": "#000000"
           }
         },
-        "download_Fqr9TA": {
-          "type": "download",
-          "settings": {
-            "label": "Crafting Atmosphere with Premium Lighting Hardware & Design",
-            "file": ""
-          }
-        },
         "download_HdbH83": {
           "type": "download",
           "settings": {
             "label": "Intelligent Control in British Homes & Overcoming Retrofit Challenges",
-            "file": ""
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/The_2026_UK_Smart_Home_Guide_1-Crafting_Atmosphere_with_Premium_Lighting_Hardware_and_Design.docx?v=1775730271"
           }
         },
         "download_XN9jPH": {
@@ -92,7 +85,6 @@
       },
       "block_order": [
         "tab_item_9Mzmew",
-        "download_Fqr9TA",
         "download_HdbH83",
         "download_XN9jPH"
       ],
