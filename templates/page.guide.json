@@ -71,22 +71,30 @@
         "download_HdbH83": {
           "type": "download",
           "settings": {
-            "label": "Intelligent Control in British Homes & Overcoming Retrofit Challenges",
+            "label": "Crafting Atmosphere with Premium Lighting Hardware & Design",
             "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/The_2026_UK_Smart_Home_Guide_1-Crafting_Atmosphere_with_Premium_Lighting_Hardware_and_Design.pdf?v=1775731089"
           }
         },
         "download_XN9jPH": {
           "type": "download",
           "settings": {
+            "label": "Intelligent Control in British Homes—Overcoming Retrofit Challenges",
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/The_2026_UK_Smart_Home_Guide_2-Intelligent_Control_in_British_Homes_Overcoming_Retrofit_Challenges_1.pdf?v=1775732137"
+          }
+        },
+        "download_ew7FRQ": {
+          "type": "download",
+          "settings": {
             "label": "Smart Control, Smarter Living & Maximizing Efficiency and Future-Proofing Your System",
-            "file": ""
+            "file": "https://cdn.shopify.com/s/files/1/0653/9277/1120/files/The_2026_UK_Smart_Home_Guide_3-Smart_Control_Smarter_Living_Maximizing_Efficiency_and_Future-Proofing_Your_System.pdf?v=1775732155"
           }
         }
       },
       "block_order": [
         "tab_item_9Mzmew",
         "download_HdbH83",
-        "download_XN9jPH"
+        "download_XN9jPH",
+        "download_ew7FRQ"
       ],
       "name": "Technical Specifications",
       "settings": {
