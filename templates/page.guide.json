@@ -16,8 +16,8 @@
           "type": "text",
           "name": "Title",
           "settings": {
-            "text": "<h1>{{ closest.page.title }}</h1>",
-            "width": "100%",
+            "text": "",
+            "width": "fit-content",
             "max_width": "normal",
             "alignment": "center",
             "type_preset": "h2",
@@ -55,9 +55,72 @@
         "padding-block-start": 40,
         "padding-block-end": 80
       }
+    },
+    "technical_specifications_cJXFwq": {
+      "type": "technical-specifications",
+      "blocks": {
+        "tab_item_9Mzmew": {
+          "type": "tab_item",
+          "settings": {
+            "tab_type": "pdf",
+            "tab_label": "",
+            "tab_background_color": "#ffffff",
+            "tab_text_color": "#000000"
+          }
+        },
+        "download_Fqr9TA": {
+          "type": "download",
+          "settings": {
+            "label": "Product datasheets",
+            "file": ""
+          }
+        },
+        "download_HdbH83": {
+          "type": "download",
+          "settings": {
+            "label": "Instructions",
+            "file": ""
+          }
+        }
+      },
+      "block_order": [
+        "tab_item_9Mzmew",
+        "download_Fqr9TA",
+        "download_HdbH83"
+      ],
+      "name": "Technical Specifications",
+      "settings": {
+        "custom_class": "",
+        "background_color": "#ffffff",
+        "container_width": 1400,
+        "padding_top_desktop": 0,
+        "padding_bottom_desktop": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "title": "2026 UK Smart Home Renovation Guide",
+        "subtitle": "",
+        "faq_title": "",
+        "title_font_size_desktop": 32,
+        "title_line_height_desktop": 1.2,
+        "subtitle_font_size_desktop": 24,
+        "subtitle_line_height_desktop": 1.4,
+        "content_font_size_desktop": 14,
+        "content_line_height_desktop": 1.6,
+        "tab_font_size_desktop": 16,
+        "tab_line_height_desktop": 1.5,
+        "title_font_size_mobile": 24,
+        "title_line_height_mobile": 1.2,
+        "subtitle_font_size_mobile": 18,
+        "subtitle_line_height_mobile": 1.4,
+        "content_font_size_mobile": 12,
+        "content_line_height_mobile": 1.6,
+        "tab_font_size_mobile": 14,
+        "tab_line_height_mobile": 1.5
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "technical_specifications_cJXFwq"
   ]
 }
