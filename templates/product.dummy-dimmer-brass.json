@@ -610,6 +610,58 @@
         "autoplay_speed": 5
       }
     },
+    "sticky_tabs_BbN7hb": {
+      "type": "sticky-tabs",
+      "blocks": {
+        "tab_w3Cte4": {
+          "type": "tab",
+          "settings": {
+            "tab_title": "product-carousel",
+            "anchor_target": "product-carousel"
+          }
+        },
+        "tab_qw9nrD": {
+          "type": "tab",
+          "settings": {
+            "tab_title": "product-features",
+            "anchor_target": "product-features"
+          }
+        },
+        "tab_xjAVeT": {
+          "type": "tab",
+          "settings": {
+            "tab_title": "选项卡 3",
+            "anchor_target": ".section-3"
+          }
+        }
+      },
+      "block_order": [
+        "tab_w3Cte4",
+        "tab_qw9nrD",
+        "tab_xjAVeT"
+      ],
+      "name": "吸顶 Tab 栏",
+      "settings": {
+        "bg_color": "#FFFFFF",
+        "border_color": "#E5E5E5",
+        "text_color": "#000000",
+        "active_text_color": "#000000",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "tab_height_desktop": 56,
+        "tab_height_mobile": 48,
+        "tab_font_size_desktop": 16,
+        "tab_font_size_mobile": 14,
+        "tab_width_desktop": 120,
+        "tab_spacing_desktop": 20,
+        "indicator_bg": "#F5F5F5",
+        "indicator_radius": 8,
+        "indicator_padding_top": 4,
+        "indicator_padding_bottom": 4,
+        "indicator_padding_left": 8,
+        "indicator_padding_right": 8
+      }
+    },
     "technical_specifications_G9GYYY": {
       "type": "technical-specifications",
       "blocks": {
@@ -1315,8 +1367,8 @@
           "type": "ai_gen_block_d32cd89",
           "name": "3.0",
           "settings": {
-            "bar_background_color": "rgba(255, 255, 255, 0.2)",
-            "bar_border_color": "rgba(255, 255, 255, 0.4)",
+            "bar_background_color": "#ffffff33",
+            "bar_border_color": "#ffffff66",
             "bar_text_color": "#000000",
             "bar_text_size": 14,
             "bar_border_radius": 8,
@@ -1371,6 +1423,7 @@
         "ai_gen_block_5b2cdcc_wrJ9wX",
         "ai_gen_block_c2ad69f_MxL9Wq"
       ],
+      "disabled": true,
       "settings": {
         "content_direction": "column",
         "vertical_on_mobile": true,
@@ -1403,6 +1456,7 @@
   "order": [
     "main",
     "product_carousel_wifGp6",
+    "sticky_tabs_BbN7hb",
     "technical_specifications_G9GYYY",
     "product_features_CKq9ce",
     "featured_blog_posts_WLJgz7",
