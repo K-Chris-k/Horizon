@@ -1,0 +1,669 @@
+{% comment %}
+  Shopify Section: 吸顶 Tab 栏 (Sticky Tabs)
+  文件名: sticky-tabs.liquid
+  放置路径: sections/sticky-tabs.liquid
+{% endcomment %}
+
+{{ 'component-sticky-tabs.css' | asset_url | stylesheet_tag }}
+
+<div class="sticky-tabs-section" data-sticky-tabs>
+  <div class="sticky-tabs__container" data-sticky-tabs-container>
+    {%- assign tab_count = section.blocks.size -%}
+    
+    <div class="sticky-tabs__wrapper" data-tabs-wrapper>
+      {% for block in section.blocks %}
+        <button 
+          class="sticky-tabs__tab {% if forloop.first %}is-active{% endif %}" 
+          data-tab-index="{{ forloop.index0 }}"
+          data-anchor="{{ block.settings.anchor_target }}"
+          {{ block.shopify_attributes }}
+        >
+          <span class="sticky-tabs__tab-label">{{ block.settings.tab_title }}</span>
+        </button>
+      {% endfor %}
+      
+      <div class="sticky-tabs__indicator" data-tabs-indicator></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* 导入 Merriweather 字体 */
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap');
+  
+  .sticky-tabs-section {
+    --tab-width-desktop: {{ section.settings.tab_width_desktop }}px;
+    --tab-spacing-desktop: {{ section.settings.tab_spacing_desktop }}px;
+    --indicator-padding-top: {{ section.settings.indicator_padding_top }}px;
+    --indicator-padding-right: {{ section.settings.indicator_padding_right }}px;
+    --indicator-padding-bottom: {{ section.settings.indicator_padding_bottom }}px;
+    --indicator-padding-left: {{ section.settings.indicator_padding_left }}px;
+    --indicator-bg: {{ section.settings.indicator_bg }};
+    --indicator-radius: {{ section.settings.indicator_radius }}px;
+    --border-color: {{ section.settings.border_color }};
+    --bg-color: {{ section.settings.bg_color }};
+    --text-color: {{ section.settings.text_color }};
+    --active-text-color: {{ section.settings.active_text_color }};
+    --tab-height-desktop: {{ section.settings.tab_height_desktop }}px;
+    --tab-height-mobile: {{ section.settings.tab_height_mobile }}px;
+    --tab-font-size-desktop: {{ section.settings.tab_font_size_desktop }}px;
+    --tab-font-size-mobile: {{ section.settings.tab_font_size_mobile }}px;
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    
+    position: relative;
+    width: 100%;
+    background-color: var(--bg-color);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-top: var(--section-padding-top);
+    padding-bottom: var(--section-padding-bottom);
+  }
+  
+  .sticky-tabs__container {
+    position: relative;
+    width: 100%;
+    transition: box-shadow 0.2s ease;
+    background-color: var(--bg-color);
+  }
+  
+  .sticky-tabs__container.is-sticky {
+    position: fixed;
+    left: 0;
+    right: 0;
+    background-color: var(--bg-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 99;
+  }
+  
+  .sticky-tabs__wrapper {
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+    height: var(--tab-height-mobile);
+  }
+  
+  .sticky-tabs__wrapper::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .sticky-tabs__tab {
+    position: relative;
+    flex-shrink: 0;
+    padding: 0;
+    height: 100%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: var(--tab-font-size-mobile);
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    color: var(--text-color);
+    transition: color 0.2s ease;
+    text-align: center;
+    outline: none;
+    user-select: none;
+    z-index: 2;
+    margin: 0;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .sticky-tabs__tab.is-active {
+    color: var(--active-text-color);
+  }
+  
+  .sticky-tabs__tab-label {
+    position: relative;
+    z-index: 2;
+    display: block;
+    white-space: nowrap;
+  }
+  
+  /* 桌面端样式 */
+  @media screen and (min-width: 750px) {
+    .sticky-tabs__wrapper {
+      justify-content: center;
+      overflow-x: visible;
+      padding: 0 40px;
+      height: var(--tab-height-desktop);
+    }
+    
+    .sticky-tabs__tab {
+      width: var(--tab-width-desktop);
+      margin-right: var(--tab-spacing-desktop);
+      font-size: var(--tab-font-size-desktop);
+    }
+    
+    .sticky-tabs__tab:last-child {
+      margin-right: 0;
+    }
+  }
+  
+  /* 移动端样式 */
+  @media screen and (max-width: 749px) {
+    .sticky-tabs__wrapper {
+      justify-content: flex-start;
+      padding: 0 16px;
+    }
+    
+    .sticky-tabs__tab {
+      flex: 1 1 0;
+      min-width: 0;
+      margin-right: 0;
+    }
+  }
+  
+  /* 选中框指示器 */
+  .sticky-tabs__indicator {
+    position: absolute;
+    top: var(--indicator-padding-top);
+    bottom: var(--indicator-padding-bottom);
+    left: 0;
+    width: 0;
+    background-color: var(--indicator-bg);
+    border-radius: var(--indicator-radius);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+    pointer-events: none;
+    box-sizing: border-box;
+  }
+  
+  /* 平滑滚动 */
+  html {
+    scroll-behavior: smooth;
+  }
+</style>
+
+<script>
+  (function() {
+    class StickyTabs {
+      constructor(section) {
+        this.section = section;
+        this.container = section.querySelector('[data-sticky-tabs-container]');
+        this.wrapper = section.querySelector('[data-tabs-wrapper]');
+        this.tabs = Array.from(section.querySelectorAll('[data-tab-index]'));
+        this.indicator = section.querySelector('[data-tabs-indicator]');
+        
+        this.isSticky = false;
+        this.sectionTop = 0;
+        this.containerHeight = 0;
+        this.headerHeight = 0;
+        this.activeIndex = 0;
+        this.ticking = false;
+        
+        this.init();
+      }
+      
+      init() {
+        this.setInitialActive();
+        this.updateIndicator(false);
+        this.calculatePositions();
+        this.bindEvents();
+      }
+      
+      setInitialActive() {
+        const activeTab = this.section.querySelector('.sticky-tabs__tab.is-active');
+        if (activeTab) {
+          this.activeIndex = parseInt(activeTab.dataset.tabIndex, 10) || 0;
+        }
+      }
+      
+      calculatePositions() {
+        const rect = this.section.getBoundingClientRect();
+        this.sectionTop = rect.top + window.pageYOffset;
+        this.containerHeight = this.container.offsetHeight;
+        
+        // 获取 header 高度 - 支持多种选择器
+        const header = document.querySelector('header, .site-header, .header-wrapper, .shopify-section-header, [class*="header"]:not(.sticky-tabs-section)');
+        if (header) {
+          const headerStyle = window.getComputedStyle(header);
+          const marginBottom = parseFloat(headerStyle.marginBottom) || 0;
+          this.headerHeight = header.offsetHeight + marginBottom;
+        } else {
+          this.headerHeight = 0;
+        }
+      }
+      
+      bindEvents() {
+        window.addEventListener('scroll', () => {
+          if (!this.ticking) {
+            requestAnimationFrame(() => {
+              this.handleScroll();
+              this.ticking = false;
+            });
+            this.ticking = true;
+          }
+        }, { passive: true });
+        
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            if (this.isSticky) {
+              this.setSticky(false);
+            }
+            this.calculatePositions();
+            this.handleScroll();
+          }, 100);
+        });
+        
+        this.wrapper.addEventListener('click', (e) => {
+          const tab = e.target.closest('.sticky-tabs__tab');
+          if (!tab) return;
+          
+          const index = parseInt(tab.dataset.tabIndex, 10);
+          const anchor = tab.dataset.anchor;
+          
+          this.setActiveTab(index);
+          
+          if (anchor && anchor.trim()) {
+            setTimeout(() => this.scrollToAnchor(anchor), 50);
+          }
+        });
+        
+        if (window.Shopify && window.Shopify.designMode) {
+          const handler = () => {
+            if (this.isSticky) this.setSticky(false);
+            this.calculatePositions();
+            this.handleScroll();
+          };
+          document.addEventListener('shopify:section:load', handler);
+          document.addEventListener('shopify:section:select', handler);
+        }
+      }
+      
+      handleScroll() {
+        const scrollY = window.pageYOffset;
+        const sectionRect = this.section.getBoundingClientRect();
+        
+        // 当 section 顶部到达 header 底部时触发吸顶
+        const shouldSticky = sectionRect.top <= this.headerHeight && scrollY >= this.sectionTop - this.headerHeight;
+        
+        if (shouldSticky !== this.isSticky) {
+          this.setSticky(shouldSticky);
+        }
+        
+        if (this.isSticky) {
+          this.updateIndicator(true);
+        }
+      }
+      
+      setSticky(sticky) {
+        this.isSticky = sticky;
+        
+        if (sticky) {
+          this.container.classList.add('is-sticky');
+          // 减去1px让顶部边框可见，形成分隔线效果
+          const desktopOffset = window.innerWidth >= 750 ? 8 : 0; // 桌面端下移 8px
+this.container.style.top = (this.headerHeight + desktopOffset - 1) + 'px';
+          
+          if (!this.placeholder) {
+            this.placeholder = document.createElement('div');
+            this.placeholder.style.cssText = `height:${this.containerHeight}px;width:100%;display:block;`;
+            this.section.insertBefore(this.placeholder, this.container);
+          }
+        } else {
+          this.container.classList.remove('is-sticky');
+          this.container.style.top = '';
+          
+          if (this.placeholder) {
+            this.placeholder.remove();
+            this.placeholder = null;
+          }
+        }
+        
+        this.updateIndicator(true);
+      }
+      
+      setActiveTab(index) {
+        if (this.activeIndex === index) return;
+        
+        this.activeIndex = index;
+        
+        this.tabs.forEach((tab, i) => {
+          tab.classList.toggle('is-active', i === index);
+        });
+        
+        this.updateIndicator(true);
+        
+        if (window.innerWidth < 750) {
+          const activeTab = this.tabs[index];
+          if (activeTab) {
+            activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          }
+        }
+      }
+      
+      updateIndicator(animate = true) {
+        const activeTab = this.tabs[this.activeIndex];
+        if (!activeTab) return;
+        
+        const wrapperRect = this.wrapper.getBoundingClientRect();
+        const tabRect = activeTab.getBoundingClientRect();
+        
+        if (wrapperRect.width === 0 || tabRect.width === 0) return;
+        
+        const left = tabRect.left - wrapperRect.left;
+        const width = tabRect.width;
+        
+        const styles = getComputedStyle(this.indicator);
+        const padLeft = parseFloat(styles.getPropertyValue('--indicator-padding-left')) || 0;
+        const padRight = parseFloat(styles.getPropertyValue('--indicator-padding-right')) || 0;
+        
+        let finalLeft = left - padLeft;
+        let finalWidth = width + padLeft + padRight;
+        
+        finalLeft = Math.max(0, Math.min(finalLeft, wrapperRect.width - finalWidth));
+        
+        if (!animate) {
+          this.indicator.style.transition = 'none';
+        } else {
+          this.indicator.style.transition = '';
+        }
+        
+        this.indicator.style.transform = `translateX(${finalLeft}px)`;
+        this.indicator.style.width = `${finalWidth}px`;
+      }
+      
+      scrollToAnchor(anchorClass) {
+        const selectors = anchorClass.split(',').map(s => s.trim()).filter(s => s);
+        
+        let targetElement = null;
+        
+        for (const selector of selectors) {
+          let processed = selector;
+          if (!selector.startsWith('.') && !selector.startsWith('#')) {
+            processed = selector.includes(' ') ? '.' + selector.split(' ').join('.') : '.' + selector;
+          }
+          
+          try {
+            targetElement = document.querySelector(processed);
+          } catch(e) {}
+          
+          if (targetElement) break;
+        }
+        
+        if (targetElement) {
+          // 偏移量 = header高度 + (吸顶时tab高度)
+          const offset = this.isSticky ? this.containerHeight + this.headerHeight : this.headerHeight;
+          const targetTop = targetElement.getBoundingClientRect().top + window.pageYOffset;
+          
+          window.scrollTo({
+            top: targetTop - offset,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }
+    
+    const sections = document.querySelectorAll('[data-sticky-tabs]');
+    sections.forEach(section => new StickyTabs(section));
+    
+    if (window.Shopify && window.Shopify.designMode) {
+      document.addEventListener('shopify:section:load', (e) => {
+        const section = document.getElementById(`shopify-section-${e.detail.sectionId}`);
+        if (section) {
+          const tabs = section.querySelector('[data-sticky-tabs]');
+          if (tabs) new StickyTabs(tabs);
+        }
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "吸顶 Tab 栏",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "样式设置"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "背景颜色",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "分隔线颜色",
+      "default": "#E5E5E5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "文字颜色",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "active_text_color",
+      "label": "激活文字颜色",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Section 边距设置"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "上边距",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "下边距",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "高度设置"
+    },
+    {
+      "type": "range",
+      "id": "tab_height_desktop",
+      "min": 40,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "桌面端高度",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "tab_height_mobile",
+      "min": 40,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "移动端高度",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "字体大小设置"
+    },
+    {
+      "type": "range",
+      "id": "tab_font_size_desktop",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "桌面端字体大小",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "tab_font_size_mobile",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "移动端字体大小",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "桌面端设置"
+    },
+    {
+      "type": "range",
+      "id": "tab_width_desktop",
+      "min": 80,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Tab 宽度",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "tab_spacing_desktop",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Tab 间距",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "选中框设置"
+    },
+    {
+      "type": "color",
+      "id": "indicator_bg",
+      "label": "背景颜色",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "range",
+      "id": "indicator_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "圆角",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "indicator_padding_top",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "上内间距",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "indicator_padding_bottom",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "下内间距",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "indicator_padding_left",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "左内间距",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "indicator_padding_right",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "右内间距",
+      "default": 8
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab 项",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_title",
+          "label": "标题",
+          "default": "选项卡"
+        },
+        {
+          "type": "text",
+          "id": "anchor_target",
+          "label": "锚点目标",
+          "info": "填写要滚动到的元素的类名或 ID（例如 .section-header 或 #product-description）。支持多个，用逗号分隔。",
+          "default": ".anchor-target"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "吸顶 Tab 栏",
+      "blocks": [
+        {
+          "type": "tab",
+          "settings": {
+            "tab_title": "选项卡 1",
+            "anchor_target": ".section-1"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "tab_title": "选项卡 2",
+            "anchor_target": ".section-2"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "tab_title": "选项卡 3",
+            "anchor_target": ".section-3"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
