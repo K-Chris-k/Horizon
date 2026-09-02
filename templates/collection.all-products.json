@@ -247,7 +247,7 @@
       "settings": {
         "collection_list": [
           "dimmer-switch",
-          "light-switch",
+          "dummy-dimmer",
           "smart-thermostat"
         ],
         "layout_type": "grid",
